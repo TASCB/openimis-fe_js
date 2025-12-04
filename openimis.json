@@ -121,10 +121,6 @@
       "npm": "@openimis/fe-grievance_social_protection@https://github.com/openimis/openimis-fe-grievance_social_protection_js#release/25.10"
     },
     {
-      "name": "LanguageFrModule",
-      "npm": "@openimis/fe-language_fr@https://github.com/openimis/openimis-fe-language_fr_js#release/25.10"
-    },
-    {
       "name": "ClaimSamplingModule",
       "npm": "@openimis/fe-claim_sampling@https://github.com/openimis/openimis-fe-claim_sampling_js#release/25.10"
     },
@@ -135,6 +131,10 @@
     {
       "name": "PayrollModule",
       "npm": "@openimis/fe-payroll@https://github.com/openimis/openimis-fe-payroll_js#release/25.10"
+    },
+    {
+      "name": "LanguageEnTasafModule",
+      "npm": "@openimis/fe-language_en_tasaf@1.5.0"
     }
   ]
 }
