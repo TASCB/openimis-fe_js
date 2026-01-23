@@ -18,7 +18,7 @@
     },
     {
       "name": "IndividualModule",
-      "npm": "@openimis/fe-individual@https://github.com/TASCB/openimis-fe-individual_js#tz-changes"
+      "npm": "@openimis/fe-individual@https://github.com/TASCB/openimis-fe-individual_js#tz-imf"
     },
     {
       "name": "SocialProtectionModule",

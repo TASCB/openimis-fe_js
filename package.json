@@ -47,7 +47,7 @@
     "shelljs": "^0.8.4",
     "zxcvbn": "^4.4.2",
     "@openimis/fe-core": "https://github.com/openimis/openimis-fe-core_js#release/25.10",
-    "@openimis/fe-individual": "https://github.com/TASCB/openimis-fe-individual_js#tz-changes",
+    "@openimis/fe-individual": "https://github.com/TASCB/openimis-fe-individual_js#tz-imf",
     "@openimis/fe-social_protection": "https://github.com/openimis/openimis-fe-social_protection_js#release/25.10",
     "@openimis/fe-opensearch_reports": "https://github.com/openimis/openimis-fe-opensearch_reports_js#release/25.10",
     "@openimis/fe-home": "https://github.com/openimis/openimis-fe-home_js#release/25.10",
@@ -73,10 +73,11 @@
     "@openimis/fe-tasks_management": "https://github.com/openimis/openimis-fe-tasks_management_js#release/25.10",
     "@openimis/fe-invoice": "https://github.com/openimis/openimis-fe-invoice_js#release/25.10",
     "@openimis/fe-grievance_social_protection": "https://github.com/openimis/openimis-fe-grievance_social_protection_js#release/25.10",
+    "@openimis/fe-language_fr": "https://github.com/openimis/openimis-fe-language_fr_js#release/25.10",
     "@openimis/fe-claim_sampling": "https://github.com/openimis/openimis-fe-claim_sampling_js#release/25.10",
     "@openimis/fe-deduplication": "https://github.com/openimis/openimis-fe-deduplication_js#release/25.10",
     "@openimis/fe-payroll": "https://github.com/openimis/openimis-fe-payroll_js#release/25.10",
-    "@openimis/fe-language_en_tasaf": "1.5.0"
+    "@openimis/fe-language_en_tasaf": "https://github.com/TASCB/openimis-fe-language_en_tasaf_js#main"
   },
   "scripts": {
     "start": "craco start",
