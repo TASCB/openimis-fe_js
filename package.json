@@ -5,7 +5,7 @@
   "proxies": {
     "opensearch": {
       "base": "/opensearch",
-      "target": "http://opensearch:5410"
+      "target": "http://localhost:5410"
     },
     "api": {
       "base": "/api",
