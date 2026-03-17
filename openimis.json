@@ -139,6 +139,14 @@
     {
       "name": "LanguageEnTasafModule",
       "npm": "@openimis/fe-language_en_tasaf@https://github.com/TASCB/openimis-fe-language_en_tasaf_js#main"
+    },
+    {
+      "name": "ReportModule",
+      "npm": "@openimis/fe-report@https://github.com/TASCB/openimis-fe-report_js.git#main"
+    },
+    {
+      "name": "CaseManagement",
+      "npm": "@openimis/fe-case_management@https://github.com/TASCB/openimis-fe-case_management_js.git#main"
     }
   ]
 }

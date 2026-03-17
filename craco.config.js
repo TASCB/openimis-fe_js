@@ -59,7 +59,7 @@ module.exports = {
         })
       );
 
-      // --- NEW: silence noisy source-map-loader warnings ---
+      // silence noisy source-map-loader warnings ---
 
       const addSourceMapExcludes = (rules) => {
         if (!rules) return;
@@ -101,6 +101,5 @@ module.exports = {
     },
   },
   devServer: {
-    // keep empty / as is – your existing config
   },
 };

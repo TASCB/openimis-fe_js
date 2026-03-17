@@ -1,11 +1,11 @@
 {
   "name": "@openimis/fe",
-  "version": "25.04+",
+  "version": "25.10",
   "license": "AGPL-3.0-only",
   "proxies": {
     "opensearch": {
       "base": "/opensearch",
-      "target": "http://localhost:5410"
+      "target": "http://opensearch:5410"
     },
     "api": {
       "base": "/api",
@@ -23,6 +23,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.58",
     "@material-ui/pickers": "^3.2.10",
+    "@sentry/react": "^10.17.0",
     "ajv": "8.17.1",
     "classnames": "^2.2.6",
     "clsx": "^1.1.1",
@@ -77,7 +78,9 @@
     "@openimis/fe-claim_sampling": "https://github.com/openimis/openimis-fe-claim_sampling_js#release/25.10",
     "@openimis/fe-deduplication": "https://github.com/openimis/openimis-fe-deduplication_js#release/25.10",
     "@openimis/fe-payroll": "https://github.com/openimis/openimis-fe-payroll_js#release/25.10",
-    "@openimis/fe-language_en_tasaf": "https://github.com/TASCB/openimis-fe-language_en_tasaf_js#main"
+    "@openimis/fe-language_en_tasaf": "https://github.com/TASCB/openimis-fe-language_en_tasaf_js#main",
+    "@openimis/fe-report": "https://github.com/TASCB/openimis-fe-report_js.git#main",
+    "@openimis/fe-case_management": "https://github.com/TASCB/openimis-fe-case_management_js.git#main"
   },
   "scripts": {
     "start": "craco start",
