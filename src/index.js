@@ -6,6 +6,7 @@ import { MuiThemeProvider, LinearProgress } from "@material-ui/core";
 import { Provider } from "react-redux";
 import MomentUtils from "@date-io/moment";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+import { IntlProvider } from "react-intl";
 import * as serviceWorker from "./serviceWorker";
 import createAppTheme from "./helpers/theme";
 import store from "./helpers/store";
@@ -18,32 +19,41 @@ import messages_ref from "./translations/ref.json";
 import "./index.css";
 import "./rc-cascader.css";
 
-
 const loadConfiguration = async () => {
   const response = await fetch(`${baseApiUrl}/graphql`, {
     method: "post",
     headers: apiHeaders(),
-    body: JSON.stringify({ "query": "{ moduleConfigurations { module, config, controls{ field, usage } } }" }),
+    body: JSON.stringify({
+      query: "{ moduleConfigurations { module, config, controls{ field, usage } } }",
+    }),
   });
+
   if (!response.ok) {
     throw response;
-  } else {
-    const { data } = await response.json();
-    data.moduleConfigurations.unshift({});
-    const out = data.moduleConfigurations.reduce((acc, c) => {
-      try {
-        acc[c.module] = { controls: c.controls, ...JSON.parse(c.config) };
-      } catch (error) {
-        console.error(`Failed to parse module ${c.module} config`, error);
-      }
-      return acc;
-    });
-    return out;
   }
+
+  const { data } = await response.json();
+  data.moduleConfigurations.unshift({});
+
+  const out = data.moduleConfigurations.reduce((acc, c) => {
+    try {
+      acc[c.module] = { controls: c.controls, ...JSON.parse(c.config) };
+    } catch (error) {
+      console.error(`Failed to parse module ${c.module} config`, error);
+    }
+    return acc;
+  }, {});
+
+  return out;
 };
 
 const AppContainer = () => {
-  const [appState, setAppState] = React.useState({ isLoading: true, config: undefined, error: null });
+  const [appState, setAppState] = React.useState({
+    isLoading: true,
+    config: undefined,
+    error: null,
+  });
+
   const localesManager = new LocalesManager();
 
   useEffect(() => {
@@ -58,6 +68,7 @@ const AppContainer = () => {
         setAppState({
           error,
           isLoading: false,
+          config: undefined,
         }),
     );
   }, []);
@@ -65,16 +76,14 @@ const AppContainer = () => {
   const themeColor = appState?.config?.["fe-core"]?.theme;
   const dynamicTheme = createAppTheme(themeColor || {});
   const logo = getConfiguredLogo(appState.config);
-  const disableTextLogo = appState?.config?.["fe-core"]?.logo?.disableTextLogo || false
+  const disableTextLogo = appState?.config?.["fe-core"]?.logo?.disableTextLogo || false;
+
+  let content;
 
   if (appState.isLoading) {
-    return (
-      <MuiThemeProvider theme={dynamicTheme}>
-        <LinearProgress className="bootstrap" />
-      </MuiThemeProvider>
-    );
+    content = <LinearProgress className="bootstrap" />;
   } else if (appState.error) {
-    return (
+    content = (
       <FatalError
         error={{
           code: appState.error.status,
@@ -87,28 +96,31 @@ const AppContainer = () => {
     const reducers = modulesManager.getContribs("reducers").reduce((reds, red) => {
       reds[red.key] = red.reducer;
       return reds;
-    }, []);
-
+    }, {});
     const middlewares = modulesManager.getContribs("middlewares");
-    
-    return (
-      <MuiThemeProvider theme={dynamicTheme}>
-        <Provider store={store(reducers, middlewares)}>
-          <MuiPickersUtilsProvider utils={MomentUtils}>
-            <ModulesManagerProvider modulesManager={modulesManager}>
-              <App
-                basename={process.env.PUBLIC_URL}
-                localesManager={localesManager}
-                messages={messages_ref}
-                logo={logo}
-                disableTextLogo={disableTextLogo}
-              />
-            </ModulesManagerProvider>
-          </MuiPickersUtilsProvider>
-        </Provider>
-      </MuiThemeProvider>
+
+    content = (
+      <Provider store={store(reducers, middlewares)}>
+        <MuiPickersUtilsProvider utils={MomentUtils}>
+          <ModulesManagerProvider modulesManager={modulesManager}>
+            <App
+              basename={process.env.PUBLIC_URL}
+              localesManager={localesManager}
+              messages={messages_ref}
+              logo={logo}
+              disableTextLogo={disableTextLogo}
+            />
+          </ModulesManagerProvider>
+        </MuiPickersUtilsProvider>
+      </Provider>
     );
   }
+
+  return (
+    <IntlProvider locale="en" messages={messages_ref}>
+      <MuiThemeProvider theme={dynamicTheme}>{content}</MuiThemeProvider>
+    </IntlProvider>
+  );
 };
 
 ReactDOM.render(<AppContainer />, document.getElementById("root"));

@@ -18,7 +18,7 @@
     },
     {
       "name": "IndividualModule",
-      "npm": "@openimis/fe-individual@https://github.com/TASCB/openimis-fe-individual_js#tz-changes"
+      "npm": "@openimis/fe-individual@https://github.com/TASCB/openimis-fe-individual_js#tz-imf"
     },
     {
       "name": "SocialProtectionModule",
@@ -135,6 +135,14 @@
     {
       "name": "PayrollModule",
       "npm": "@openimis/fe-payroll@https://github.com/openimis/openimis-fe-payroll_js#release/25.10"
+    },
+    {
+      "name": "LanguageEnTasafModule",
+      "npm": "@openimis/fe-language_en_tasaf@https://github.com/TASCB/openimis-fe-language_en_tasaf_js#main"
+    },
+    {
+      "name": "TASAFPaymentModule",
+      "npm": "@openimis/fe-tasaf-payment@../openimis-fe-tasaf-payment_js"
     }
   ]
 }

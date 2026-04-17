@@ -1,4 +1,4 @@
-import defaultLogo from "../openIMIS.png";
+import defaultLogo from "../tasafMIS.png";
 
 export default function getConfiguredLogo(config, key = 'value') {
   const logoBase64 = config?.["fe-core"]?.logo?.[key];
