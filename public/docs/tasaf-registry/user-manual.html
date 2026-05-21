@@ -1,0 +1,901 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>TASAF MIS — Registry Module User Manual</title>
+<link rel="icon" type="image/png" href="assets/tasaf-logo.png" />
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    /* TASAF corporateTeal palette */
+    --tasaf-primary: #00695C;
+    --tasaf-primary-dark: #004D40;
+    --tasaf-primary-light: #4DB6AC;
+    --tasaf-accent: #070707;
+    --tasaf-bg: #F4FAF9;
+    --tasaf-bg-soft: #FFFFFF;
+    --tasaf-header: #D6ECE9;
+    --tasaf-highlight: #E4F2EF;
+    --tasaf-text: #202B2A;
+    --tasaf-muted: #5F6368;
+    --tasaf-white: #FFFFFF;
+    --tasaf-border: #D6ECE9;
+    --tasaf-toggled: #546E7A;
+    --tasaf-row-selected: rgba(0, 105, 92, 0.08);
+    --tasaf-row-hover: rgba(0, 105, 92, 0.12);
+    --tasaf-success: #2E7D32;
+    --tasaf-warning: #ED6C02;
+    --tasaf-shadow: 0 6px 24px rgba(0, 105, 92, 0.12);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Rubik', 'Roboto', 'Helvetica Neue', sans-serif;
+    font-weight: 300;
+    color: var(--tasaf-text);
+    background: var(--tasaf-bg);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  a { color: var(--tasaf-primary); text-decoration: none; border-bottom: 1px dotted var(--tasaf-primary); }
+  a:hover { color: var(--tasaf-accent); border-bottom-style: solid; }
+  code, pre, kbd {
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 0.9em;
+  }
+  code {
+    background: var(--tasaf-highlight);
+    color: var(--tasaf-primary-dark);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+  pre {
+    background: #002B23;
+    color: #E4F2EF;
+    padding: 14px 16px;
+    border-radius: 6px;
+    overflow-x: auto;
+    border-left: 4px solid var(--tasaf-primary);
+  }
+  pre code { background: transparent; color: inherit; padding: 0; }
+
+  /* === Layout shell === */
+  .page-wrap {
+    max-width: 980px;
+    margin: 24px auto 64px;
+    background: var(--tasaf-white);
+    box-shadow: var(--tasaf-shadow);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  /* === Cover (hero) === */
+  .cover {
+    background:
+      radial-gradient(circle at 110% -20%, rgba(255,255,255,0.12) 0, transparent 45%),
+      radial-gradient(circle at -10% 120%, rgba(255,255,255,0.10) 0, transparent 45%),
+      linear-gradient(135deg, var(--tasaf-primary) 0%, var(--tasaf-primary-dark) 100%);
+    color: var(--tasaf-white);
+    padding: 56px 56px 48px;
+    display: flex;
+    gap: 36px;
+    align-items: center;
+    border-bottom: 6px solid var(--tasaf-accent);
+  }
+  .cover-logo {
+    background: var(--tasaf-white);
+    padding: 14px;
+    border-radius: 16px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.18);
+    flex-shrink: 0;
+  }
+  .cover-logo img { display: block; width: 160px; height: auto; }
+  .cover-text h1 {
+    margin: 0 0 8px;
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    line-height: 1.15;
+  }
+  .cover-text h2 {
+    margin: 0 0 18px;
+    font-size: 20px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.86);
+  }
+  .cover-meta {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.16);
+    border: 1px solid rgba(255,255,255,0.28);
+    font-size: 12.5px;
+    font-weight: 400;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+  }
+
+  /* === Subhead bar === */
+  .subhead {
+    background: var(--tasaf-header);
+    color: var(--tasaf-primary-dark);
+    padding: 14px 56px;
+    font-size: 13.5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(0,98,115,0.18);
+  }
+  .subhead strong { font-weight: 500; }
+
+  /* === Main content === */
+  .content { padding: 36px 56px 72px; }
+  .content h2 {
+    color: var(--tasaf-primary);
+    font-weight: 600;
+    font-size: 24px;
+    margin: 40px 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 3px solid var(--tasaf-header);
+    position: relative;
+  }
+  .content h2::before {
+    content: "";
+    position: absolute;
+    left: 0; bottom: -3px;
+    width: 60px;
+    height: 3px;
+    background: var(--tasaf-primary);
+  }
+  .content h2:first-of-type { margin-top: 8px; }
+  .content h3 {
+    color: var(--tasaf-primary-dark);
+    font-weight: 500;
+    font-size: 18px;
+    margin: 26px 0 10px;
+  }
+  .content h4 {
+    color: var(--tasaf-primary);
+    font-weight: 500;
+    font-size: 15.5px;
+    margin: 20px 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .content p { margin: 0 0 12px; }
+  .content ul, .content ol { padding-left: 22px; margin: 0 0 14px; }
+  .content li { margin: 4px 0; }
+
+  /* Lead paragraph after a heading */
+  .lead {
+    font-size: 16px;
+    color: var(--tasaf-muted);
+    margin: 4px 0 18px;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0 22px;
+    background: var(--tasaf-white);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,105,92,0.08);
+  }
+  thead th {
+    background: var(--tasaf-primary);
+    color: var(--tasaf-white);
+    text-align: left;
+    padding: 10px 12px;
+    font-weight: 500;
+    font-size: 13.5px;
+    letter-spacing: 0.2px;
+  }
+  tbody td {
+    padding: 9px 12px;
+    border-top: 1px solid var(--tasaf-border);
+    font-size: 14px;
+    vertical-align: top;
+  }
+  tbody tr:nth-child(even) td { background: var(--tasaf-bg); }
+  tbody tr:hover td { background: var(--tasaf-row-hover); }
+  tbody tr.selected td { background: var(--tasaf-row-selected); }
+
+  /* Callouts */
+  .callout {
+    border-left: 5px solid var(--tasaf-primary);
+    background: var(--tasaf-header);
+    padding: 14px 18px;
+    margin: 18px 0;
+    border-radius: 0 8px 8px 0;
+  }
+  .callout.tip { border-left-color: var(--tasaf-success); background: #E8F5E9; }
+  .callout.warn { border-left-color: var(--tasaf-warning); background: #FFF3E0; }
+  .callout.danger { border-left-color: var(--tasaf-accent); background: #FDECEA; }
+  .callout .label {
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.6px;
+    color: var(--tasaf-primary-dark);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .callout.tip .label { color: var(--tasaf-success); }
+  .callout.warn .label { color: var(--tasaf-warning); }
+  .callout.danger .label { color: var(--tasaf-accent); }
+  .callout p:last-child { margin-bottom: 0; }
+
+  /* Screenshot placeholder (legacy, for any leftover) */
+  .screenshot {
+    border: 2px dashed var(--tasaf-primary);
+    background:
+      repeating-linear-gradient(135deg, transparent 0 12px, rgba(0,105,92,0.04) 12px 24px),
+      var(--tasaf-bg);
+    color: var(--tasaf-primary);
+    text-align: center;
+    padding: 26px 16px;
+    border-radius: 8px;
+    margin: 14px 0 22px;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: 0.2px;
+  }
+  .screenshot::before {
+    content: "📷  ";
+    font-style: normal;
+  }
+
+  /* Real figures with screenshots */
+  figure.shot {
+    margin: 18px 0 26px;
+    background: var(--tasaf-white);
+    border: 1px solid var(--tasaf-border);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(0, 105, 92, 0.10);
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  figure.shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-bottom: 1px solid var(--tasaf-border);
+    background: var(--tasaf-bg);
+  }
+  figure.shot figcaption {
+    padding: 10px 16px;
+    background: var(--tasaf-header);
+    color: var(--tasaf-primary-dark);
+    font-size: 13px;
+    font-weight: 400;
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+  }
+  figure.shot figcaption .num {
+    display: inline-block;
+    background: var(--tasaf-primary);
+    color: var(--tasaf-white);
+    padding: 2px 9px;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 11.5px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+  figure.shot.compact img { max-width: 720px; margin: 0 auto; border-bottom: none; }
+  figure.shot.compact { background: var(--tasaf-bg); }
+  figure.shot.compact figcaption { border-top: 1px solid var(--tasaf-border); }
+
+  /* Step procedure */
+  ol.steps {
+    counter-reset: step;
+    list-style: none;
+    padding-left: 0;
+  }
+  ol.steps > li {
+    counter-increment: step;
+    position: relative;
+    padding: 6px 0 6px 44px;
+    margin: 6px 0;
+  }
+  ol.steps > li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0; top: 6px;
+    width: 30px; height: 30px;
+    background: var(--tasaf-primary);
+    color: var(--tasaf-white);
+    border-radius: 50%;
+    text-align: center;
+    line-height: 30px;
+    font-weight: 500;
+    font-size: 14px;
+  }
+
+  /* Mini cards (menu items list) */
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px;
+    margin: 14px 0 22px;
+  }
+  .menu-card {
+    background: var(--tasaf-white);
+    border: 1px solid var(--tasaf-border);
+    border-left: 4px solid var(--tasaf-primary);
+    border-radius: 6px;
+    padding: 12px 14px;
+    box-shadow: 0 1px 3px rgba(0,105,92,0.08);
+  }
+  .menu-card .name { font-weight: 500; color: var(--tasaf-primary-dark); display: block; }
+  .menu-card .perm { font-size: 12px; color: var(--tasaf-muted); display: block; margin-top: 4px; }
+
+  /* TOC */
+  .toc {
+    background: var(--tasaf-header);
+    border-radius: 8px;
+    padding: 18px 24px;
+    margin: 0 0 28px;
+    border-left: 5px solid var(--tasaf-primary);
+  }
+  .toc h3 {
+    margin-top: 0;
+    color: var(--tasaf-primary);
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .toc ol {
+    columns: 2;
+    column-gap: 32px;
+    padding-left: 18px;
+    margin: 0;
+  }
+  .toc li { margin: 3px 0; break-inside: avoid; }
+  .toc a { border-bottom: none; }
+
+  /* Status chips */
+  .chip {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+  }
+  .chip.running { background: #E3F2FD; color: #0D47A1; }
+  .chip.completed { background: #E8F5E9; color: var(--tasaf-success); }
+  .chip.failed { background: #FDECEA; color: var(--tasaf-accent); }
+  .chip.cancelled { background: #ECEFF1; color: var(--tasaf-toggled); }
+  .chip.poor { background: #FDECEA; color: var(--tasaf-accent); }
+  .chip.nonpoor { background: #E8F5E9; color: var(--tasaf-success); }
+  .chip.pending { background: #FFF3E0; color: var(--tasaf-warning); }
+
+  /* Footer */
+  .doc-footer {
+    background: var(--tasaf-primary-dark);
+    color: rgba(255,255,255,0.9);
+    padding: 28px 56px;
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .doc-footer .brand { display: flex; align-items: center; gap: 12px; }
+  .doc-footer img { width: 36px; height: 36px; background: white; padding: 4px; border-radius: 8px; }
+  .doc-footer a { color: #cbedf2; border-bottom: none; }
+
+  /* Print */
+  @media print {
+    body { background: white; font-size: 12pt; }
+    .page-wrap { box-shadow: none; margin: 0; border-radius: 0; }
+    .cover { padding: 28px 32px; }
+    .content { padding: 24px 32px; }
+    .subhead, .doc-footer { padding: 12px 32px; }
+    a { color: inherit; border-bottom: none; }
+    h2 { break-after: avoid; }
+    table, .callout, .screenshot, figure.shot { break-inside: avoid; }
+    figure.shot { box-shadow: none; border-color: #cfd8d6; }
+    figure.shot img { max-height: 9.5in; object-fit: contain; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- ========== COVER ========== -->
+  <header class="cover">
+    <div class="cover-logo">
+      <img src="assets/tasaf-logo.png" alt="TASAF — Tanzania Social Action Fund" />
+    </div>
+    <div class="cover-text">
+      <h1>Registry Module</h1>
+      <h2>TASAF MIS — End-User Manual</h2>
+      <div class="cover-meta">
+        <span class="badge">Tanzania Social Action Fund</span>
+        <span class="badge">Mfuko wa Maendeleo ya Jamii</span>
+        <span class="badge">Version 1.0</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="subhead">
+    <span><strong>Audience:</strong> Registry officers · PAA staff · PMT analysts · Enrollment officers</span>
+    <span><strong>Document:</strong> docs/tasaf-registry/user-manual.html</span>
+  </div>
+
+  <main class="content">
+
+    <!-- TOC -->
+    <nav class="toc">
+      <h3>Contents</h3>
+      <ol>
+        <li><a href="#intro">Introduction</a></li>
+        <li><a href="#login">Login &amp; access</a></li>
+        <li><a href="#navigation">Menu navigation</a></li>
+        <li><a href="#households">Households</a></li>
+        <li><a href="#members">Household members</a></li>
+        <li><a href="#imports">Importing from Survey Solutions</a></li>
+        <li><a href="#pmt">PMT (Proxy Means Test)</a></li>
+        <li><a href="#eligible">Eligible Households / Members</a></li>
+        <li><a href="#monitoring">Survey Monitoring Dashboard</a></li>
+        <li><a href="#statuses">Statuses &amp; field meanings</a></li>
+        <li><a href="#errors">Common errors &amp; resolutions</a></li>
+        <li><a href="#procedures">Quick procedures</a></li>
+      </ol>
+    </nav>
+
+    <!-- 1 -->
+    <section id="intro">
+      <h2>1. Introduction</h2>
+      <p class="lead">
+        The Registry Module is where household and household-member data lives in TASAF MIS.
+        It is the social protection registry that feeds PMT classification, enrollment,
+        payroll, and MUSE-driven payments.
+      </p>
+      <p>From the Registry Module you can:</p>
+      <ul>
+        <li>Search and view households and their members.</li>
+        <li>Open and review interview records pulled from Survey Solutions.</li>
+        <li>Identify non-consented households (<em>kaya ambazo hazijahojiwa</em>).</li>
+        <li>Identify PMT-eligible households (<em>POOR</em> class) and enrollable members.</li>
+        <li>Trigger a fresh Survey Solutions import per PAA / district.</li>
+        <li>Reconfigure and re-run PMT scoring per district.</li>
+      </ul>
+      <div class="callout">
+        <span class="label">Out of scope</span>
+        <p>This module does not send payments, generate paylists, or talk to MUSE — those live under the <strong>TASAF Payment</strong> module.</p>
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section id="login">
+      <h2>2. Login and access</h2>
+      <ol class="steps">
+        <li>Open TASAF MIS in your browser. The login screen shows the TASAF logo and the <em>tasafMIS</em> app name.</li>
+        <li>Enter your <strong>Username</strong> and <strong>Password</strong> and click <strong>LOG IN</strong>.</li>
+        <li>If you've forgotten your password, click <strong>FORGOT PASSWORD?</strong> and follow the recovery flow.</li>
+        <li>After login, the <strong>Registry</strong> menu on the left shows the Registry Module entries you have rights for. If you do not see them, your role needs to be granted the relevant permission codes.</li>
+      </ol>
+
+      <figure class="shot compact">
+        <img src="assets/login%20interface.png" alt="TASAF MIS login screen" />
+        <figcaption><span class="num">Fig. 2.1</span> TASAF MIS login screen — username, password, and the FORGOT PASSWORD link.</figcaption>
+      </figure>
+
+      <figure class="shot compact">
+        <img src="assets/forgotten_pass.png" alt="Recover your account screen" />
+        <figcaption><span class="num">Fig. 2.2</span> Recover your account — enter your username; the system emails password-reset instructions.</figcaption>
+      </figure>
+
+      <div class="callout warn">
+        <span class="label">Login failed?</span>
+        <p>If the login screen shows an error such as <em>"can't access property tokenAuth, response.payload.data is undefined"</em>, the backend may be unreachable. Confirm with your administrator that the backend service is up before retrying.</p>
+      </div>
+
+      <figure class="shot compact">
+        <img src="assets/login%20error.png" alt="Login error message" />
+        <figcaption><span class="num">Fig. 2.3</span> Example error message shown when the backend is unreachable or credentials are invalid.</figcaption>
+      </figure>
+
+      <h4>Required rights per Registry menu item</h4>
+      <table>
+        <thead>
+          <tr><th>Menu item (as shown in the UI)</th><th>Right (permission code)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Import Data</td><td><code>159001</code></td></tr>
+          <tr><td>Targeted Households</td><td><code>180001</code></td></tr>
+          <tr><td>Targeted Members</td><td><code>159001</code></td></tr>
+          <tr><td>Uninterviewed</td><td><code>159001</code></td></tr>
+          <tr><td>PMT Rerun</td><td><code>180005</code></td></tr>
+          <tr><td>Enrollment List</td><td><code>180005</code></td></tr>
+          <tr><td>Eligible Households</td><td><code>180001</code></td></tr>
+          <tr><td>Eligible Members</td><td><code>159001</code></td></tr>
+          <tr><td>Survey Monitoring</td><td><code>159001</code></td></tr>
+        </tbody>
+      </table>
+
+      <p>If you do not have any of the above rights at all, ask an administrator to grant them. Administrators manage users, roles, and locations from <strong>Administration</strong> → <em>Users / Roles Management / Locations</em>:</p>
+
+      <figure class="shot">
+        <img src="assets/Admnistration.png" alt="Administration submenu" />
+        <figcaption><span class="num">Fig. 2.4</span> Administration submenu — Users, Roles Management, Locations, My Profile, Change Password. Use this section to grant Registry Module rights or to update your own profile / password.</figcaption>
+      </figure>
+    </section>
+
+    <!-- 3 -->
+    <section id="navigation">
+      <h2>3. Registry Module menu navigation</h2>
+      <p>After login you land on the TASAF MIS welcome screen. The left side bar carries the application menu, the top bar carries the global search box, logout, and help icons.</p>
+
+      <figure class="shot">
+        <img src="assets/home.png" alt="TASAF MIS home screen" />
+        <figcaption><span class="num">Fig. 3.1</span> Welcome screen — left sidebar shows the top-level menu (Dashboards, Registry, Programs, Payments, Public Works, Economic Inclusion, Case Management, Grievance, Reports, Tasks Management, PSSN II Registry, Administration).</figcaption>
+      </figure>
+
+      <h3>3.1 The Registry menu</h3>
+      <p>Click <strong>Registry</strong> in the side bar to expand it. The Registry Module exposes the following entries:</p>
+      <div class="menu-grid">
+        <div class="menu-card"><span class="name">Import Data</span><span class="perm">Trigger and monitor Survey Solutions imports (per PAA / district)</span></div>
+        <div class="menu-card"><span class="name">Targeted Households</span><span class="perm">List of all household records (Groups)</span></div>
+        <div class="menu-card"><span class="name">Targeted Members</span><span class="perm">List of all household members (Individuals)</span></div>
+        <div class="menu-card"><span class="name">Uninterviewed</span><span class="perm">Kaya ambazo hazijahojiwa (non-consented households)</span></div>
+        <div class="menu-card"><span class="name">PMT Rerun</span><span class="perm">Configure cutoff and recalculate PMT scores</span></div>
+        <div class="menu-card"><span class="name">Enrollment List</span><span class="perm">PMT-classified households for enrollment</span></div>
+        <div class="menu-card"><span class="name">Eligible Households</span><span class="perm">POOR + consented households</span></div>
+        <div class="menu-card"><span class="name">Eligible Members</span><span class="perm">Members of eligible households</span></div>
+        <div class="menu-card"><span class="name">Survey Monitoring</span><span class="perm">Real-time field-monitoring dashboard</span></div>
+      </div>
+
+      <figure class="shot">
+        <img src="assets/registy%20menu.png" alt="Registry submenu expanded" />
+        <figcaption><span class="num">Fig. 3.2</span> Registry submenu fully expanded — these are the entry points covered by this manual.</figcaption>
+      </figure>
+
+      <h3>3.2 Related sections</h3>
+      <p>You will see two more sections that interact with the Registry Module:</p>
+      <ul>
+        <li><strong>PSSN II Registry</strong> — PSSN II Individuals, PSSN II Households, Legacy Imports. Use these when you need to consult or import the previous PSSN II registry data alongside the current Registry Module.</li>
+        <li><strong>Dashboards</strong> — Individual Reports, Group Reports, Beneficiary Reports, Data Updates Reports, Grievance Reports, Invoice Reports, Payment Reports, Manage Dashboards. These render summary views over the Registry data.</li>
+      </ul>
+
+      <figure class="shot">
+        <img src="assets/PSSN%20II%20registry.png" alt="PSSN II Registry submenu" />
+        <figcaption><span class="num">Fig. 3.3</span> PSSN II Registry submenu — legacy individuals, households, and the Legacy Imports page.</figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="assets/dashboard%20menu.png" alt="Dashboards submenu" />
+        <figcaption><span class="num">Fig. 3.4</span> Dashboards submenu — reports built on top of Registry data.</figcaption>
+      </figure>
+    </section>
+
+    <!-- 4 -->
+    <section id="households">
+      <h2>4. Households (Targeted Households)</h2>
+
+      <h3>4.1 Search the household list</h3>
+      <ol class="steps">
+        <li>Open <strong>Registry → Targeted Households</strong>.</li>
+        <li>Use the <strong>Search Criteria</strong> bar at the top to narrow by HHID, head name (first / last), village code, or "Missing Location" flag.</li>
+        <li>Pick a Region, District, Ward, and Village using the location pickers. Click <strong>SEARCH</strong> (top-right) to apply, or <strong>RESET FILTERS</strong> to clear.</li>
+        <li>The result table shows total count ("<em>6507 Households Found</em>"), and per row: <strong>HHID</strong>, <strong>Head</strong>, <strong>HH Size</strong>, <strong>Region</strong>, <strong>District</strong>, <strong>Ward</strong>, <strong>Village</strong>. The pencil icon opens the household detail.</li>
+        <li>Top-right buttons: <strong>DOWNLOAD</strong> exports the filtered list and <strong>ENROLLMENT</strong> drives the enrollment flow.</li>
+      </ol>
+
+      <figure class="shot">
+        <img src="assets/Targeted%20HHs.png" alt="Targeted Households list with search criteria" />
+        <figcaption><span class="num">Fig. 4.1</span> Targeted Households — search criteria bar, total count, paginated table, and per-row edit (pencil) action.</figcaption>
+      </figure>
+
+      <h3>4.2 View household details</h3>
+      <ol class="steps">
+        <li>Click the pencil icon on a row (or double-click the row) to open the household detail page.</li>
+        <li>The head panel shows: HHID, head, primary recipient, location, PMT score and class.</li>
+        <li>Tabs: <strong>Individuals</strong>, <strong>Benefit Plans</strong>, <strong>Change Log</strong>, <strong>Benefits</strong>, <strong>Tasks</strong>.</li>
+        <li>To edit, change the field then click the floating <strong>Save</strong> button. The change is journalised and visible in the Change Log.</li>
+        <li>To delete, use the trash icon — a confirmation dialog appears before the soft delete.</li>
+      </ol>
+
+      <h3>4.3 Add or move members</h3>
+      <ul>
+        <li><strong>Add an existing member</strong>: click the <code>+</code> icon, search for the member, pick a role and recipient type, confirm.</li>
+        <li><strong>Move a member into a new household</strong>: from the member's detail page, this creates a new household with the moved member as HEAD and produces a maker/checker task.</li>
+      </ul>
+    </section>
+
+    <!-- 5 -->
+    <section id="members">
+      <h2>5. Household members (Targeted Members)</h2>
+      <h3>5.1 Search the member list</h3>
+      <ol class="steps">
+        <li>Open <strong>Registry → Targeted Members</strong>.</li>
+        <li>Filter by First Name, Last Name, Village Code, or use the Region / District / Ward / Village pickers. Toggle <strong>DEDUPLICATE</strong>, <strong>Show Deleted</strong>, or <strong>Missing Location</strong> as needed.</li>
+        <li>The result table shows total count ("<em>23983 Household Members Found</em>") and per row: <strong>First Name</strong>, <strong>Last Name</strong>, <strong>Day of birth</strong>, <strong>Region</strong>, <strong>District</strong>, <strong>Ward</strong>, <strong>Village</strong>.</li>
+        <li>Top-right buttons: <strong>DOWNLOAD</strong>, <strong>ENROLLMENT</strong>, <strong>UPLOAD</strong>, <strong>UPLOAD HISTORY</strong>. Click the pencil icon to open a member detail page.</li>
+      </ol>
+
+      <figure class="shot">
+        <img src="assets/Targeted%20Members.png" alt="Targeted Members list with search criteria" />
+        <figcaption><span class="num">Fig. 5.1</span> Targeted Members — search bar with the DEDUPLICATE toggle, total count, and the action buttons for download / enrollment / upload history.</figcaption>
+      </figure>
+
+      <h3>5.2 View member details</h3>
+      <p>The detail page shows the head panel (names, DOB, location) plus tabs: <strong>Benefit Plans</strong>, <strong>Change Log</strong>, <strong>Tasks</strong>, <strong>Benefits</strong>, <strong>Group history</strong>.</p>
+
+      <h3>5.3 Edit or delete a member</h3>
+      <ul>
+        <li>Update any editable field and click <strong>Save</strong>. Row-level security (your district scope) is enforced. Every save creates a mutation log entry.</li>
+        <li>Deletion is soft (sets <code>is_deleted = true</code>). Admins can undo through an undo-delete mutation. Tick <strong>Show Deleted</strong> on the search bar to bring back hidden rows.</li>
+      </ul>
+
+      <h3>5.4 Uninterviewed households (kaya ambazo hazijahojiwa)</h3>
+      <p>Open <strong>Registry → Uninterviewed</strong>. The list shows households whose head was not interviewed or who declined consent (<code>json_ext.consent_res = "2"</code> / <code>"02"</code>). The <strong>Reason</strong> column carries the Swahili description (e.g. <em>Mwakilishi wa kaya hajahudhuria mahojiano</em> = "household representative did not attend the interview"). Use this page to triage data-quality issues from the field.</p>
+
+      <figure class="shot">
+        <img src="assets/uniinterviewed%20list.png" alt="Uninterviewed Households page" />
+        <figcaption><span class="num">Fig. 5.2</span> Uninterviewed Households — head name, district, village, interview key, and the reason for not interviewing. <strong>DOWNLOAD PDF</strong> exports the filtered list.</figcaption>
+      </figure>
+    </section>
+
+    <!-- 6 -->
+    <section id="imports">
+      <h2>6. Importing registry data from Survey Solutions</h2>
+      <p>The Registry Module imports interview data through the PAA-based ETL.</p>
+
+      <h3>6.1 Trigger a PAA import</h3>
+      <ol class="steps">
+        <li>Open <strong>Registry → Import Data</strong>. The page is split into three blocks: <em>Import Data — API</em>, <em>Import Survey Solutions Data by PAA</em>, and <em>Import History</em>.</li>
+        <li>The <strong>API</strong> block (top) lists registered ETL services (currently <code>SurveySolutionService</code>). Clicking <strong>PULL DATA</strong> there runs the named service end-to-end. This is the legacy entry point.</li>
+        <li>The <strong>by PAA</strong> block is the normal path. Pick <strong>Region</strong> and <strong>District / PAA</strong>. Only districts you have rights for appear.</li>
+        <li>The system auto-detects the questionnaire that matches the PAA. Open <strong>Show Advanced Options</strong> to pick a specific questionnaire, paste a manual identity (<code>GUID$version</code>), or tick <em>Dry run</em>.</li>
+        <li>For Zanzibar districts the page shows a "Zanzibar PAA scope" hint (<code>PEMBA</code> / <code>UNGUJA</code>).</li>
+        <li>Click <strong>TRIGGER IMPORT</strong>. Confirm in the dialog.</li>
+        <li>The page polls Import History every 12 seconds and refreshes the row count while the import is <span class="chip running">running</span>.</li>
+      </ol>
+
+      <figure class="shot">
+        <img src="assets/import%20data.png" alt="Import Data page" />
+        <figcaption><span class="num">Fig. 6.1</span> Import Data — top: API trigger for <code>SurveySolutionService</code>. Middle: PAA-based import with Region / District pickers and Advanced Options. Bottom: Import History table with the District/PAA, household count, member count, questionnaire version, date, and status chips.</figcaption>
+      </figure>
+
+      <h3>6.2 Monitor import history</h3>
+      <p>The "Pulled questionnaires" table at the bottom of the page shows one row per import:</p>
+      <table>
+        <thead>
+          <tr><th>Column</th><th>Meaning</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>PAA name</td><td>District display name.</td></tr>
+          <tr><td>Number of households</td><td>Unique households touched (insert + update).</td></tr>
+          <tr><td>Number of members</td><td>Individuals touched.</td></tr>
+          <tr><td>Questionnaire version</td><td>Numeric version of the HQ questionnaire.</td></tr>
+          <tr><td>Date pulled</td><td>When the import started.</td></tr>
+          <tr><td>Status</td><td><span class="chip running">running</span> · <span class="chip completed">completed</span> · <span class="chip failed">failed</span> · <span class="chip cancelled">cancelled</span></td></tr>
+        </tbody>
+      </table>
+      <div class="callout tip">
+        <span class="label">Tip</span>
+        <p>If a row stays <strong>running</strong> longer than 12 hours, it is automatically marked <strong>failed</strong> the next time the page is loaded.</p>
+      </div>
+
+      <h3>6.3 Legacy single-service trigger</h3>
+      <p>The top "Import Data — API" card lists every ETL service registered in the backend. Pressing <strong>PULL DATA</strong> there runs the named service end-to-end. In current TASAF use only <code>SurveySolutionService</code> is wired; other services are demos.</p>
+    </section>
+
+    <!-- 7 -->
+    <section id="pmt">
+      <h2>7. PMT (Proxy Means Test)</h2>
+
+      <h3>7.1 PMT Rerun (configuration &amp; recalculation)</h3>
+      <ol class="steps">
+        <li>Open <strong>Registry → PMT Rerun</strong>.</li>
+        <li>Pick the district whose cutoff you want to set.</li>
+        <li>The page shows the current cutoff (default <code>11.01</code>). Update it (allowed range <code>0 ≤ cutoff ≤ 50</code>) and save.</li>
+        <li>Optionally click <strong>Run PMT recalculation</strong>. A progress dialog appears showing percentage complete, processed households, and newly enrolled POOR households.</li>
+        <li>When finished, the audit summary table refreshes.</li>
+      </ol>
+
+      <h3>7.2 PMT Audit Summary</h3>
+      <p>The audit summary table shows one row per district with:</p>
+      <ul>
+        <li>District code and name.</li>
+        <li>Total households scored.</li>
+        <li><span class="chip poor">POOR</span> / <span class="chip nonpoor">NON_POOR</span> counts.</li>
+        <li>Average and median PMT score.</li>
+        <li>Last rerun timestamp.</li>
+      </ul>
+
+      <h3>7.3 Enrollment List</h3>
+      <p>Open <strong>Registry → Enrollment List</strong>. The page is district-scoped. The list shows, for each household: <strong>HHID</strong>, <strong>Head Name</strong>, <strong>Village</strong>, <strong>PMT Score</strong>, and <strong>Status</strong> (<span class="chip poor">POOR</span> / <span class="chip nonpoor">NON_POOR</span>). Filter by HHID, head name, PMT Status, and the Region / District / Ward / Village pickers. Click <strong>DOWNLOAD PDF</strong> (top-right) to export the filtered list.</p>
+
+      <figure class="shot">
+        <img src="assets/enrollment%20list.png" alt="Enrollment List page" />
+        <figcaption><span class="num">Fig. 7.1</span> Enrollment List — household HHID, head name, village, PMT score, and POOR/NON_POOR status. <strong>DOWNLOAD PDF</strong> exports the filtered set.</figcaption>
+      </figure>
+    </section>
+
+    <!-- 8 -->
+    <section id="eligible">
+      <h2>8. Eligible Households / Eligible Members</h2>
+      <p>Two pre-filtered views for enrollment officers:</p>
+      <ul>
+        <li><strong>Eligible Households</strong>: households where <code>pmt_class_household = POOR</code> AND the head is consented.</li>
+        <li><strong>Eligible Members</strong>: members whose household is PMT-eligible and consented.</li>
+      </ul>
+      <p>Use them when running an enrollment campaign. The action bar lets you trigger maker-checker enrollment confirmation.</p>
+    </section>
+
+    <!-- 9 -->
+    <section id="monitoring">
+      <h2>9. Survey Monitoring Dashboard</h2>
+      <p>Open <strong>Registry → Survey Monitoring</strong> for a real-time view of Survey Solutions field activity. The page header shows the last sync time from HQ, an Auto-refresh (30s) toggle, and a <strong>SYNC NOW</strong> button. The dashboard auto-refreshes every 30 seconds and shows:</p>
+      <ul>
+        <li><strong>Filters</strong> — questionnaire (PAA) picker, "Submitted since" date filter, auto-refresh toggle, "Sync now" button.</li>
+        <li><strong>Pipeline strip</strong> — 4-stage funnel: Started → Completed → Approved by supervisor → Approved by HQ, with conversion percentages.</li>
+        <li><strong>KPI tiles</strong> — rejection rate, awaiting-supervisor count, awaiting-HQ count, active enumerators (with sparkline).</li>
+        <li><strong>Interview feed</strong> — latest interviews; clicking a status chip filters the feed; "Open in HQ" opens the interview directly in Survey Solutions HQ.</li>
+        <li><strong>Enumerator leaderboard</strong> — top producers; click a row to filter the feed.</li>
+        <li><strong>Trends</strong> — completion S-curve, daily productivity bars, 7×24 activity heatmap.</li>
+      </ul>
+      <div class="callout">
+        <span class="label">How accurate are the numbers?</span>
+        <p>KPIs (Data collection pipeline tiles) are exact — per-status TotalCount queries against HQ. Live interview activity, the leaderboard, and the heatmap are based on a bounded sample of interviews (sample size shown in the UI).</p>
+      </div>
+
+      <figure class="shot">
+        <img src="assets/survey%20monitoring.png" alt="Survey Monitoring dashboard" />
+        <figcaption><span class="num">Fig. 9.1</span> Survey Monitoring — header with Sync Now, PAA / date filters, the 4-stage Data collection pipeline (Assigned → Completed → Approved by supervisor → Approved by HQ), KPI tiles (Rejection rate, Awaiting supervisor review, Awaiting HQ approval, Active enumerators), live interview activity feed, and enumerator leaderboard.</figcaption>
+      </figure>
+    </section>
+
+    <!-- 10 -->
+    <section id="statuses">
+      <h2>10. Common statuses and what they mean</h2>
+      <table>
+        <thead>
+          <tr><th>Where</th><th>Status</th><th>Meaning</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Import history</td><td><span class="chip running">running</span></td><td>The ETL Celery task is in flight.</td></tr>
+          <tr><td>Import history</td><td><span class="chip completed">completed</span></td><td>The ETL finished successfully; counts saved.</td></tr>
+          <tr><td>Import history</td><td><span class="chip failed">failed</span></td><td>The task raised an exception or was timed out; tooltip carries the error.</td></tr>
+          <tr><td>Import history</td><td><span class="chip cancelled">cancelled</span></td><td>The task was cancelled before completion. <em>To confirm from implementation</em>: how a user cancels (no UI control exists today).</td></tr>
+          <tr><td>PMT enrollment</td><td><span class="chip pending">PENDING</span></td><td>Default after creation; not yet decided.</td></tr>
+          <tr><td>PMT enrollment</td><td><span class="chip completed">ENROLLED</span></td><td>Auto- or operator-enrolled into a programme.</td></tr>
+          <tr><td>PMT enrollment</td><td><span class="chip failed">DISENROLLED</span></td><td>Manually disenrolled; reason stored.</td></tr>
+          <tr><td>PMT enrollment</td><td><span class="chip cancelled">SUSPENDED</span></td><td>Temporarily withheld.</td></tr>
+          <tr><td>PMT enrollment</td><td><span class="chip failed">REJECTED</span></td><td>Rejected at maker-checker.</td></tr>
+          <tr><td>PMT class</td><td><span class="chip poor">POOR</span></td><td>PMT score ≤ active cutoff.</td></tr>
+          <tr><td>PMT class</td><td><span class="chip nonpoor">NON_POOR</span></td><td>PMT score &gt; active cutoff.</td></tr>
+          <tr><td>Member role</td><td colspan="2"><code>HEAD</code> · <code>SPOUSE</code> · <code>SON</code> · <code>DAUGHTER</code> · <code>MOTHER</code> · <code>FATHER</code> · <code>GRANDFATHER</code> · <code>GRANDMOTHER</code> · <code>GRANDSON</code> · <code>GRANDDAUGHTER</code> · <code>SISTER</code> · <code>BROTHER</code> · <code>OTHER RELATIVE</code> · <code>NOT RELATED</code></td></tr>
+          <tr><td>Recipient type</td><td colspan="2"><code>PRIMARY</code> · <code>SECONDARY</code></td></tr>
+          <tr><td>Consent</td><td><code>consent_res = 2</code> / <code>02</code></td><td>Non-consented household head — surfaces on the Kaya ambazo hazijahojiwa page.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 11 -->
+    <section id="errors">
+      <h2>11. Common errors and how to resolve them</h2>
+      <table>
+        <thead>
+          <tr><th>Symptom</th><th>Likely cause</th><th>Resolution</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><em>"An import is already running for this district."</em></td>
+            <td>A previous PAA ETL is still running (or stuck) for the same district.</td>
+            <td>Wait, or ask an admin to inspect the row and worker logs. Stale rows (&gt;12h) are auto-failed on next page load.</td>
+          </tr>
+          <tr>
+            <td><em>"Questionnaire validation failed: Selected questionnaire X does not belong to PAA/district Y"</em></td>
+            <td>The chosen questionnaire identity does not match the picked PAA.</td>
+            <td>Pick a questionnaire whose title matches the PAA, or leave on auto-detect. For Zanzibar, use the PEMBA / UNGUJA alias districts.</td>
+          </tr>
+          <tr>
+            <td><em>"No matching questionnaire found"</em></td>
+            <td>HQ has no questionnaire whose title matches the prefix and PAA.</td>
+            <td>Open Survey Monitoring → questionnaire picker to confirm HQ has the right version. As a workaround, paste the identity manually in Advanced options.</td>
+          </tr>
+          <tr>
+            <td>Import row stuck in <span class="chip running">running</span> for hours</td>
+            <td>Worker crashed mid-task, or HQ export timed out.</td>
+            <td>Re-run the same district. The ETL is idempotent and dedups by interview key. Admins can also force-stale at the 12 h mark.</td>
+          </tr>
+          <tr>
+            <td><em>"No data + no questionnaire dropdown"</em> on Survey Monitoring</td>
+            <td>Backend is on an older build without the latest dashboard schema.</td>
+            <td>Ask an admin to restart the backend container so the editable install reloads.</td>
+          </tr>
+          <tr>
+            <td>Empty Eligible Households / Members list</td>
+            <td>No PMT recalculation has been run, or the chosen district has no POOR households.</td>
+            <td>Open <strong>Registry → PMT Rerun</strong> → run PMT recalculation for the district.</td>
+          </tr>
+          <tr>
+            <td><em>"Unauthorized"</em></td>
+            <td>Your role is missing the right.</td>
+            <td>Ask your administrator (see §2).</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 12 -->
+    <section id="procedures">
+      <h2>12. Quick procedures</h2>
+
+      <h3>Run a fresh import for a district</h3>
+      <ol class="steps">
+        <li>Registry → Import Data → pick Region → pick District / PAA.</li>
+        <li>Leave questionnaire on Auto-detect (unless you know a specific identity).</li>
+        <li>Click <strong>TRIGGER IMPORT</strong> → confirm.</li>
+        <li>Watch the row in <em>Import History</em> turn from <span class="chip running">running</span> to <span class="chip completed">completed</span>.</li>
+        <li>Open Registry → Targeted Households, filter by that district, confirm the new households appear.</li>
+      </ol>
+
+      <h3>Reclassify a district after a cutoff change</h3>
+      <ol class="steps">
+        <li>Registry → PMT Rerun → pick the district.</li>
+        <li>Update the cutoff → save.</li>
+        <li>Click <strong>Run PMT recalculation</strong> → watch the progress dialog.</li>
+        <li>Registry → Enrollment List → pick the district → verify the new POOR / NON_POOR split.</li>
+        <li>Registry → Eligible Households → confirm the new POOR + consented households appear.</li>
+      </ol>
+
+      <h3>Find why a household isn't on the Eligible list</h3>
+      <ol class="steps">
+        <li>Registry → Targeted Households → search by HHID.</li>
+        <li>Open the household — check PMT score and class on the head panel.</li>
+        <li>If PMT class is <span class="chip nonpoor">NON_POOR</span>, the household isn't eligible. Verify the cutoff under PMT Rerun.</li>
+        <li>If PMT class is empty, the household has no PMT yet — run PMT recalculation.</li>
+        <li>Open the household head member → confirm <code>consent_res</code> is not <code>2</code>/<code>02</code> in <code>json_ext</code>. If it is, the head is non-consented, which excludes the household from the Eligible list.</li>
+      </ol>
+
+      <div class="callout warn">
+        <span class="label">Assumptions and items to confirm</span>
+        <ul>
+          <li>UI control to cancel a <strong>running</strong> PAA import is not present today.</li>
+          <li>Region-wide PMT recalculation: backend supports it; UI currently drives a single district.</li>
+          <li>Non-consented filter accepts only <code>consent_res ∈ {"2", "02"}</code>.</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="doc-footer">
+    <div class="brand">
+      <img src="assets/tasaf-logo.png" alt="TASAF logo" />
+      <div>
+        <strong>TASAF MIS — Registry Module</strong><br/>
+        Tanzania Social Action Fund · Mfuko wa Maendeleo ya Jamii
+      </div>
+    </div>
+    <div>
+      © Tanzania Social Action Fund · <a href="../index.html">Documentation hub</a> · v1.0
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

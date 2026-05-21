@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>TASAF MIS — Documentation</title>
+<link rel="icon" type="image/png" href="assets/tasaf-logo.png" />
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --tasaf-primary: #00695C;
+    --tasaf-primary-dark: #004D40;
+    --tasaf-primary-light: #4DB6AC;
+    --tasaf-accent: #070707;
+    --tasaf-bg: #F4FAF9;
+    --tasaf-header: #D6ECE9;
+    --tasaf-highlight: #E4F2EF;
+    --tasaf-text: #202B2A;
+    --tasaf-muted: #5F6368;
+    --tasaf-white: #FFFFFF;
+    --tasaf-border: #D6ECE9;
+    --tasaf-toggled: #546E7A;
+    --tasaf-success: #2E7D32;
+    --tasaf-warning: #ED6C02;
+    --tasaf-shadow: 0 6px 24px rgba(0, 105, 92, 0.12);
+    --tasaf-shadow-card: 0 2px 12px rgba(0, 105, 92, 0.10);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Rubik', 'Roboto', 'Helvetica Neue', sans-serif;
+    font-weight: 300;
+    color: var(--tasaf-text);
+    background: var(--tasaf-bg);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  a { color: var(--tasaf-primary); text-decoration: none; }
+  a:hover { color: var(--tasaf-primary-dark); }
+  code {
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    background: var(--tasaf-highlight);
+    color: var(--tasaf-primary-dark);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+
+  /* === Top brand bar === */
+  .topbar {
+    background: var(--tasaf-primary);
+    color: var(--tasaf-white);
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 4px solid var(--tasaf-accent);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  }
+  .topbar img {
+    width: 44px; height: 44px;
+    background: var(--tasaf-white);
+    padding: 4px;
+    border-radius: 8px;
+  }
+  .topbar .brand {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .topbar .brand strong { font-size: 18px; font-weight: 500; letter-spacing: 0.2px; }
+  .topbar .brand small { font-size: 12.5px; color: rgba(255,255,255,0.78); }
+  .topbar .actions { display: flex; gap: 14px; }
+  .topbar .actions a {
+    color: var(--tasaf-white);
+    font-size: 13.5px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.3);
+  }
+  .topbar .actions a:hover { background: rgba(255,255,255,0.12); }
+
+  /* === Hero === */
+  .hero {
+    max-width: 1100px;
+    margin: 32px auto 24px;
+    padding: 32px 36px;
+    background:
+      radial-gradient(circle at 110% -20%, rgba(255,255,255,0.18) 0, transparent 45%),
+      linear-gradient(135deg, var(--tasaf-primary) 0%, var(--tasaf-primary-dark) 100%);
+    color: var(--tasaf-white);
+    border-radius: 14px;
+    box-shadow: var(--tasaf-shadow);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    align-items: center;
+  }
+  .hero h1 {
+    margin: 0 0 8px;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+  }
+  .hero p {
+    margin: 0;
+    color: rgba(255,255,255,0.86);
+    max-width: 700px;
+  }
+  .hero .quick-stats {
+    display: flex;
+    gap: 28px;
+    align-items: stretch;
+  }
+  .stat {
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.28);
+    padding: 12px 18px;
+    border-radius: 10px;
+    text-align: center;
+    min-width: 100px;
+  }
+  .stat .num { display: block; font-size: 26px; font-weight: 700; }
+  .stat .lbl { display: block; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.6px; opacity: 0.85; }
+
+  /* === Sections === */
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 16px 64px;
+  }
+  section.modules { margin: 28px 0; }
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin: 0 0 16px;
+    padding: 0 4px;
+  }
+  .section-header h2 {
+    color: var(--tasaf-primary);
+    font-weight: 600;
+    font-size: 22px;
+    margin: 0;
+  }
+  .section-header .pill {
+    background: var(--tasaf-header);
+    color: var(--tasaf-primary-dark);
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
+  .section-header .hint {
+    margin-left: auto;
+    color: var(--tasaf-muted);
+    font-size: 13px;
+  }
+
+  /* === Module cards === */
+  .module-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 18px;
+  }
+  .module-card {
+    background: var(--tasaf-white);
+    border-radius: 12px;
+    box-shadow: var(--tasaf-shadow-card);
+    padding: 18px 20px 16px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--tasaf-border);
+    border-top: 4px solid var(--tasaf-primary);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .module-card.coming-soon {
+    border-top-color: var(--tasaf-toggled);
+    opacity: 0.85;
+  }
+  .module-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0,105,92,0.16);
+  }
+  .module-card .head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .module-card .icon {
+    width: 36px; height: 36px;
+    background: var(--tasaf-header);
+    color: var(--tasaf-primary);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 16px;
+  }
+  .module-card.coming-soon .icon { background: #ECEFF1; color: var(--tasaf-toggled); }
+  .module-card .title {
+    flex: 1;
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--tasaf-primary-dark);
+  }
+  .module-card .status {
+    font-size: 11px;
+    padding: 2px 9px;
+    border-radius: 999px;
+    background: var(--tasaf-header);
+    color: var(--tasaf-primary-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-weight: 500;
+  }
+  .module-card.coming-soon .status { background: #ECEFF1; color: var(--tasaf-toggled); }
+  .module-card .desc {
+    color: var(--tasaf-muted);
+    font-size: 13.5px;
+    margin: 0 0 14px;
+    flex-grow: 1;
+  }
+  .module-card .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: auto;
+  }
+  .module-card .links a {
+    padding: 6px 12px;
+    border-radius: 6px;
+    background: var(--tasaf-primary);
+    color: var(--tasaf-white);
+    font-size: 13px;
+    font-weight: 400;
+    border: 1px solid var(--tasaf-primary);
+    transition: background .15s ease;
+  }
+  .module-card .links a:hover { background: var(--tasaf-primary-dark); }
+  .module-card .links a.ghost {
+    background: var(--tasaf-white);
+    color: var(--tasaf-primary);
+  }
+  .module-card .links a.ghost:hover {
+    background: var(--tasaf-highlight);
+  }
+  .module-card .links a.disabled {
+    pointer-events: none;
+    opacity: 0.45;
+    background: #ECEFF1;
+    color: var(--tasaf-toggled);
+    border-color: #CFD8DC;
+  }
+
+  /* === Resource strip === */
+  .resources {
+    margin-top: 36px;
+    padding: 24px 28px;
+    background: var(--tasaf-white);
+    border-radius: 12px;
+    box-shadow: var(--tasaf-shadow-card);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 24px;
+  }
+  .resources h3 {
+    color: var(--tasaf-primary);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin: 0 0 10px;
+    font-weight: 500;
+  }
+  .resources ul { padding-left: 0; list-style: none; margin: 0; }
+  .resources li { margin: 4px 0; font-size: 14px; }
+  .resources li a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px dotted transparent;
+  }
+  .resources li a::before { content: "→"; color: var(--tasaf-primary-light); font-weight: 600; }
+  .resources li a:hover { border-bottom-color: var(--tasaf-primary); }
+
+  /* === Footer === */
+  footer.doc-footer {
+    background: var(--tasaf-primary-dark);
+    color: rgba(255,255,255,0.9);
+    padding: 22px 36px;
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+    margin-top: 32px;
+  }
+  footer.doc-footer .brand { display: flex; align-items: center; gap: 12px; }
+  footer.doc-footer img { width: 36px; height: 36px; background: white; padding: 4px; border-radius: 8px; }
+  footer.doc-footer a { color: var(--tasaf-highlight); }
+
+  /* Print */
+  @media print {
+    body { background: white; }
+    .topbar { box-shadow: none; }
+    .hero { box-shadow: none; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    .module-card { box-shadow: none; break-inside: avoid; }
+    a { color: inherit; }
+  }
+
+  @media (max-width: 760px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero .quick-stats { justify-content: flex-start; }
+    .topbar { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+  <header class="topbar">
+    <img src="assets/tasaf-logo.png" alt="TASAF" />
+    <div class="brand">
+      <strong>TASAF MIS · Documentation</strong>
+      <small>Tanzania Social Action Fund · Mfuko wa Maendeleo ya Jamii</small>
+    </div>
+    <div class="actions">
+      <a href="#modules">Modules</a>
+      <a href="#resources">Resources</a>
+      <a href="../">Back to MIS</a>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div>
+      <h1>TASAF MIS — Documentation hub</h1>
+      <p>
+        One place for everything about TASAF's customised openIMIS implementation: the Registry,
+        Payments, MUSE adaptor, Payroll, ETL, and operational guides. Open any module below
+        to read the user manual, technical reference, workflows, and admin guide.
+      </p>
+    </div>
+    <div class="quick-stats">
+      <div class="stat"><span class="num">8</span><span class="lbl">Modules</span></div>
+      <div class="stat"><span class="num">1</span><span class="lbl">Documented</span></div>
+      <div class="stat"><span class="num">7</span><span class="lbl">In progress</span></div>
+    </div>
+  </section>
+
+  <main>
+
+    <section id="modules" class="modules">
+      <div class="section-header">
+        <h2>Modules</h2>
+        <span class="pill">User &amp; technical docs</span>
+        <span class="hint">Click any link to open the doc. Items marked "Coming soon" are stubs.</span>
+      </div>
+      <div class="module-grid">
+
+        <!-- Registry — fully documented -->
+        <div class="module-card">
+          <div class="head">
+            <div class="icon">RM</div>
+            <div class="title">Registry Module</div>
+            <span class="status">Available</span>
+          </div>
+          <p class="desc">Households, household members, PAA-based imports from Survey Solutions, non-consented filter, PMT scoring &amp; enrollment, Survey Monitoring dashboard.</p>
+          <div class="links">
+            <a href="tasaf-registry/user-manual.html">User manual</a>
+            <a href="tasaf-registry/technical-documentation.md" class="ghost">Technical</a>
+            <a href="tasaf-registry/admin-guide.md" class="ghost">Admin</a>
+            <a href="tasaf-registry/workflows.md" class="ghost">Workflows</a>
+            <a href="tasaf-registry/field-mapping.md" class="ghost">Fields</a>
+            <a href="tasaf-registry/user-manual.pdf" class="ghost">PDF</a>
+          </div>
+        </div>
+
+        <!-- Payment Module — placeholder -->
+        <div class="module-card coming-soon">
+          <div class="head">
+            <div class="icon">PM</div>
+            <div class="title">Payment Module</div>
+            <span class="status">Coming soon</span>
+          </div>
+          <p class="desc">Payment accounts, verification (MUSE), pre-audit, paylists, return feedback, payment dashboard. Backed by <code>openimis-be-tasaf_payment_py</code>.</p>
+          <div class="links">
+            <a href="TASAF_PAYMENT_TUTORIAL.md" class="ghost">Tutorial (legacy)</a>
+            <a href="TASAF_PAYMENT_SYSTEM.md" class="ghost">System overview</a>
+            <a href="#" class="disabled">User manual</a>
+            <a href="#" class="disabled">PDF</a>
+          </div>
+        </div>
+
+        <!-- MUSE Adaptor — placeholder -->
+        <div class="module-card coming-soon">
+          <div class="head">
+            <div class="icon">MU</div>
+            <div class="title">MUSE Payment Adaptor</div>
+            <span class="status">Coming soon</span>
+          </div>
+          <p class="desc">Integration layer between TASAF MIS and MUSE/GovESB for verification and payment dispatch. Backend <code>openimis-be-muse_payment_adaptor_py</code> · frontend <code>openimis-fe-muse_payment_adaptor_js</code>.</p>
+          <div class="links">
+            <a href="#" class="disabled">User manual</a>
+            <a href="#" class="disabled">Technical</a>
+            <a href="#" class="disabled">PDF</a>
+          </div>
+        </div>
+
+        <!-- Payroll — placeholder -->
+        <div class="module-card coming-soon">
+          <div class="head">
+            <div class="icon">PR</div>
+            <div class="title">Payroll Module</div>
+            <span class="status">Coming soon</span>
+          </div>
+          <p class="desc">Benefit consumption, payroll generation, payment cycle scheduling. Standard openIMIS with TASAF wiring.</p>
+          <div class="links">
+            <a href="PAYROLL_TO_TASAF_PAYMENT_GENERATION.md" class="ghost">Generation flow (legacy)</a>
+            <a href="#" class="disabled">User manual</a>
+          </div>
+        </div>
+
+        <!-- Payment Cycle -->
+        <div class="module-card coming-soon">
+          <div class="head">
+            <div class="icon">PC</div>
+            <div class="title">Payment Cycle</div>
+            <span class="status">Coming soon</span>
+          </div>
+          <p class="desc">Payment cycle scheduling and benefit consumption windows.</p>
+          <div class="links">
+            <a href="#" class="disabled">User manual</a>
+            <a href="#" class="disabled">Technical</a>
+          </div>
+        </div>
+
+        <!-- ETL -->
+        <div class="module-card coming-soon">
+          <div class="head">
+            <div class="icon">ET</div>
+            <div class="title">API ETL (Survey Solutions)</div>
+            <span class="status">Coming soon</span>
+          </div>
+          <p class="desc">PAA-based ETL pulling interviews from Survey Solutions HQ. Already covered in the Registry Module docs.</p>
+          <div class="links">
+            <a href="tasaf-registry/workflows.md" class="ghost">Flow diagrams</a>
+            <a href="tasaf-registry/admin-guide.md" class="ghost">Operations</a>
+            <a href="API_ETL_ASYNC_IMPORT.md" class="ghost">Async behaviour (legacy)</a>
+          </div>
+        </div>
+
+        <!-- Survey Monitoring -->
+        <div class="module-card coming-soon">
+          <div class="head">
+            <div class="icon">SM</div>
+            <div class="title">Survey Monitoring</div>
+            <span class="status">Coming soon</span>
+          </div>
+          <p class="desc">Real-time field-monitoring dashboard for Survey Solutions enumerators. Covered in the Registry Module manual.</p>
+          <div class="links">
+            <a href="tasaf-registry/user-manual.html#monitoring">Section in manual</a>
+            <a href="SURVEY_MONITORING_DASHBOARD.md" class="ghost">Architecture (legacy)</a>
+            <a href="SURVEY_MONITORING_DASHBOARD_TUTORIAL.md" class="ghost">Tutorial (legacy)</a>
+          </div>
+        </div>
+
+        <!-- Core / Auth / Locations -->
+        <div class="module-card coming-soon">
+          <div class="head">
+            <div class="icon">CO</div>
+            <div class="title">Core, Auth, Locations</div>
+            <span class="status">Coming soon</span>
+          </div>
+          <p class="desc">User administration, roles &amp; rights, location hierarchy (region → district → ward → village). Mostly upstream openIMIS.</p>
+          <div class="links">
+            <a href="#" class="disabled">Admin guide</a>
+            <a href="#" class="disabled">User manual</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="resources" class="resources">
+      <div>
+        <h3>Quick links</h3>
+        <ul>
+          <li><a href="tasaf-registry/user-manual.html">Registry Module user manual (HTML)</a></li>
+          <li><a href="tasaf-registry/user-manual.pdf">Registry Module user manual (PDF)</a></li>
+          <li><a href="tasaf-registry/index.md">Registry Module doc index</a></li>
+          <li><a href="../README.md">Repository README</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Operations</h3>
+        <ul>
+          <li><a href="tasaf-registry/admin-guide.md">Registry admin guide</a></li>
+          <li><a href="SURVEY_MONITORING_ADMIN_RUNBOOK.md">Survey Monitoring runbook</a></li>
+          <li><a href="OPENSEARCH_DEV_TOOLS_TUTORIAL.md">OpenSearch dev tools</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Architecture</h3>
+        <ul>
+          <li><a href="PAYMENT_ARCHITECTURE.md">Payment architecture</a></li>
+          <li><a href="TASAF_PAYMENT_OPENIMIS_INTEGRATION.md">TASAF / openIMIS integration</a></li>
+          <li><a href="ENROLLMENT_TO_BENEFIT_TO_PAYMENT_FLOW.md">Enrollment → benefit → payment flow</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Field reference</h3>
+        <ul>
+          <li><a href="tasaf-registry/field-mapping.md">Registry field mapping</a></li>
+          <li><a href="GROUP_MEMBER_ROLE_MAPPING_FINDINGS.md">Group member role mapping</a></li>
+          <li><a href="SURVEY_SOLUTIONS_EXPORT_INTERVIEW_STATUS.md">SS export / interview status</a></li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="doc-footer">
+    <div class="brand">
+      <img src="assets/tasaf-logo.png" alt="TASAF logo" />
+      <div>
+        <strong>TASAF MIS · Documentation Hub</strong><br/>
+        Tanzania Social Action Fund · Mfuko wa Maendeleo ya Jamii
+      </div>
+    </div>
+    <div>
+      © Tanzania Social Action Fund · Version 1.0 · <a href="tasaf-registry/index.md">Registry docs</a>
+    </div>
+  </footer>
+
+</body>
+</html>
