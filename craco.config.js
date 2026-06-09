@@ -1,5 +1,10 @@
 const webpack = require("webpack");
 
+const excludeBrokenSourceMaps = [
+  /node_modules[\\/]@formatjs[\\/]fast-memoize[\\/]/,
+  /node_modules[\\/]react-double-scrollbar[\\/]/,
+];
+
 module.exports = {
   webpack: {
     configure: (webpackConfig) => {
@@ -23,6 +28,31 @@ module.exports = {
           ),
         })
       );
+
+      webpackConfig.module.rules.forEach((rule) => {
+        if (!Array.isArray(rule.oneOf)) return;
+
+        rule.oneOf.forEach((oneOfRule) => {
+          if (oneOfRule.enforce !== "pre") return;
+          if (!String(oneOfRule.test).includes("js|mjs|jsx|ts|tsx")) return;
+
+          const currentExclude = oneOfRule.exclude;
+          oneOfRule.exclude = Array.isArray(currentExclude)
+            ? [...currentExclude, ...excludeBrokenSourceMaps]
+            : currentExclude
+              ? [currentExclude, ...excludeBrokenSourceMaps]
+              : excludeBrokenSourceMaps;
+        });
+      });
+
+      webpackConfig.ignoreWarnings = [
+        ...(webpackConfig.ignoreWarnings || []),
+        (warning) => {
+          const message = warning?.message || "";
+          return message.includes("@formatjs/fast-memoize/index.ts")
+            || message.includes("react-double-scrollbar/dist/DoubleScrollbar.js.map");
+        },
+      ];
 
       return webpackConfig;
     },

@@ -705,16 +705,73 @@
     <section id="pmt">
       <h2>7. PMT (Proxy Means Test)</h2>
 
-      <h3>7.1 PMT Rerun (configuration &amp; recalculation)</h3>
+      <p>The <strong>PMT Configuration</strong> page (<strong>Registry → PMT Configuration</strong>) has three tabs that look similar but do different things: <strong>PMT Rerun</strong>, <strong>PMT Cutoff Adjustment</strong>, and <strong>Formula &amp; Parameters</strong>. Each is described below.</p>
+
+      <h3>7.1 PMT Rerun (recalculate the scores)</h3>
+      <p><strong>PMT Rerun</strong> recalculates each household's PMT <strong>score</strong> from its survey data — household size, assets owned, settlement type, member ages — using the PMT formula, then classifies every household <span class="chip poor">POOR</span> / <span class="chip nonpoor">NON_POOR</span> against the cutoff. It updates <strong>both</strong> the score and the class.</p>
       <ol class="steps">
-        <li>Open <strong>Registry → PMT Rerun</strong>.</li>
-        <li>Pick the district whose cutoff you want to set.</li>
-        <li>The page shows the current cutoff (default <code>11.01</code>). Update it (allowed range <code>0 ≤ cutoff ≤ 50</code>) and save.</li>
-        <li>Optionally click <strong>Run PMT recalculation</strong>. A progress dialog appears showing percentage complete, processed households, and newly enrolled POOR households.</li>
+        <li>Open <strong>Registry → PMT Configuration → PMT Rerun</strong>.</li>
+        <li>Pick the Region / District to recalculate.</li>
+        <li>Enter the cutoff (default <code>11.01</code>, allowed range <code>0 &lt; cutoff ≤ 50</code>).</li>
+        <li>Click <strong>Apply</strong>. A progress dialog shows percentage complete, processed households, and newly enrolled POOR households.</li>
         <li>When finished, the audit summary table refreshes.</li>
       </ol>
+      <p>Use Rerun when the <strong>inputs to the score changed</strong> — the PMT formula was edited, or the household/survey data was re-imported.</p>
 
-      <h3>7.2 PMT Audit Summary</h3>
+      <figure class="shot">
+        <div class="shot-ph" style="display:flex;align-items:center;justify-content:center;min-height:200px;border:2px dashed #c8e0dc;border-radius:8px;background:#f6faf9;color:#7a9c96;font-size:14px;text-align:center;padding:24px;">📷 Screenshot placeholder — PMT Rerun tab (to be added)</div>
+        <figcaption><span class="num">Fig. 7.1</span> PMT Rerun tab — Region / District pickers, cutoff field, and the <strong>Apply</strong> button.</figcaption>
+      </figure>
+
+      <h3>7.2 PMT Cutoff Adjustment (move the line only)</h3>
+      <p><strong>PMT Cutoff Adjustment</strong> does <strong>not</strong> recalculate scores. It keeps each household's existing PMT score and only re-applies the <span class="chip poor">POOR</span> / <span class="chip nonpoor">NON_POOR</span> threshold using the new cutoff. It updates the <strong>class only</strong> — the score is left unchanged — so it is lighter and faster than a full rerun.</p>
+      <ol class="steps">
+        <li>Open <strong>Registry → PMT Configuration → PMT Cutoff Adjustment</strong>.</li>
+        <li>Pick the Region / District.</li>
+        <li>Enter the new cutoff and click <strong>Apply</strong>. A progress dialog tracks the reclassification.</li>
+      </ol>
+      <p>Use Cutoff Adjustment when you only want to <strong>move the eligibility line</strong> and keep everyone's existing score.</p>
+
+      <figure class="shot">
+        <div class="shot-ph" style="display:flex;align-items:center;justify-content:center;min-height:200px;border:2px dashed #c8e0dc;border-radius:8px;background:#f6faf9;color:#7a9c96;font-size:14px;text-align:center;padding:24px;">📷 Screenshot placeholder — PMT Cutoff Adjustment tab (to be added)</div>
+        <figcaption><span class="num">Fig. 7.2</span> PMT Cutoff Adjustment tab — Region / District pickers and the new cutoff applied to existing scores.</figcaption>
+      </figure>
+
+      <h3>7.3 Rerun vs Cutoff Adjustment — which to use</h3>
+      <table>
+        <thead>
+          <tr><th>&nbsp;</th><th>PMT Rerun</th><th>PMT Cutoff Adjustment</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Recomputes the PMT score?</td><td>Yes (runs the formula)</td><td>No (reuses stored score)</td></tr>
+          <tr><td>Updates the score</td><td>Yes</td><td>No (unchanged)</td></tr>
+          <tr><td>Updates the class</td><td>Yes</td><td>Yes</td></tr>
+          <tr><td>Relative cost</td><td>Heavier</td><td>Lighter</td></tr>
+          <tr><td>When to use</td><td>Formula or survey data changed</td><td>Just moving the cutoff line</td></tr>
+          <tr><td>Auto-enrols POOR households afterwards</td><td>Yes</td><td>Yes</td></tr>
+        </tbody>
+      </table>
+
+      <h3>7.4 Formula &amp; Parameters (configure the PMT formula)</h3>
+      <p>The <strong>Formula &amp; Parameters</strong> tab lets authorised users change the PMT formula itself — the cutoff and the regression coefficients (intercept, household-size, working-age, urban, and the per-asset coefficients). Changes follow a <strong>maker-checker</strong> workflow: the editor submits a proposed formula, and a <strong>second user</strong> must approve it under <strong>Tasks</strong> before it takes effect.</p>
+      <ol class="steps">
+        <li>Open <strong>Registry → PMT Configuration → Formula &amp; Parameters</strong>. The active formula loads.</li>
+        <li>Edit the cutoff / coefficients, and add or remove asset rows as needed.</li>
+        <li>Click <strong>Submit for approval</strong>. The form locks while the change is pending.</li>
+        <li>A different user opens <strong>Tasks</strong>, reviews the proposed values under <strong>PMT Formula Changes</strong>, and <strong>Approves</strong> (or rejects).</li>
+        <li>Once approved, the new formula becomes active. <strong>Run PMT Rerun</strong> for the affected districts to apply it to existing households.</li>
+      </ol>
+      <div class="callout tip">
+        <span class="label">Tip</span>
+        <p>A new formula only takes effect through <strong>PMT Rerun</strong> — <strong>Cutoff Adjustment ignores formula changes</strong> because it reuses the old stored scores. Editing the formula never rescores anyone on its own; you must rerun afterwards.</p>
+      </div>
+
+      <figure class="shot">
+        <div class="shot-ph" style="display:flex;align-items:center;justify-content:center;min-height:200px;border:2px dashed #c8e0dc;border-radius:8px;background:#f6faf9;color:#7a9c96;font-size:14px;text-align:center;padding:24px;">📷 Screenshot placeholder — Formula &amp; Parameters tab (to be added)</div>
+        <figcaption><span class="num">Fig. 7.3</span> Formula &amp; Parameters tab — cutoff and coefficient fields, asset-row editor, and the <strong>Submit for approval</strong> button.</figcaption>
+      </figure>
+
+      <h3>7.5 PMT Audit Summary</h3>
       <p>The audit summary table shows one row per district with:</p>
       <ul>
         <li>District code and name.</li>
@@ -724,12 +781,12 @@
         <li>Last rerun timestamp.</li>
       </ul>
 
-      <h3>7.3 Enrollment List</h3>
+      <h3>7.6 Enrollment List</h3>
       <p>Open <strong>Registry → Enrollment List</strong>. The page is district-scoped. The list shows, for each household: <strong>HHID</strong>, <strong>Head Name</strong>, <strong>Village</strong>, <strong>PMT Score</strong>, and <strong>Status</strong> (<span class="chip poor">POOR</span> / <span class="chip nonpoor">NON_POOR</span>). Filter by HHID, head name, PMT Status, and the Region / District / Ward / Village pickers. Click <strong>DOWNLOAD PDF</strong> (top-right) to export the filtered list.</p>
 
       <figure class="shot">
         <img src="assets/enrollment%20list.png" alt="Enrollment List page" />
-        <figcaption><span class="num">Fig. 7.1</span> Enrollment List — household HHID, head name, village, PMT score, and POOR/NON_POOR status. <strong>DOWNLOAD PDF</strong> exports the filtered set.</figcaption>
+        <figcaption><span class="num">Fig. 7.4</span> Enrollment List — household HHID, head name, village, PMT score, and POOR/NON_POOR status. <strong>DOWNLOAD PDF</strong> exports the filtered set.</figcaption>
       </figure>
     </section>
 
@@ -855,9 +912,8 @@
 
       <h3>Reclassify a district after a cutoff change</h3>
       <ol class="steps">
-        <li>Registry → PMT Rerun → pick the district.</li>
-        <li>Update the cutoff → save.</li>
-        <li>Click <strong>Run PMT recalculation</strong> → watch the progress dialog.</li>
+        <li>Registry → PMT Configuration → <strong>PMT Cutoff Adjustment</strong> → pick the district. <em>(Use Cutoff Adjustment when only the cutoff changed — it reuses existing scores. Use <strong>PMT Rerun</strong> instead if the formula or survey data changed.)</em></li>
+        <li>Enter the new cutoff → <strong>Apply</strong> → watch the progress dialog.</li>
         <li>Registry → Enrollment List → pick the district → verify the new POOR / NON_POOR split.</li>
         <li>Registry → Eligible Households → confirm the new POOR + consented households appear.</li>
       </ol>

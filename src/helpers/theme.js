@@ -4,6 +4,9 @@ import { alpha } from "@material-ui/core/styles/colorManipulator";
 const defaultColors = {
   primaryColor: "#006273",
   errorColor: "#801a00",
+  successColor: "#2e7d32",
+  warningColor: "#ed6c02",
+  infoColor: "#0288d1",
   whiteColor: "#fff",
   fontColor: "#006273",
   backgroundColor: "#dbeef0",
@@ -20,6 +23,9 @@ const createAppTheme = (colorOverrides = {}) => {
   const {
     primaryColor,
     errorColor,
+    successColor,
+    warningColor,
+    infoColor,
     whiteColor,
     fontColor,
     backgroundColor,
@@ -44,6 +50,9 @@ const createAppTheme = (colorOverrides = {}) => {
       primary: { main: primaryColor },
       secondary: { main: whiteColor },
       error: { main: errorColor },
+      success: { main: successColor },
+      warning: { main: warningColor },
+      info: { main: infoColor },
       text: {
         primary: fontColor,
         secondary: fontColor,

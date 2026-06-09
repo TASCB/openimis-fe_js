@@ -8,5 +8,6 @@ module.exports = function override(config, env) {
       '@material-ui':  path.resolve('./node_modules/@material-ui'),
     }
   };
+
   return config;
 };
