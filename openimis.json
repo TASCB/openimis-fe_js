@@ -14,7 +14,7 @@
   "modules": [
     {
       "name": "CoreModule",
-      "npm": "@openimis/fe-core@https://github.com/TASCB/openimis-fe-core_js#release/25.10"
+      "npm": "@openimis/fe-core@https://github.com/TASCB/openimis-fe-core_js#tz-imf"
     },
     {
       "name": "IndividualModule",
@@ -22,7 +22,7 @@
     },
     {
       "name": "LegacyIndividualModule",
-      "npm": "@openimis/fe-legacy_individual@../openimis-fe-legacy_individual_js"
+      "npm": "@openimis/fe-legacy_individual@https://github.com/tasaf-tz/openimis-fe-legacy_individual_js#main"
     },
     {
       "name": "SocialProtectionModule",
