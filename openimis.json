@@ -138,7 +138,7 @@
     },
     {
       "name": "PayrollModule",
-      "npm": "@openimis/fe-payroll@https://github.com/openimis/openimis-fe-payroll_js#release/25.10"
+      "npm": "@openimis/fe-payroll@https://github.com/TASCB/openimis-fe-payroll_js#tz-imf"
     },
     {
       "name": "LanguageEnTasafModule",
