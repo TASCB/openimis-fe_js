@@ -23,6 +23,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.58",
     "@material-ui/pickers": "^3.2.10",
+    "@sentry/react": "^10.17.0",
     "ajv": "8.17.1",
     "classnames": "^2.2.6",
     "clsx": "^1.1.1",
@@ -83,7 +84,9 @@
     "@openimis/fe-training": "file:../openimis-fe-training_js",
     "@openimis/fe-communications": "file:../openimis-fe-communications_js",
     "@openimis/fe-access_request": "file:../openimis-fe-access_request_js",
-    "@openimis/fe-approval": "file:../openimis-fe-approval_js"
+    "@openimis/fe-approval": "file:../openimis-fe-approval_js",
+    "@openimis/fe-report": "https://github.com/TASCB/openimis-fe-report_js.git#main",
+    "@openimis/fe-case_management": "https://github.com/TASCB/openimis-fe-case_management_js.git#main"
   },
   "scripts": {
     "start": "NODE_OPTIONS=--max-old-space-size=4096 craco start",

@@ -163,6 +163,14 @@
     {
       "name": "ApprovalModule",
       "npm": "@openimis/fe-approval@file:../openimis-fe-approval_js"
+    },
+    {
+      "name": "ReportModule",
+      "npm": "@openimis/fe-report@https://github.com/TASCB/openimis-fe-report_js.git#main"
+    },
+    {
+      "name": "CaseManagementModule",
+      "npm": "@openimis/fe-case_management@https://github.com/TASCB/openimis-fe-case_management_js.git#main"
     }
   ]
 }
