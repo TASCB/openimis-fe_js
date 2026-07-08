@@ -18,7 +18,7 @@
     },
     {
       "name": "IndividualModule",
-      "npm": "@openimis/fe-individual@https://github.com/TASCB/openimis-fe-individual_js#tz-imf"
+      "npm": "@openimis/fe-individual@file:../openimis-fe-individual_js"
     },
     {
       "name": "LegacyIndividualModule",
@@ -142,11 +142,27 @@
     },
     {
       "name": "LanguageEnTasafModule",
-      "npm": "@openimis/fe-language_en_tasaf@https://github.com/TASCB/openimis-fe-language_en_tasaf_js#main"
+      "npm": "@openimis/fe-language_en_tasaf@file:../openimis-fe-language_en_tasaf_js"
     },
     {
       "name": "TASAFPaymentModule",
-      "npm": "@openimis/fe-tasaf-payment@https://github.com/TASCB/openimis-fe-tasaf-payment_js#main"
+      "npm": "@openimis/fe-tasaf-payment@file:../openimis-fe-tasaf-payment_js"
+    },
+    {
+      "name": "TrainingModule",
+      "npm": "@openimis/fe-training@file:../openimis-fe-training_js"
+    },
+    {
+      "name": "CommunicationsModule",
+      "npm": "@openimis/fe-communications@file:../openimis-fe-communications_js"
+    },
+    {
+      "name": "AccessRequestModule",
+      "npm": "@openimis/fe-access_request@file:../openimis-fe-access_request_js"
+    },
+    {
+      "name": "ApprovalModule",
+      "npm": "@openimis/fe-approval@file:../openimis-fe-approval_js"
     }
   ]
 }

@@ -13,7 +13,7 @@ import store from "./helpers/store";
 import LocalesManager from "./LocalesManager";
 import ModulesManager from "./ModulesManager";
 import ModulesManagerProvider from "./ModulesManagerProvider";
-import { App, FatalError, baseApiUrl, apiHeaders } from "@openimis/fe-core";
+import { App, FatalError, baseApiUrl, apiHeaders, Helmet } from "@openimis/fe-core";
 import getConfiguredLogo from "./helpers/logo";
 import messages_ref from "./translations/ref.json";
 import "./index.css";
@@ -103,13 +103,20 @@ const AppContainer = () => {
       <Provider store={store(reducers, middlewares)}>
         <MuiPickersUtilsProvider utils={MomentUtils}>
           <ModulesManagerProvider modulesManager={modulesManager}>
-            <App
-              basename={process.env.PUBLIC_URL}
-              localesManager={localesManager}
-              messages={messages_ref}
-              logo={logo}
-              disableTextLogo={disableTextLogo}
-            />
+            {/* ModulesManagerProvider renders React.Children.only — keep a single child.
+                Wrap App + the branding Helmet in one fragment. */}
+            <>
+              <App
+                basename={process.env.PUBLIC_URL}
+                localesManager={localesManager}
+                messages={messages_ref}
+                logo={logo}
+                disableTextLogo={disableTextLogo}
+              />
+              {/* TASAF branding: override fe-core's default "openIMIS" document title.
+                  Rendered after <App/> so react-helmet's last-wins picks these up. */}
+              <Helmet titleTemplate="%s - TasafMIS" defaultTitle="TasafMIS" />
+            </>
           </ModulesManagerProvider>
         </MuiPickersUtilsProvider>
       </Provider>

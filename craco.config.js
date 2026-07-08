@@ -11,6 +11,13 @@ module.exports = {
       // Set publicPath to serve assets under /front/
       webpackConfig.output.publicPath = "/front/";
 
+      // Resolve yarn-linked local modules against this app's single React copy
+      webpackConfig.resolve = webpackConfig.resolve || {};
+      webpackConfig.resolve.symlinks = false;
+
+      // Don't treat node_modules as immutable, so rebuilds of yarn-linked modules are picked up
+      webpackConfig.snapshot = { ...(webpackConfig.snapshot || {}), managedPaths: [] };
+
       // Inject environment variables explicitly
       webpackConfig.plugins.push(
         new webpack.DefinePlugin({

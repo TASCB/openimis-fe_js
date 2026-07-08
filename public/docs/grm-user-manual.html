@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>TASAF MIS — Grievance (GRM) Module User Manual</title>
+<link rel="icon" type="image/png" href="assets/tasaf-logo.png" />
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    /* TASAF corporateTeal palette (matches the main app) */
+    --tasaf-primary: #00695C;
+    --tasaf-primary-dark: #004D40;
+    --tasaf-primary-light: #4DB6AC;
+    --tasaf-accent: #B83232;
+    --tasaf-bg: #F4FAF9;
+    --tasaf-header: #D6ECE9;
+    --tasaf-highlight: #E4F2EF;
+    --tasaf-text: #202B2A;
+    --tasaf-muted: #5F6368;
+    --tasaf-white: #FFFFFF;
+    --tasaf-border: #D6ECE9;
+    --tasaf-toggled: #546E7A;
+    --tasaf-success: #2E7D32;
+    --tasaf-warning: #ED6C02;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: 'Rubik', 'Roboto', 'Helvetica Neue', sans-serif;
+    font-weight: 300; color: var(--tasaf-text); background: var(--tasaf-bg);
+    line-height: 1.65; font-size: 15px;
+  }
+  img, svg { max-width: 100%; }
+  a { color: var(--tasaf-primary); text-decoration: none; border-bottom: 1px dotted var(--tasaf-primary); }
+  a:hover { color: var(--tasaf-accent); border-bottom-style: solid; }
+  code, kbd { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 0.9em;
+    background: var(--tasaf-highlight); color: var(--tasaf-primary-dark); padding: 1px 6px; border-radius: 4px; }
+
+  .page-wrap { max-width: 1180px; margin: 24px auto; background: var(--tasaf-white);
+    box-shadow: 0 8px 40px rgba(0,105,92,0.12); border-radius: 14px; overflow: hidden; }
+
+  /* Cover */
+  .cover { background: linear-gradient(135deg, #00695C 0%, #004F45 100%); color: #fff;
+    padding: 40px 56px; display: flex; align-items: center; gap: 28px; }
+  .cover-logo img { width: 76px; height: 76px; background: #fff; padding: 8px; border-radius: 14px; }
+  .cover-text h1 { margin: 0; font-size: 30px; font-weight: 600; letter-spacing: 0.2px; }
+  .cover-text h2 { margin: 4px 0 12px; font-size: 16px; font-weight: 400; color: var(--tasaf-header); }
+  .cover-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+  .badge { background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.25);
+    padding: 3px 11px; border-radius: 999px; font-size: 12px; }
+
+  .subhead { background: var(--tasaf-header); color: var(--tasaf-primary-dark);
+    padding: 12px 56px; font-size: 13px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+  .content { padding: 36px 56px 48px; }
+  h2 { color: var(--tasaf-primary); font-size: 22px; font-weight: 600; margin: 40px 0 12px;
+    padding-bottom: 8px; border-bottom: 2px solid var(--tasaf-header); }
+  h2:first-of-type { margin-top: 8px; }
+  h3 { color: var(--tasaf-primary-dark); font-size: 16.5px; font-weight: 600; margin: 24px 0 8px; }
+  p { margin: 10px 0; }
+  ul, ol { margin: 10px 0; padding-left: 22px; }
+  li { margin: 5px 0; }
+
+  /* TOC */
+  .toc { background: var(--tasaf-header); border-radius: 8px; padding: 18px 24px; margin: 0 0 24px;
+    border-left: 5px solid var(--tasaf-primary); }
+  .toc h3 { margin: 0 0 8px; color: var(--tasaf-primary); font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .toc ol { columns: 2; column-gap: 32px; padding-left: 18px; margin: 0; }
+  .toc li { margin: 3px 0; break-inside: avoid; }
+  .toc a { border-bottom: none; }
+
+  /* Step procedures */
+  ol.steps { counter-reset: step; list-style: none; padding-left: 0; }
+  ol.steps > li { counter-increment: step; position: relative; padding: 5px 0 5px 42px; margin: 5px 0; }
+  ol.steps > li::before { content: counter(step); position: absolute; left: 0; top: 4px;
+    width: 28px; height: 28px; background: var(--tasaf-primary); color: #fff; border-radius: 50%;
+    text-align: center; line-height: 28px; font-weight: 500; font-size: 13px; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 24px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 14px; border: 1px solid var(--tasaf-border); vertical-align: top; }
+  th { background: var(--tasaf-primary); color: #fff; font-weight: 500; }
+  tbody tr:nth-child(even) { background: var(--tasaf-bg); }
+  td code { white-space: nowrap; }
+
+  /* Callouts */
+  .callout { border-radius: 8px; padding: 14px 18px; margin: 16px 0; border-left: 5px solid; font-size: 14px; }
+  .callout.note { background: var(--tasaf-highlight); border-color: var(--tasaf-primary); }
+  .callout.warn { background: #FDF0D4; border-color: var(--tasaf-warning); }
+  .callout.tip { background: #E8F5E9; border-color: var(--tasaf-success); }
+  .callout strong { color: var(--tasaf-primary-dark); }
+
+  /* Status / reporter chips */
+  .chip { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 500; }
+  .chip.received { background: #ECEFF1; color: var(--tasaf-toggled); }
+  .chip.open { background: #E3F2FD; color: #0D47A1; }
+  .chip.progress { background: #FFF3E0; color: var(--tasaf-warning); }
+  .chip.resolved { background: #E8F5E9; color: var(--tasaf-success); }
+  .chip.closed { background: #FDECEA; color: var(--tasaf-accent); }
+
+  /* Figure / screenshot placeholders (replace the .ph div with <img> when screenshots are ready) */
+  figure.shot { margin: 18px 0 26px; background: var(--tasaf-white); border: 1px solid var(--tasaf-border);
+    border-radius: 10px; overflow: hidden; box-shadow: 0 4px 14px rgba(0,105,92,0.10); }
+  figure.shot .ph { display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 220px; gap: 6px; text-align: center; color: var(--tasaf-primary);
+    background: repeating-linear-gradient(135deg, transparent 0 14px, rgba(0,105,92,0.045) 14px 28px), var(--tasaf-bg);
+    border-bottom: 1px dashed var(--tasaf-primary-light); font-style: italic; }
+  figure.shot .ph .cam { font-size: 30px; font-style: normal; }
+  figure.shot .ph .lbl { font-size: 13px; letter-spacing: 0.3px; }
+  figure.shot figcaption { padding: 10px 16px; background: var(--tasaf-header); color: var(--tasaf-primary-dark);
+    font-size: 13px; display: flex; gap: 10px; align-items: baseline; }
+  figure.shot figcaption .num { display: inline-block; background: var(--tasaf-primary); color: #fff;
+    padding: 2px 9px; border-radius: 4px; font-weight: 500; font-size: 11.5px; letter-spacing: 0.4px;
+    text-transform: uppercase; flex-shrink: 0; }
+
+  /* Footer */
+  .doc-footer { background: var(--tasaf-primary-dark); color: rgba(255,255,255,0.9); padding: 26px 56px;
+    font-size: 13px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .doc-footer .brand { display: flex; align-items: center; gap: 12px; }
+  .doc-footer img { width: 36px; height: 36px; background: #fff; padding: 4px; border-radius: 8px; }
+  .doc-footer a { color: #cbedf2; border-bottom: none; }
+
+  @media (max-width: 700px) {
+    .cover, .subhead, .content, .doc-footer { padding-left: 22px; padding-right: 22px; }
+    .toc ol { columns: 1; }
+    .cover { flex-direction: column; text-align: center; }
+  }
+  @media print {
+    body { background: #fff; } .page-wrap { box-shadow: none; margin: 0; border-radius: 0; }
+    a { color: inherit; border-bottom: none; } table, .callout, figure.shot { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- ========== COVER ========== -->
+  <header class="cover">
+    <div class="cover-logo"><img src="assets/tasaf-logo.png" alt="TASAF — Tanzania Social Action Fund" /></div>
+    <div class="cover-text">
+      <h1>Grievance Module (GRM)</h1>
+      <h2>TASAF MIS — Operational End-User Manual</h2>
+      <div class="cover-meta">
+        <span class="badge">Tanzania Social Action Fund</span>
+        <span class="badge">Mfuko wa Maendeleo ya Jamii</span>
+        <span class="badge">Version 1.0 · 14 June 2026</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="subhead">
+    <span><strong>Audience:</strong> Grievance intake officers · processors · supervisors · read-only reviewers</span>
+    <span><strong>Module:</strong> <code>openimis-be-grievance_social_protection_py</code></span>
+  </div>
+
+  <main class="content">
+
+    <p><strong>Daily procedures for registering, processing, resolving, and reviewing grievances.</strong>
+    This guide covers interactive web use of the Grievance module; system setup is covered in the
+    administrator manual. Screen labels and branding may differ by deployment — procedures are based on
+    the module source and an end-to-end test run dated 12 June 2026 (10 of 10 core scenarios passed).</p>
+
+    <!-- TOC -->
+    <nav class="toc">
+      <h3>Contents</h3>
+      <ol>
+        <li><a href="#purpose">Purpose, roles &amp; access</a></li>
+        <li><a href="#navigation">Navigation &amp; key concepts</a></li>
+        <li><a href="#register">Register a grievance</a></li>
+        <li><a href="#search">Search, open &amp; review</a></li>
+        <li><a href="#update">Update assignment, status &amp; details</a></li>
+        <li><a href="#comments">Comments, attachments &amp; printing</a></li>
+        <li><a href="#resolve">Resolve, close &amp; reopen</a></li>
+        <li><a href="#history">History &amp; reporting</a></li>
+        <li><a href="#troubleshooting">Troubleshooting &amp; good practice</a></li>
+        <li><a href="#glossary">Glossary &amp; quick reference</a></li>
+      </ol>
+    </nav>
+
+    <!-- 1 -->
+    <h2 id="purpose">1. Purpose, Roles, and Access</h2>
+    <p>The Grievance module records complaints or concerns, identifies the reporter when known, assigns
+    work to staff, preserves comments and evidence, and tracks the grievance through closure.</p>
+
+    <h3>Typical user roles</h3>
+    <table>
+      <thead><tr><th>Role</th><th>Typical work</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Intake officer</strong></td><td>Create grievances and search existing records.</td></tr>
+        <tr><td><strong>Processor</strong></td><td>Review assigned grievances, update status, comment, resolve, close, and reopen.</td></tr>
+        <tr><td><strong>Supervisor</strong></td><td>Processor functions plus oversight and reporting, subject to deployment.</td></tr>
+        <tr><td><strong>Reviewer</strong> (read-only)</td><td>Search and open read-only grievance details.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Access &amp; permissions</h3>
+    <p>Menus and controls are permission-based. If an action is missing, do not use another person's
+    account — ask the system administrator to review your assigned role. The standard processor bundle
+    is rights <code>127000, 127002, 127004, 127005, 127006</code>. Add <code>127001</code> only where
+    uploads to existing tickets are required; it also grants creation.</p>
+    <table>
+      <thead><tr><th>Right</th><th>Grants</th></tr></thead>
+      <tbody>
+        <tr><td><code>127000</code></td><td>Search and open grievance records (and the Grievance menu).</td></tr>
+        <tr><td><code>127001</code></td><td>Create grievances and upload attachments to existing tickets.</td></tr>
+        <tr><td><code>127002</code></td><td>Update grievances — edit fields and change status.</td></tr>
+        <tr><td><code>127004</code></td><td>Add comments to a grievance.</td></tr>
+        <tr><td><code>127005</code></td><td>View the full comments table.</td></tr>
+        <tr><td><code>127006</code></td><td>Resolve grievances (resolve-using-comment and close).</td></tr>
+      </tbody>
+    </table>
+
+    <!-- 2 -->
+    <h2 id="navigation">2. Module Navigation and Key Concepts</h2>
+    <p>Open the main <strong>Grievance</strong> menu. Depending on your rights it can contain:</p>
+    <ul>
+      <li><strong>Add Grievance</strong> — register a new grievance.</li>
+      <li><strong>Grievances</strong> — search, open, and process records.</li>
+      <li><strong>Grievance Categories, Types, and Channels</strong> — configuration lists, normally maintained by administrators.</li>
+      <li><strong>Grievance Reports</strong> — report shortcuts when enabled in the deployed build.</li>
+    </ul>
+
+    <h3>Status lifecycle</h3>
+    <table>
+      <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><span class="chip received">RECEIVED</span></td><td>The grievance has been registered.</td></tr>
+        <tr><td><span class="chip open">OPEN</span></td><td>The grievance is accepted for active handling.</td></tr>
+        <tr><td><span class="chip progress">IN_PROGRESS</span></td><td>Work is actively underway.</td></tr>
+        <tr><td><span class="chip resolved">RESOLVED</span></td><td>A resolution has been recorded.</td></tr>
+        <tr><td><span class="chip closed">CLOSED</span></td><td>Processing is complete and the record is locked.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Reporter types</h3>
+    <table>
+      <thead><tr><th>Reporter type</th><th>When to use</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Individual</strong></td><td>The person exists in the Individual registry.</td></tr>
+        <tr><td><strong>Beneficiary</strong></td><td>The person is enrolled as a beneficiary.</td></tr>
+        <tr><td><strong>Attending Staff</strong></td><td>A system user reports the grievance.</td></tr>
+        <tr><td><strong>None</strong></td><td>The grievance is anonymous or no reporter record is available.</td></tr>
+      </tbody>
+    </table>
+
+    <!-- 3 -->
+    <h2 id="register">3. Register a Grievance</h2>
+    <h3>Before you start</h3>
+    <ul>
+      <li>Confirm whether the grievance already exists.</li>
+      <li>Collect the reporter's consent and only record information required for handling the case.</li>
+      <li>Prepare supporting files. A grievance can have up to <strong>5 attachments</strong>, each no larger than <strong>25&nbsp;MB</strong>.</li>
+      <li>Know the correct category, type, intake channel, and assigned staff member.</li>
+    </ul>
+
+    <h3>Registration procedure</h3>
+    <ol class="steps">
+      <li>Open <strong>Grievance &gt; Add Grievance</strong>.</li>
+      <li>Select the <strong>Reporter Type</strong>. For Individual or Beneficiary, select the matching registry record. For Attending Staff, select the system user. Choose <strong>None</strong> for an anonymous grievance.</li>
+      <li>Select the <strong>Category</strong>. The Type list is restricted to types configured under that category.</li>
+      <li>Select the <strong>Type</strong> and confirm the <strong>Channel</strong> (the reviewed build defaults the channel to <em>Web</em>).</li>
+      <li>Enter the <strong>Date of Incident</strong> when known. Future dates are not permitted.</li>
+      <li>Assign the grievance to the responsible <strong>User</strong> where applicable.</li>
+      <li>Enter a concise but complete <strong>description</strong>. Separate facts, reported allegations, and actions already taken.</li>
+      <li>Select supporting files if needed. Review filenames before saving.</li>
+      <li>Select <strong>Save</strong> and wait for the activity journal to confirm successful creation.</li>
+      <li>Open <strong>Grievances</strong> and search for the generated code to verify the record exists.</li>
+    </ol>
+
+    <figure class="shot">
+      <div class="ph"><span class="cam">📷</span><span class="lbl">Fig. 1 — screenshot to be added</span></div>
+      <figcaption><span class="num">Fig. 1</span> New grievance form. Required Category and Type selections control whether saving is available.</figcaption>
+    </figure>
+
+    <div class="callout note"><strong>Payment-related categories.</strong> When a category name contains
+    <em>Payment</em> or <em>Malipo</em>, the form can require a payment window and payment year — complete both fields before saving.</div>
+
+    <!-- 4 -->
+    <h2 id="search">4. Search, Open, and Review Grievances</h2>
+    <p>Open <strong>Grievance &gt; Grievances</strong>. Use one or more filters, then select <strong>Search</strong>.</p>
+
+    <figure class="shot">
+      <div class="ph"><span class="cam">📷</span><span class="lbl">Fig. 2 — screenshot to be added</span></div>
+      <figcaption><span class="num">Fig. 2</span> Grievance search results filtered by grievance code.</figcaption>
+    </figure>
+
+    <h3>Open a grievance</h3>
+    <ol class="steps">
+      <li>Search using the grievance code or another filter.</li>
+      <li>If you have edit rights, select the <strong>Edit</strong> action in the row.</li>
+      <li>If you are a read-only reviewer, double-click the row to open the details.</li>
+      <li>Check the reporter, category, type, status, assigned user, description, resolution target, attachments, and comments.</li>
+    </ol>
+
+    <figure class="shot">
+      <div class="ph"><span class="cam">📷</span><span class="lbl">Fig. 3 — screenshot to be added</span></div>
+      <figcaption><span class="num">Fig. 3</span> Read-only users can search and open records, but the Edit action is not displayed.</figcaption>
+    </figure>
+
+    <!-- 5 -->
+    <h2 id="update">5. Update Assignment, Status, and Details</h2>
+    <p>A processor with update permission can change the category, type, incident date, status, assigned
+    user, description, and resolution value. Reporter identity, priority, and channel are presented as
+    read-only in the reviewed edit screen.</p>
+    <ol class="steps">
+      <li>Open the grievance from the search list.</li>
+      <li>Review the current information before changing it.</li>
+      <li>Update the assigned <strong>User</strong> when responsibility changes.</li>
+      <li>Set <strong>Status</strong> to <span class="chip open">OPEN</span> or <span class="chip progress">IN_PROGRESS</span> as processing begins.</li>
+      <li>Update the description only to correct or clarify the main account — use comments for the ongoing case log.</li>
+      <li>Select <strong>Save</strong> and confirm success in the activity journal.</li>
+      <li>Search for the grievance again and verify the new status.</li>
+    </ol>
+
+    <figure class="shot">
+      <div class="ph"><span class="cam">📷</span><span class="lbl">Fig. 4 — screenshot to be added</span></div>
+      <figcaption><span class="num">Fig. 4</span> An assigned processor has moved the grievance to In Progress.</figcaption>
+    </figure>
+
+    <div class="callout warn"><strong>Audit discipline.</strong> Do not overwrite the description to hide
+    previous information. Use comments for investigation notes and status explanations; historical
+    versions can be reviewed with <strong>Show History</strong>.</div>
+
+    <!-- 6 -->
+    <h2 id="comments">6. Comments, Attachments, and Printing</h2>
+    <h3>Add a comment</h3>
+    <ol class="steps">
+      <li>Open an active grievance.</li>
+      <li>Scroll to <strong>Comments</strong> and select <strong>Add Comment to a Grievance</strong>.</li>
+      <li>Enter the comment. Add a commenter type and record when required by local procedure.</li>
+      <li>Select <strong>Save</strong> and verify that the comment appears.</li>
+    </ol>
+    <p>Users with comment-create permission can add comments. The currently assigned user can also add a
+    comment to their assigned grievance. Viewing the full comments table requires comment-view permission.</p>
+
+    <figure class="shot">
+      <div class="ph"><span class="cam">📷</span><span class="lbl">Fig. 5 — screenshot to be added</span></div>
+      <figcaption><span class="num">Fig. 5</span> The attachments and comments panels on an active grievance.</figcaption>
+    </figure>
+
+    <h3>Attach additional evidence</h3>
+    <ol class="steps">
+      <li>In the <strong>Attachments</strong> panel, select the upload icon.</li>
+      <li>Choose allowed files. The module rejects files that exceed size, count, or MIME-type limits.</li>
+      <li>Use <strong>Preview</strong> for images, audio, video, or PDF. Use <strong>Download</strong> for any stored attachment.</li>
+    </ol>
+    <div class="callout note"><strong>Existing-ticket uploads</strong> currently require the create/upload
+    right <code>127001</code>. If the upload control is unavailable or the request is denied, contact the system administrator.</div>
+
+    <h3>Attachment rules</h3>
+    <table>
+      <thead><tr><th>Rule</th><th>Supported value</th></tr></thead>
+      <tbody>
+        <tr><td>Maximum files</td><td>5 per grievance</td></tr>
+        <tr><td>Maximum size</td><td>25&nbsp;MB per file</td></tr>
+        <tr><td>Images</td><td>JPEG, PNG, GIF, WebP</td></tr>
+        <tr><td>Audio</td><td>MP3/MPEG, WAV, OGG</td></tr>
+        <tr><td>Video</td><td>MP4, WebM</td></tr>
+        <tr><td>Documents</td><td>PDF, XLS, XLSX</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Printing</h3>
+    <p>Use the print icon in the grievance details to print the grievance. A separate print icon in the
+    comments panel prints the comment history. Verify that confidential information is not exposed before printing.</p>
+
+    <!-- 7 -->
+    <h2 id="resolve">7. Resolve, Close, and Reopen</h2>
+    <h3>Resolve using a comment</h3>
+    <p>A user with comment-view and resolve rights can select the checkmark beside a suitable comment.
+    The selected comment becomes the resolution comment and the tested workflow closes the grievance.</p>
+    <ol class="steps">
+      <li>Add a clear resolution comment that states the decision, action taken, and any follow-up.</li>
+      <li>Select <strong>Resolve Using Comment</strong> beside that comment.</li>
+      <li>Confirm that the grievance reaches its terminal status and becomes read-only.</li>
+    </ol>
+
+    <h3>Close by changing status</h3>
+    <p>Changing status to <span class="chip closed">CLOSED</span> requires both update and resolve rights.
+    The application requires a closing comment before the close operation is submitted.</p>
+    <ol class="steps">
+      <li>Change <strong>Status</strong> to CLOSED.</li>
+      <li>Select <strong>Save</strong>.</li>
+      <li>Enter the required closing comment in the dialog.</li>
+      <li>Select <strong>Close Grievance</strong> and confirm that the record is locked.</li>
+    </ol>
+
+    <figure class="shot">
+      <div class="ph"><span class="cam">📷</span><span class="lbl">Fig. 6 — screenshot to be added</span></div>
+      <figcaption><span class="num">Fig. 6</span> Closed grievance. Editing, attachment upload, and comment creation are disabled.</figcaption>
+    </figure>
+
+    <div class="callout tip"><strong>Reopen.</strong> A processor with update rights can reopen a closed
+    grievance using the unlock action. Reopen only when new evidence, an appeal, or an incomplete action
+    justifies renewed processing — record the reason in a comment.</div>
+
+    <!-- 8 -->
+    <h2 id="history">8. History and Reporting</h2>
+    <h3>Historical versions</h3>
+    <ol class="steps">
+      <li>Open the Grievances search page.</li>
+      <li>Select <strong>Show History</strong> and then <strong>Search</strong>.</li>
+      <li>Open the required version. Historical versions are read-only.</li>
+      <li>Compare the version with the current record and comments.</li>
+    </ol>
+
+    <h3>Reports</h3>
+    <p>The module defines the following reports:</p>
+    <ul>
+      <li>Grievance by Categories</li>
+      <li>PAAs without Grievances</li>
+      <li>Channels Received Grievances</li>
+      <li>Grievance Resolution Status</li>
+      <li>Grievance Closure Timelines</li>
+      <li>Grievance Closure Timelines by PAA</li>
+      <li>Overdue Grievances by PAA</li>
+    </ul>
+    <p>Report filters include report type, date range, assigned agent, and PAA/location. The source
+    supports <strong>CSV, Excel, and PDF</strong> export when results exist.</p>
+
+    <!-- 9 -->
+    <h2 id="troubleshooting">9. Troubleshooting and Good Practice</h2>
+    <table>
+      <thead><tr><th>Symptom</th><th>Likely cause</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td>Grievance menu is missing</td><td>Your role lacks <code>127000</code> or <code>127001</code>.</td><td>Ask an administrator to review your role.</td></tr>
+        <tr><td>Save is disabled</td><td>Required reporter/category/type data is incomplete.</td><td>Complete required fields (and payment fields if shown).</td></tr>
+        <tr><td>Cannot edit</td><td>Record is closed/history, or role lacks <code>127002</code>.</td><td>Confirm status and permission; request the processor rights bundle.</td></tr>
+        <tr><td>Cannot view comments</td><td>Role lacks <code>127005</code>.</td><td>Request comment-view access if required.</td></tr>
+        <tr><td>Cannot resolve or close</td><td>Role lacks <code>127006</code>, or close also lacks <code>127002</code>.</td><td>Confirm status and permission.</td></tr>
+        <tr><td>Attachment rejected</td><td>File count, size, type, or storage configuration issue.</td><td>Check limits; contact the administrator for storage errors.</td></tr>
+        <tr><td>Report page is empty</td><td>Deployment-specific report UI issue.</td><td>Capture the route and filters and contact support.</td></tr>
+        <tr><td>No notification received</td><td>Recipient notifications are not implemented.</td><td>Use operational handoff procedures outside the module.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Data-protection practice</h3>
+    <ul>
+      <li>Use the least amount of personal data needed to process the grievance.</li>
+      <li>Do not place passwords, financial credentials, or unrelated medical details in comments or attachments.</li>
+      <li>Verify the correct individual or beneficiary before saving.</li>
+      <li>Do not export or print grievance data unless authorized.</li>
+      <li>Use anonymous reporter mode when identity is not known or should not be recorded under policy.</li>
+    </ul>
+
+    <!-- 10 -->
+    <h2 id="glossary">10. Glossary and Quick Reference</h2>
+    <table>
+      <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Reporter</strong></td><td>Anonymous person, individual, beneficiary, or attending staff member who raised the grievance.</td></tr>
+        <tr><td><strong>Category</strong></td><td>Broad subject area for a grievance and its service timeline.</td></tr>
+        <tr><td><strong>Type</strong></td><td>Specific grievance classification under a category.</td></tr>
+        <tr><td><strong>Channel</strong></td><td>How the grievance was received, such as Web, App, or USSD.</td></tr>
+        <tr><td><strong>Assigned user / Owner</strong></td><td>Staff member responsible for processing the grievance.</td></tr>
+        <tr><td><strong>Resolution comment</strong></td><td>Comment selected as the formal basis for resolving the grievance.</td></tr>
+        <tr><td><strong>PAA</strong></td><td>Program administrative area, or configured location dimension used in reports.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout note"><strong>Release limitations.</strong> Recipient notifications are not
+    implemented — use operational handoff procedures outside the module. Existing-ticket uploads require
+    right <code>127001</code>. Menus and controls are permission-based; if an action is missing, ask the
+    administrator to review your role.</div>
+
+  </main>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="doc-footer">
+    <div class="brand">
+      <img src="assets/tasaf-logo.png" alt="TASAF" />
+      <span>Tanzania Social Action Fund · Grievance Module End-User Manual · Version 1.0</span>
+    </div>
+    <div><a href="index.html">← Back to documentation hub</a></div>
+  </footer>
+
+</div>
+</body>
+</html>
