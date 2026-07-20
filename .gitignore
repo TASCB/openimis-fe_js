@@ -10,3 +10,9 @@ src/locales.js
 .idea
 yarn.lock
 .env
+
+# Claude Code local config
+.claude/
+
+# Loose doc notes (not part of the served public/docs site)
+public/docs/*.md
