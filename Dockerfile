@@ -32,10 +32,25 @@ FROM dev-stage AS build-stage
 USER node
 ENV GENERATE_SOURCEMAP=true
 ENV NODE_ENV=production
+# Slow/flaky link to npm + the git module repos. Set network resilience as ENV so it
+# applies to EVERY npm invocation below (incl. the npm@11 self-upgrade) — was ETIMEDOUT.
+ENV npm_config_fetch_timeout=1800000
+ENV npm_config_fetch_retries=10
+ENV npm_config_fetch_retry_mintimeout=20000
+ENV npm_config_fetch_retry_maxtimeout=300000
+# git module clones can stall indefinitely; abort a dead clone so the retry loop reacts
+ENV GIT_HTTP_LOW_SPEED_LIMIT=1000
+ENV GIT_HTTP_LOW_SPEED_TIME=60
 RUN npm config set prefix /home/node/.npm-global
-RUN npm install -g npm@latest
+# npm@latest now resolves to npm 12, which requires Node >=22; this image is Node 20,
+# so pin to npm 11 (the latest line compatible with Node 20.17+). Retry on flaky network.
+RUN for i in 1 2 3 4 5; do npm install -g npm@11 && break || { echo "npm@11 attempt $i failed"; sleep 20; }; done
 RUN npm run load-config
-RUN npm install  --include=dev --legacy-peer-deps
+RUN for i in 1 2 3 4 5; do \
+      echo "npm install attempt $i" && \
+      npm install --include=dev --legacy-peer-deps && break || \
+      { echo "attempt $i failed, retrying in 20s"; sleep 20; }; \
+    done
 RUN npm run build
 
 FROM nginx:latest
