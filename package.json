@@ -48,6 +48,7 @@
     "shelljs": "^0.8.4",
     "zxcvbn": "^4.4.2",
     "@openimis/fe-core": "https://github.com/TASCB/openimis-fe-core_js#tz-imf",
+    "@openimis/fe-tasaf_common": "file:../openimis-fe-tasaf_common_js",
     "@openimis/fe-individual": "file:../openimis-fe-individual_js",
     "@openimis/fe-legacy_individual": "https://github.com/tasaf-tz/openimis-fe-legacy_individual_js#main",
     "@openimis/fe-social_protection": "https://github.com/openimis/openimis-fe-social_protection_js#release/25.10",

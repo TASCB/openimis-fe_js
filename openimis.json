@@ -17,6 +17,10 @@
       "npm": "@openimis/fe-core@https://github.com/TASCB/openimis-fe-core_js#tz-imf"
     },
     {
+      "name": "TasafCommonModule",
+      "npm": "@openimis/fe-tasaf_common@file:../openimis-fe-tasaf_common_js"
+    },
+    {
       "name": "IndividualModule",
       "npm": "@openimis/fe-individual@file:../openimis-fe-individual_js"
     },
