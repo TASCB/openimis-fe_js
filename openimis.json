@@ -18,11 +18,11 @@
     },
     {
       "name": "TasafCommonModule",
-      "npm": "@openimis/fe-tasaf_common@file:../openimis-fe-tasaf_common_js"
+      "npm": "@openimis/fe-tasaf_common@https://github.com/TASCB/openimis-fe-tasaf_common_js.git#main"
     },
     {
       "name": "IndividualModule",
-      "npm": "@openimis/fe-individual@file:../openimis-fe-individual_js"
+      "npm": "@openimis/fe-individual@https://github.com/TASCB/openimis-fe-individual_js.git#tz-imf"
     },
     {
       "name": "LegacyIndividualModule",
@@ -126,7 +126,7 @@
     },
     {
       "name": "GrievanceSocialProtectionModule",
-      "npm": "@openimis/fe-grievance_social_protection@file:../openimis-fe-grievance_social_protection_js"
+      "npm": "@openimis/fe-grievance_social_protection@https://github.com/TASCB/openimis-fe-grievance_social_protection_js#tz-changes"
     },
     {
       "name": "LanguageFrModule",
@@ -146,31 +146,31 @@
     },
     {
       "name": "LanguageEnTasafModule",
-      "npm": "@openimis/fe-language_en_tasaf@file:../openimis-fe-language_en_tasaf_js"
+      "npm": "@openimis/fe-language_en_tasaf@https://github.com/TASCB/openimis-fe-language_en_tasaf_js.git#main"
     },
     {
       "name": "TASAFPaymentModule",
-      "npm": "@openimis/fe-tasaf-payment@file:../openimis-fe-tasaf-payment_js"
+      "npm": "@openimis/fe-tasaf-payment@https://github.com/TASCB/openimis-fe-tasaf-payment_js.git#main"
     },
     {
       "name": "TrainingModule",
-      "npm": "@openimis/fe-training@file:../openimis-fe-training_js"
+      "npm": "@openimis/fe-training@https://github.com/TASCB/openimis-fe-training_js.git#tz-imf"
     },
     {
       "name": "CommunicationsModule",
-      "npm": "@openimis/fe-communications@file:../openimis-fe-communications_js"
+      "npm": "@openimis/fe-communications@https://github.com/TASCB/openimis-fe-communications_js.git#tz-imf"
     },
     {
       "name": "CoordinationModule",
-      "npm": "@openimis/fe-coordination@file:../openimis-fe-coordination_js"
+      "npm": "@openimis/fe-coordination@https://github.com/TASCB/openimis-fe-coordination_js.git#tz-imf"
     },
     {
       "name": "AccessRequestModule",
-      "npm": "@openimis/fe-access_request@file:../openimis-fe-access_request_js"
+      "npm": "@openimis/fe-access_request@https://github.com/TASCB/openimis-fe-access_request_js.git#tz-imf"
     },
     {
       "name": "ApprovalModule",
-      "npm": "@openimis/fe-approval@file:../openimis-fe-approval_js"
+      "npm": "@openimis/fe-approval@https://github.com/TASCB/openimis-fe-approval_js.git#tz-imf"
     },
     {
       "name": "ReportModule",
