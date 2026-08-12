@@ -1,12 +1,18 @@
 {
   "locales": [
     {
-      "languages": ["en", "en-GB"],
+      "languages": [
+        "en",
+        "en-GB"
+      ],
       "intl": "en-GB",
       "fileNames": "en"
     },
     {
-      "languages": ["fr", "fr-FR"],
+      "languages": [
+        "fr",
+        "fr-FR"
+      ],
       "intl": "fr-FR",
       "fileNames": "fr"
     }
@@ -171,6 +177,10 @@
     {
       "name": "ApprovalModule",
       "npm": "@openimis/fe-approval@https://github.com/TASCB/openimis-fe-approval_js.git#tz-imf"
+    },
+    {
+      "name": "NotificationsModule",
+      "npm": "@openimis/fe-notifications@https://github.com/TASCB/openimis-fe-notifications_js.git#tz-tst-grd"
     },
     {
       "name": "ReportModule",
