@@ -1,0 +1,850 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>TASAF Mifumo — Systems Directory User Manual</title>
+<link rel="icon" type="image/png" href="assets/tasaf-logo.png" />
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    /* TASAF corporateTeal palette */
+    --tasaf-primary: #00695C;
+    --tasaf-primary-dark: #004D40;
+    --tasaf-primary-light: #4DB6AC;
+    --tasaf-accent: #070707;
+    --tasaf-bg: #F4FAF9;
+    --tasaf-bg-soft: #FFFFFF;
+    --tasaf-header: #D6ECE9;
+    --tasaf-highlight: #E4F2EF;
+    --tasaf-text: #202B2A;
+    --tasaf-muted: #5F6368;
+    --tasaf-white: #FFFFFF;
+    --tasaf-border: #D6ECE9;
+    --tasaf-toggled: #546E7A;
+    --tasaf-row-selected: rgba(0, 105, 92, 0.08);
+    --tasaf-row-hover: rgba(0, 105, 92, 0.12);
+    --tasaf-success: #2E7D32;
+    --tasaf-warning: #ED6C02;
+    --tasaf-shadow: 0 6px 24px rgba(0, 105, 92, 0.12);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Rubik', 'Roboto', 'Helvetica Neue', sans-serif;
+    font-weight: 300;
+    color: var(--tasaf-text);
+    background: var(--tasaf-bg);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  a { color: var(--tasaf-primary); text-decoration: none; border-bottom: 1px dotted var(--tasaf-primary); }
+  a:hover { color: var(--tasaf-accent); border-bottom-style: solid; }
+  code, pre, kbd {
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 0.9em;
+  }
+  code {
+    background: var(--tasaf-highlight);
+    color: var(--tasaf-primary-dark);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+  pre {
+    background: #002B23;
+    color: #E4F2EF;
+    padding: 14px 16px;
+    border-radius: 6px;
+    overflow-x: auto;
+    border-left: 4px solid var(--tasaf-primary);
+  }
+  pre code { background: transparent; color: inherit; padding: 0; }
+
+  /* === Layout shell === */
+  .page-wrap {
+    max-width: 980px;
+    margin: 24px auto 64px;
+    background: var(--tasaf-white);
+    box-shadow: var(--tasaf-shadow);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  /* === Cover (hero) === */
+  .cover {
+    background:
+      radial-gradient(circle at 110% -20%, rgba(255,255,255,0.12) 0, transparent 45%),
+      radial-gradient(circle at -10% 120%, rgba(255,255,255,0.10) 0, transparent 45%),
+      linear-gradient(135deg, var(--tasaf-primary) 0%, var(--tasaf-primary-dark) 100%);
+    color: var(--tasaf-white);
+    padding: 56px 56px 48px;
+    display: flex;
+    gap: 36px;
+    align-items: center;
+    border-bottom: 6px solid var(--tasaf-accent);
+  }
+  .cover-logo {
+    background: var(--tasaf-white);
+    padding: 14px;
+    border-radius: 16px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.18);
+    flex-shrink: 0;
+  }
+  .cover-logo img { display: block; width: 160px; height: auto; }
+  .cover-text h1 {
+    margin: 0 0 8px;
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    line-height: 1.15;
+  }
+  .cover-text h2 {
+    margin: 0 0 18px;
+    font-size: 20px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.86);
+  }
+  .cover-meta {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.16);
+    border: 1px solid rgba(255,255,255,0.28);
+    font-size: 12.5px;
+    font-weight: 400;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+  }
+
+  /* === Subhead bar === */
+  .subhead {
+    background: var(--tasaf-header);
+    color: var(--tasaf-primary-dark);
+    padding: 14px 56px;
+    font-size: 13.5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(0,98,115,0.18);
+  }
+  .subhead strong { font-weight: 500; }
+
+  /* === Main content === */
+  .content { padding: 36px 56px 72px; }
+  .content h2 {
+    color: var(--tasaf-primary);
+    font-weight: 600;
+    font-size: 24px;
+    margin: 40px 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 3px solid var(--tasaf-header);
+    position: relative;
+  }
+  .content h2::before {
+    content: "";
+    position: absolute;
+    left: 0; bottom: -3px;
+    width: 60px;
+    height: 3px;
+    background: var(--tasaf-primary);
+  }
+  .content h2:first-of-type { margin-top: 8px; }
+  .content h3 {
+    color: var(--tasaf-primary-dark);
+    font-weight: 500;
+    font-size: 18px;
+    margin: 26px 0 10px;
+  }
+  .content h4 {
+    color: var(--tasaf-primary);
+    font-weight: 500;
+    font-size: 15.5px;
+    margin: 20px 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .content p { margin: 0 0 12px; }
+  .content ul, .content ol { padding-left: 22px; margin: 0 0 14px; }
+  .content li { margin: 4px 0; }
+
+  /* Lead paragraph after a heading */
+  .lead {
+    font-size: 16px;
+    color: var(--tasaf-muted);
+    margin: 4px 0 18px;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0 22px;
+    background: var(--tasaf-white);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,105,92,0.08);
+  }
+  thead th {
+    background: var(--tasaf-primary);
+    color: var(--tasaf-white);
+    text-align: left;
+    padding: 10px 12px;
+    font-weight: 500;
+    font-size: 13.5px;
+    letter-spacing: 0.2px;
+  }
+  tbody td {
+    padding: 9px 12px;
+    border-top: 1px solid var(--tasaf-border);
+    font-size: 14px;
+    vertical-align: top;
+  }
+  tbody tr:nth-child(even) td { background: var(--tasaf-bg); }
+  tbody tr:hover td { background: var(--tasaf-row-hover); }
+  tbody tr.selected td { background: var(--tasaf-row-selected); }
+
+  /* Callouts */
+  .callout {
+    border-left: 5px solid var(--tasaf-primary);
+    background: var(--tasaf-header);
+    padding: 14px 18px;
+    margin: 18px 0;
+    border-radius: 0 8px 8px 0;
+  }
+  .callout.tip { border-left-color: var(--tasaf-success); background: #E8F5E9; }
+  .callout.warn { border-left-color: var(--tasaf-warning); background: #FFF3E0; }
+  .callout.danger { border-left-color: var(--tasaf-accent); background: #FDECEA; }
+  .callout .label {
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.6px;
+    color: var(--tasaf-primary-dark);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .callout.tip .label { color: var(--tasaf-success); }
+  .callout.warn .label { color: var(--tasaf-warning); }
+  .callout.danger .label { color: var(--tasaf-accent); }
+  .callout p:last-child { margin-bottom: 0; }
+
+  /* Screenshot placeholder (legacy, for any leftover) */
+  .screenshot {
+    border: 2px dashed var(--tasaf-primary);
+    background:
+      repeating-linear-gradient(135deg, transparent 0 12px, rgba(0,105,92,0.04) 12px 24px),
+      var(--tasaf-bg);
+    color: var(--tasaf-primary);
+    text-align: center;
+    padding: 26px 16px;
+    border-radius: 8px;
+    margin: 14px 0 22px;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: 0.2px;
+  }
+  .screenshot::before {
+    content: "📷  ";
+    font-style: normal;
+  }
+
+  /* Real figures with screenshots */
+  figure.shot {
+    margin: 18px 0 26px;
+    background: var(--tasaf-white);
+    border: 1px solid var(--tasaf-border);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(0, 105, 92, 0.10);
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  figure.shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-bottom: 1px solid var(--tasaf-border);
+    background: var(--tasaf-bg);
+  }
+  figure.shot figcaption {
+    padding: 10px 16px;
+    background: var(--tasaf-header);
+    color: var(--tasaf-primary-dark);
+    font-size: 13px;
+    font-weight: 400;
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+  }
+  figure.shot figcaption .num {
+    display: inline-block;
+    background: var(--tasaf-primary);
+    color: var(--tasaf-white);
+    padding: 2px 9px;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 11.5px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+  figure.shot.compact img { max-width: 720px; margin: 0 auto; border-bottom: none; }
+  figure.shot.compact { background: var(--tasaf-bg); }
+  figure.shot.compact figcaption { border-top: 1px solid var(--tasaf-border); }
+
+  /* Step procedure */
+  ol.steps {
+    counter-reset: step;
+    list-style: none;
+    padding-left: 0;
+  }
+  ol.steps > li {
+    counter-increment: step;
+    position: relative;
+    padding: 6px 0 6px 44px;
+    margin: 6px 0;
+  }
+  ol.steps > li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0; top: 6px;
+    width: 30px; height: 30px;
+    background: var(--tasaf-primary);
+    color: var(--tasaf-white);
+    border-radius: 50%;
+    text-align: center;
+    line-height: 30px;
+    font-weight: 500;
+    font-size: 14px;
+  }
+
+  /* Mini cards (menu items list) */
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px;
+    margin: 14px 0 22px;
+  }
+  .menu-card {
+    background: var(--tasaf-white);
+    border: 1px solid var(--tasaf-border);
+    border-left: 4px solid var(--tasaf-primary);
+    border-radius: 6px;
+    padding: 12px 14px;
+    box-shadow: 0 1px 3px rgba(0,105,92,0.08);
+  }
+  .menu-card .name { font-weight: 500; color: var(--tasaf-primary-dark); display: block; }
+  .menu-card .perm { font-size: 12px; color: var(--tasaf-muted); display: block; margin-top: 4px; }
+
+  /* TOC */
+  .toc {
+    background: var(--tasaf-header);
+    border-radius: 8px;
+    padding: 18px 24px;
+    margin: 0 0 28px;
+    border-left: 5px solid var(--tasaf-primary);
+  }
+  .toc h3 {
+    margin-top: 0;
+    color: var(--tasaf-primary);
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .toc ol {
+    columns: 2;
+    column-gap: 32px;
+    padding-left: 18px;
+    margin: 0;
+  }
+  .toc li { margin: 3px 0; break-inside: avoid; }
+  .toc a { border-bottom: none; }
+
+  /* Status chips */
+  .chip {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+  }
+  .chip.running { background: #E3F2FD; color: #0D47A1; }
+  .chip.completed { background: #E8F5E9; color: var(--tasaf-success); }
+  .chip.failed { background: #FDECEA; color: var(--tasaf-accent); }
+  .chip.cancelled { background: #ECEFF1; color: var(--tasaf-toggled); }
+  .chip.poor { background: #FDECEA; color: var(--tasaf-accent); }
+  .chip.nonpoor { background: #E8F5E9; color: var(--tasaf-success); }
+  .chip.pending { background: #FFF3E0; color: var(--tasaf-warning); }
+
+  /* Footer */
+  .doc-footer {
+    background: var(--tasaf-primary-dark);
+    color: rgba(255,255,255,0.9);
+    padding: 28px 56px;
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .doc-footer .brand { display: flex; align-items: center; gap: 12px; }
+  .doc-footer img { width: 36px; height: 36px; background: white; padding: 4px; border-radius: 8px; }
+  .doc-footer a { color: #cbedf2; border-bottom: none; }
+
+  /* Print */
+  @media print {
+    body { background: white; font-size: 12pt; }
+    .page-wrap { box-shadow: none; margin: 0; border-radius: 0; }
+    .cover { padding: 28px 32px; }
+    .content { padding: 24px 32px; }
+    .subhead, .doc-footer { padding: 12px 32px; }
+    a { color: inherit; border-bottom: none; }
+    h2 { break-after: avoid; }
+    table, .callout, .screenshot, figure.shot { break-inside: avoid; }
+    figure.shot { box-shadow: none; border-color: #cfd8d6; }
+    figure.shot img { max-height: 9.5in; object-fit: contain; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- ========== COVER ========== -->
+  <header class="cover">
+    <div class="cover-logo">
+      <img src="assets/tasaf-logo.png" alt="TASAF — Tanzania Social Action Fund" />
+    </div>
+    <div class="cover-text">
+      <h1>TASAF Mifumo</h1>
+      <h2>Systems Directory — End-User Manual</h2>
+      <div class="cover-meta">
+        <span class="badge">Tanzania Social Action Fund</span>
+        <span class="badge">Mfuko wa Maendeleo ya Jamii</span>
+        <span class="badge">Version 1.0</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="subhead">
+    <span><strong>Audience:</strong> All TASAF staff · ICT Unit administrators</span>
+    <span><strong>Document:</strong> docs/mifumo/user-manual.html</span>
+  </div>
+
+  <main class="content">
+
+    <!-- TOC -->
+    <nav class="toc">
+      <h3>Contents</h3>
+      <ol>
+        <li><a href="#intro">Introduction</a></li>
+        <li><a href="#directory">The public directory</a></li>
+        <li><a href="#finding">Finding and opening a system</a></li>
+        <li><a href="#statuses">Status badges and what they mean</a></li>
+        <li><a href="#internal">The internal directory</a></li>
+        <li><a href="#install">Installing Mifumo as an app</a></li>
+        <li><a href="#login">Signing in</a></li>
+        <li><a href="#systems">Managing systems</a></li>
+        <li><a href="#categories">Managing categories</a></li>
+        <li><a href="#launchlog">The launch log</a></li>
+        <li><a href="#problems">Common problems</a></li>
+      </ol>
+    </nav>
+
+    <!-- 1 -->
+    <section id="intro">
+      <h2>1. Introduction</h2>
+      <p class="lead">
+        TASAF Mifumo is the directory of TASAF systems. It answers one question —
+        <em>where is the system I need, and is it working?</em> — and then opens it.
+      </p>
+      <p>Before Mifumo, the addresses of TASAF systems lived in bookmarks, emails and chat messages,
+        and there was no way to tell a system that was down from one whose address had changed.
+        Mifumo keeps one catalogue, checks the recorded addresses on a schedule, and shows the result
+        on every row.</p>
+      <p>From Mifumo you can:</p>
+      <ul>
+        <li>Search every TASAF system by name, description or address.</li>
+        <li>See whether a system answered the last check before you try to open it.</li>
+        <li>Open a system in a new tab, and return to the ones you use most from the "Recent" row.</li>
+        <li>Reach the administration consoles the ICT Unit runs, on a separate signed-in page.</li>
+        <li>Install the directory as an app on a computer or phone.</li>
+      </ul>
+      <div class="callout">
+        <span class="label">Out of scope</span>
+        <p>Mifumo holds no beneficiary, payment or programme data, and it does not sign anyone in to the
+          systems it lists. Every system keeps its own login; Mifumo only points at it.</p>
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section id="directory">
+      <h2>2. The public directory</h2>
+      <p>Open a web browser and type the address of TASAF Mifumo. The directory is displayed. No login
+        is asked for, and nothing on the page identifies you.</p>
+
+      <figure class="shot">
+        <img src="assets/public_directory.png" alt="The TASAF Mifumo public directory" />
+        <figcaption><span class="num">Fig. 2.1</span> The public directory — categories on the left, systems as cards grouped by category, and the search box with the online summary above them.</figcaption>
+      </figure>
+
+      <p>The panel on the left lists the categories and how many systems each holds. The cards on the
+        right are the systems themselves, grouped under their category heading. Each card carries the
+        system's short name, its address, a one-line description, a status badge, and how the system is
+        reached.</p>
+    </section>
+
+    <!-- 3 -->
+    <section id="finding">
+      <h2>3. Finding and opening a system</h2>
+
+      <h3>Opening a system</h3>
+      <p>Click <strong>Open system</strong> on the card, or click anywhere on the card. The system opens
+        in a new browser tab and Mifumo stays where it is. The action at the foot of the card changes
+        with the state of the system:</p>
+      <table>
+        <thead>
+          <tr><th>Action</th><th>Meaning</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Open system</strong></td><td>The system has an address and answered the last check.</td></tr>
+          <tr><td><strong>Open anyway</strong></td><td>The system did not answer the last check. The link still works — a check can fail for reasons that do not affect you, most often because it ran from outside the TASAF network.</td></tr>
+          <tr><td><strong>Request access</strong></td><td>Access is granted per user and there is no address to open. The action starts an email to the ICT Unit instead.</td></tr>
+        </tbody>
+      </table>
+      <p>A system with no address on record is shown greyed, marked <em>Address not yet recorded</em>, and
+        cannot be opened.</p>
+
+      <h3>Searching</h3>
+      <p>Type in the search box at the top of the page. The list narrows as you type, matching the short
+        name, the full name, the description, the category and the address. Searching runs inside your
+        browser, so it responds immediately and sends nothing to the server.</p>
+
+      <h4>Keyboard</h4>
+      <table>
+        <thead>
+          <tr><th>Key</th><th>Does</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>Ctrl</code> + <code>K</code></td><td>Jump to the search box from anywhere on the page (<code>⌘</code> + <code>K</code> on macOS).</td></tr>
+          <tr><td><code>↑</code> / <code>↓</code></td><td>Move the highlight through the matching systems.</td></tr>
+          <tr><td><code>Enter</code></td><td>Open the highlighted system.</td></tr>
+          <tr><td><code>Esc</code></td><td>Clear the search and the category filter.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Filtering by category</h3>
+      <p>Click a category in the left panel to show only its systems, and <strong>All systems</strong> to
+        go back. Only categories that hold a visible system appear in the panel.</p>
+
+      <h3>Recently opened</h3>
+      <p>The systems you opened most recently appear as chips under the search box, so the system you use
+        every morning is one click away. This list is kept in your own browser and never reaches the
+        server; the public and internal directories keep separate lists. On a first visit the row is not
+        shown at all.</p>
+    </section>
+
+    <!-- 4 -->
+    <section id="statuses">
+      <h2>4. Status badges and what they mean</h2>
+      <p>Every card carries a badge in words as well as colour, so the state is readable without relying
+        on colour alone.</p>
+      <table>
+        <thead>
+          <tr><th>Badge</th><th>Meaning</th><th>What to do</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>ONLINE</strong></td><td>The system answered the last check.</td><td>Open it.</td></tr>
+          <tr><td><strong>SIGN-IN REQUIRED</strong></td><td>The system answered but refused anonymous access — what a portal behind a login does.</td><td>Open it; you will land on its login page.</td></tr>
+          <tr><td><strong>UNREACHABLE</strong></td><td>Nothing answered at the recorded address.</td><td>Read the address line for the reason, then see §11.</td></tr>
+          <tr><td><strong>RESTRICTED</strong></td><td>Access is granted per user by the ICT Unit; there is no address to open.</td><td>Use <strong>Request access</strong>.</td></tr>
+          <tr><td><strong>NOT CHECKED</strong></td><td>No check has run yet, or the system has no address on record.</td><td>Nothing — an administrator adds the address.</td></tr>
+        </tbody>
+      </table>
+
+      <p>When a check fails, the card's address line says what went wrong:</p>
+      <table>
+        <thead>
+          <tr><th>Reason shown</th><th>What it means</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><em>address not found</em></td><td>The hostname does not resolve. The recorded address is wrong, or DNS does not know it.</td></tr>
+          <tr><td><em>timed out</em></td><td>Nothing answered in time. Usually the network path or the VPN.</td></tr>
+          <tr><td><em>connection refused</em></td><td>The host is there and refused the connection. Usually the port.</td></tr>
+          <tr><td><em>certificate error</em></td><td>The HTTPS certificate could not be negotiated.</td></tr>
+          <tr><td><em>server error</em></td><td>The system answered with an error of its own.</td></tr>
+        </tbody>
+      </table>
+
+      <p>Above the cards, a summary line reports how many of the checked systems are online and how long
+        ago the last check ran.</p>
+
+      <div class="callout warn">
+        <span class="label">Systems on 192.168.x addresses</span>
+        <p>Several TASAF systems live on internal addresses and can only be reached from inside the TASAF
+          network or over the corporate VPN. Seen from outside, they are reported as unreachable even when
+          they are perfectly healthy. Such a system shows <em>Unreachable — check VPN</em> rather than a bare
+          failure. Connect to the VPN and try again before reporting an outage.</p>
+      </div>
+    </section>
+
+    <!-- 5 -->
+    <section id="internal">
+      <h2>5. The internal directory</h2>
+      <p>The internal directory lists what the ICT Unit administers rather than what staff work in:
+        consoles, servers, storage and the other services that keep the estate running. It is the same
+        page as the public directory, reading the same catalogue, with the same search, categories and
+        status badges.</p>
+      <p>It is reached at <code>/internal</code>, or from <strong>Internal directory</strong> in the
+        administration panel, and is served only to a signed-in administrator or editor. A visitor who is
+        not signed in is sent to the login page.</p>
+
+      <figure class="shot">
+        <img src="assets/internal_directory.png" alt="The internal directory" />
+        <figcaption><span class="num">Fig. 5.1</span> The internal directory — the word INTERNAL under the logo is what distinguishes it from the public page, which is otherwise identical.</figcaption>
+      </figure>
+
+      <div class="callout tip">
+        <span class="label">Directory is not access type</span>
+        <p><strong>Show in</strong> decides <em>which page lists a system</em>. <strong>Access type</strong>
+          records <em>how the system is reached</em> once opened. A public system can require the VPN, and an
+          internal console can be reachable without it.</p>
+      </div>
+    </section>
+
+    <!-- 6 -->
+    <section id="install">
+      <h2>6. Installing Mifumo as an app</h2>
+      <p>Mifumo can be installed on a computer or a phone so that it opens from the desktop or home
+        screen in its own window, without the browser's address bar.</p>
+      <ol class="steps">
+        <li><strong>Chrome or Edge on a computer:</strong> open the directory, click the install icon at the right of the address bar, and confirm.</li>
+        <li><strong>Safari on a Mac:</strong> choose <strong>File → Add to Dock</strong>.</li>
+        <li><strong>Chrome on Android:</strong> open the menu and choose <strong>Install app</strong> or <strong>Add to Home screen</strong>.</li>
+        <li><strong>Safari on iOS:</strong> use the share button and choose <strong>Add to Home Screen</strong>.</li>
+      </ol>
+      <p>Mifumo is a directory of other systems, so it is of limited use with no network. The installed
+        app keeps only its own design files and a short offline notice: the directory itself is always
+        fetched fresh, because it carries a sign-in state and a list that changes. Opened with no
+        connection, the app says it is offline rather than showing an out-of-date list.</p>
+      <div class="callout warn">
+        <span class="label">Install needs HTTPS</span>
+        <p>Browsers only offer to install a site served over HTTPS. If the install option never appears,
+          check that Mifumo is being reached over <code>https://</code> and not plain <code>http://</code>.</p>
+      </div>
+    </section>
+
+    <!-- 7 -->
+    <section id="login">
+      <h2>7. Signing in</h2>
+      <p>Browsing the directory needs no account. Signing in is for the people who maintain the catalogue
+        and for the internal directory. There is no public registration — an administrator creates every
+        account.</p>
+      <ol class="steps">
+        <li>Go to <code>/login</code>, or click <strong>Sign in</strong> at the foot of the directory's left panel.</li>
+        <li>Enter the email address and password of your account.</li>
+        <li>Click <strong>Log in</strong>. Tick <strong>Remember me</strong> only on a computer that is yours.</li>
+      </ol>
+
+      <figure class="shot compact">
+        <img src="assets/login.png" alt="The Mifumo sign-in page" />
+        <figcaption><span class="num">Fig. 7.1</span> The sign-in page. The eye button at the right of the password field shows what you have typed, for checking a password before submitting it.</figcaption>
+      </figure>
+
+      <div class="callout warn">
+        <span class="label">Locked out</span>
+        <p>Five failed attempts in a minute lock the account briefly. The page then says how many seconds
+          remain. Wait, then try again — the count clears on its own.</p>
+      </div>
+
+      <h3>Forgotten password</h3>
+      <p>Click <strong>Forgot your password?</strong> on the sign-in page, enter the email address of your
+        account, and click <strong>Email password reset link</strong>. A link arrives by email; opening it
+        leads to a page for choosing a new password. The link can be used once.</p>
+
+      <figure class="shot compact">
+        <img src="assets/forgotten_password.png" alt="Requesting a password reset link" />
+        <figcaption><span class="num">Fig. 7.2</span> Requesting a reset link. The page reports that a link has been sent whether or not the address belongs to an account, so nobody can use it to discover which addresses have accounts.</figcaption>
+      </figure>
+
+      <h3>The dashboard</h3>
+      <p>A successful sign-in opens the administration dashboard.</p>
+
+      <figure class="shot">
+        <img src="assets/dashboard.png" alt="The administration dashboard" />
+        <figcaption><span class="num">Fig. 7.3</span> The dashboard counts the catalogue — listed, online, down, restricted, and without an address — then lists the systems needing attention grouped by what went wrong, with the systems opened most often this month beside them.</figcaption>
+      </figure>
+
+      <h4>Roles</h4>
+      <table>
+        <thead>
+          <tr><th>Role</th><th>Can do</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Administrator</strong></td><td>Systems, categories, the launch log, and user accounts.</td></tr>
+          <tr><td><strong>Editor</strong></td><td>Systems and categories. Cannot manage user accounts.</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Log out</strong> sits at the foot of the left panel and in the account menu at the top right.</p>
+    </section>
+
+    <!-- 8 -->
+    <section id="systems">
+      <h2>8. Managing systems</h2>
+      <p>Open <strong>Systems</strong> in the left panel. The table lists everything both directories
+        carry, including systems that are hidden from their directory.</p>
+
+      <figure class="shot">
+        <img src="assets/systems_index.png" alt="The systems list in the administration panel" />
+        <figcaption><span class="num">Fig. 8.1</span> The systems list, with filters for search, category, status, access type and directory above it.</figcaption>
+      </figure>
+
+      <h3>Adding or editing a system</h3>
+      <p>Click <strong>Add system</strong>, or the name of an existing system.</p>
+
+      <figure class="shot">
+        <img src="assets/system_form.png" alt="The system form" />
+        <figcaption><span class="num">Fig. 8.2</span> The system form. Details on the left, and the settings that decide who sees the row on the right.</figcaption>
+      </figure>
+
+      <table>
+        <thead>
+          <tr><th>Field</th><th>What to put in it</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Short name</strong></td><td>The name shown on the directory card, e.g. <em>TASAF MIS</em>.</td></tr>
+          <tr><td><strong>Full name</strong></td><td>The formal name of the system.</td></tr>
+          <tr><td><strong>Slug</strong></td><td>Leave blank to generate it from the short name. Seeding matches on this, so avoid changing it once set.</td></tr>
+          <tr><td><strong>Description</strong></td><td>One line, under 45 characters, so every directory row stays one line tall. The form counts as you type.</td></tr>
+          <tr><td><strong>Address</strong></td><td>A full URL (<code>https://example.go.tz/</code>) or a bare host or IP (<code>192.168.0.158</code>). Never put a colon and port here.</td></tr>
+          <tr><td><strong>Port</strong></td><td>Only when the system answers on a non-standard port.</td></tr>
+          <tr><td><strong>Logo</strong></td><td>PNG, SVG or JPG up to 512 KB. Without one, the card shows a monogram built from the short name.</td></tr>
+          <tr><td><strong>Notes</strong></td><td>For administrators only. Never shown on either directory page.</td></tr>
+          <tr><td><strong>Show in</strong></td><td><strong>Public directory</strong> for a system staff work in; <strong>Internal directory</strong> for a console the ICT Unit administers.</td></tr>
+          <tr><td><strong>Category</strong></td><td>The group the card sits under on the directory.</td></tr>
+          <tr><td><strong>Access type</strong></td><td><strong>Public</strong> or <strong>VPN</strong> — shown as a chip on the card.</td></tr>
+          <tr><td><strong>Status</strong></td><td><strong>Available</strong> (has an address and should work), <strong>Restricted</strong> (access granted per user, no address), or <strong>Pending</strong> (no address on record yet).</td></tr>
+          <tr><td><strong>Sort order</strong></td><td>Lower numbers come first within a category.</td></tr>
+          <tr><td><strong>Active</strong></td><td>Untick to hide the system from its directory without deleting it. It stays in this list.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Testing the connection</h3>
+      <p>An existing system's form carries a <strong>Test connection</strong> panel. <strong>Test now</strong>
+        runs the same check the scheduler runs and reports the result immediately, which is the quickest way
+        to confirm a corrected address.</p>
+      <div class="callout tip">
+        <span class="label">The test runs from the server</span>
+        <p>Not from your browser. A VPN system will only answer if the server hosting Mifumo is itself inside
+          the TASAF network.</p>
+      </div>
+    </section>
+
+    <!-- 9 -->
+    <section id="categories">
+      <h2>9. Managing categories</h2>
+      <p>Categories are the headings systems are grouped under, on both directories and in the left panel.</p>
+
+      <figure class="shot">
+        <img src="assets/categories.png" alt="The categories list" />
+        <figcaption><span class="num">Fig. 9.1</span> Categories, with the number of systems in each.</figcaption>
+      </figure>
+
+      <p>A category carries a name, an optional description, a sort order and an active toggle. Deleting a
+        category that still holds systems is refused; move them to another category first.</p>
+      <div class="callout warn">
+        <span class="label">Deactivating a category hides its systems</span>
+        <p>An inactive category is removed from the directory along with every system inside it, even systems
+          that are themselves active. Deactivate a category only when you intend its whole group to disappear
+          from the directory.</p>
+      </div>
+    </section>
+
+    <!-- 10 -->
+    <section id="launchlog">
+      <h2>10. The launch log</h2>
+      <p>The launch log records every click-through from the directory, so the ICT Unit can see which
+        systems are actually used.</p>
+
+      <figure class="shot">
+        <img src="assets/launch_log.png" alt="The launch log" />
+        <figcaption><span class="num">Fig. 10.1</span> The launch log — a bar chart of this month's launches by system, then the individual click-throughs, filterable by system and date range.</figcaption>
+      </figure>
+
+      <div class="callout">
+        <span class="label">Anonymous by design</span>
+        <p>No account, session or name is recorded — only the system, the time, the IP address and the browser
+          agent string. The log cannot say <em>who</em> opened a system, and is not intended to.</p>
+      </div>
+    </section>
+
+    <!-- 11 -->
+    <section id="problems">
+      <h2>11. Common problems</h2>
+      <table>
+        <thead>
+          <tr><th>What you see</th><th>What it usually is</th><th>What to do</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>A system you know is running shows <strong>UNREACHABLE — check VPN</strong>.</td>
+            <td>The check ran from outside the TASAF network.</td>
+            <td>Connect to the VPN. If the card still says so from inside the network, tell the ICT Unit.</td>
+          </tr>
+          <tr>
+            <td><em>address not found</em> on a system that used to work.</td>
+            <td>The hostname no longer resolves, or the address was recorded wrongly.</td>
+            <td>An administrator should open the system and use <strong>Test connection</strong> after correcting the address.</td>
+          </tr>
+          <tr>
+            <td>A system is missing from the directory.</td>
+            <td>It is inactive, its category is inactive, or it is on the other directory.</td>
+            <td>Check the systems list in the administration panel — hidden systems still appear there.</td>
+          </tr>
+          <tr>
+            <td>Every system shows <strong>NOT CHECKED</strong>.</td>
+            <td>Status checking is switched off, or the scheduler is not running on the server.</td>
+            <td>An administrator should check <code>STATUS_CHECK_ENABLED</code> and the scheduler on the host.</td>
+          </tr>
+          <tr>
+            <td>The install option never appears in the browser.</td>
+            <td>Mifumo is being served over plain HTTP.</td>
+            <td>Reach it over <code>https://</code>.</td>
+          </tr>
+          <tr>
+            <td><em>Too many login attempts.</em></td>
+            <td>Five failed sign-ins in a minute.</td>
+            <td>Wait the number of seconds shown, then try again, or use <strong>Forgot your password?</strong>.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <footer class="doc-footer">
+    <div class="brand">
+      <img src="assets/tasaf-logo.png" alt="TASAF logo" />
+      <div>
+        <strong>TASAF Mifumo · Systems Directory</strong><br/>
+        Tanzania Social Action Fund · Mfuko wa Maendeleo ya Jamii
+      </div>
+    </div>
+    <div>
+      © Tanzania Social Action Fund · Version 1.0 · <a href="index.md">Mifumo docs</a>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>
