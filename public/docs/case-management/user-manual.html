@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>TASAF MIS — Case Management Module User Manual</title>
+<link rel="icon" type="image/png" href="../assets/tasaf-logo.png" />
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    /* TASAF corporateTeal palette (matches the main app) */
+    --tasaf-primary: #00695C;
+    --tasaf-primary-dark: #004D40;
+    --tasaf-primary-light: #4DB6AC;
+    --tasaf-accent: #B83232;
+    --tasaf-bg: #F4FAF9;
+    --tasaf-header: #D6ECE9;
+    --tasaf-highlight: #E4F2EF;
+    --tasaf-text: #202B2A;
+    --tasaf-muted: #5F6368;
+    --tasaf-white: #FFFFFF;
+    --tasaf-border: #D6ECE9;
+    --tasaf-toggled: #546E7A;
+    --tasaf-success: #2E7D32;
+    --tasaf-warning: #ED6C02;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: 'Rubik', 'Roboto', 'Helvetica Neue', sans-serif;
+    font-weight: 300; color: var(--tasaf-text); background: var(--tasaf-bg);
+    line-height: 1.65; font-size: 15px;
+  }
+  img, svg { max-width: 100%; }
+  a { color: var(--tasaf-primary); text-decoration: none; border-bottom: 1px dotted var(--tasaf-primary); }
+  a:hover { color: var(--tasaf-accent); border-bottom-style: solid; }
+  code, kbd { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 0.9em;
+    background: var(--tasaf-highlight); color: var(--tasaf-primary-dark); padding: 1px 6px; border-radius: 4px; }
+
+  .page-wrap { max-width: 1180px; margin: 24px auto; background: var(--tasaf-white);
+    box-shadow: 0 8px 40px rgba(0,105,92,0.12); border-radius: 14px; overflow: hidden; }
+
+  /* Cover */
+  .cover { background: linear-gradient(135deg, #00695C 0%, #004F45 100%); color: #fff;
+    padding: 40px 56px; display: flex; align-items: center; gap: 28px; }
+  .cover-logo img { width: 76px; height: 76px; background: #fff; padding: 8px; border-radius: 14px; }
+  .cover-text h1 { margin: 0; font-size: 30px; font-weight: 600; letter-spacing: 0.2px; }
+  .cover-text h2 { margin: 4px 0 12px; font-size: 16px; font-weight: 400; color: var(--tasaf-header); }
+  .cover-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+  .badge { background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.25);
+    padding: 3px 11px; border-radius: 999px; font-size: 12px; }
+
+  .subhead { background: var(--tasaf-header); color: var(--tasaf-primary-dark);
+    padding: 12px 56px; font-size: 13px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+  .content { padding: 36px 56px 48px; }
+  h2 { color: var(--tasaf-primary); font-size: 22px; font-weight: 600; margin: 40px 0 12px;
+    padding-bottom: 8px; border-bottom: 2px solid var(--tasaf-header); }
+  h2:first-of-type { margin-top: 8px; }
+  h3 { color: var(--tasaf-primary-dark); font-size: 16.5px; font-weight: 600; margin: 24px 0 8px; }
+  p { margin: 10px 0; }
+  ul, ol { margin: 10px 0; padding-left: 22px; }
+  li { margin: 5px 0; }
+
+  /* TOC */
+  .toc { background: var(--tasaf-header); border-radius: 8px; padding: 18px 24px; margin: 0 0 24px;
+    border-left: 5px solid var(--tasaf-primary); }
+  .toc h3 { margin: 0 0 8px; color: var(--tasaf-primary); font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .toc ol { columns: 2; column-gap: 32px; padding-left: 18px; margin: 0; }
+  .toc li { margin: 3px 0; break-inside: avoid; }
+  .toc a { border-bottom: none; }
+
+  /* Step procedures */
+  ol.steps { counter-reset: step; list-style: none; padding-left: 0; }
+  ol.steps > li { counter-increment: step; position: relative; padding: 5px 0 5px 42px; margin: 5px 0; }
+  ol.steps > li::before { content: counter(step); position: absolute; left: 0; top: 4px;
+    width: 28px; height: 28px; background: var(--tasaf-primary); color: #fff; border-radius: 50%;
+    text-align: center; line-height: 28px; font-weight: 500; font-size: 13px; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 24px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 14px; border: 1px solid var(--tasaf-border); vertical-align: top; }
+  th { background: var(--tasaf-primary); color: #fff; font-weight: 500; }
+  tbody tr:nth-child(even) { background: var(--tasaf-bg); }
+  td code { white-space: nowrap; }
+
+  /* Callouts */
+  .callout { border-radius: 8px; padding: 14px 18px; margin: 16px 0; border-left: 5px solid; font-size: 14px; }
+  .callout.note { background: var(--tasaf-highlight); border-color: var(--tasaf-primary); }
+  .callout.warn { background: #FDF0D4; border-color: var(--tasaf-warning); }
+  .callout.tip { background: #E8F5E9; border-color: var(--tasaf-success); }
+  .callout strong { color: var(--tasaf-primary-dark); }
+
+  /* Status / reporter chips */
+  .chip { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 500; }
+  .chip.received { background: #ECEFF1; color: var(--tasaf-toggled); }
+  .chip.open { background: #E3F2FD; color: #0D47A1; }
+  .chip.progress { background: #FFF3E0; color: var(--tasaf-warning); }
+  .chip.resolved { background: #E8F5E9; color: var(--tasaf-success); }
+  .chip.closed { background: #FDECEA; color: var(--tasaf-accent); }
+
+  /* Figure / screenshot placeholders (replace the .ph div with <img> when screenshots are ready) */
+  figure.shot { margin: 18px 0 26px; background: var(--tasaf-white); border: 1px solid var(--tasaf-border);
+    border-radius: 10px; overflow: hidden; box-shadow: 0 4px 14px rgba(0,105,92,0.10); }
+  figure.shot img { display: block; max-width: 100%; height: auto; margin: 0 auto; border-bottom: 1px solid var(--tasaf-border); }
+  figure.shot a { border-bottom: none; }
+  figure.shot .ph { display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 220px; gap: 6px; text-align: center; color: var(--tasaf-primary);
+    background: repeating-linear-gradient(135deg, transparent 0 14px, rgba(0,105,92,0.045) 14px 28px), var(--tasaf-bg);
+    border-bottom: 1px dashed var(--tasaf-primary-light); font-style: italic; }
+  figure.shot .ph .cam { font-size: 30px; font-style: normal; }
+  figure.shot .ph .lbl { font-size: 13px; letter-spacing: 0.3px; }
+  figure.shot figcaption { padding: 10px 16px; background: var(--tasaf-header); color: var(--tasaf-primary-dark);
+    font-size: 13px; display: flex; gap: 10px; align-items: baseline; }
+  figure.shot figcaption .num { display: inline-block; background: var(--tasaf-primary); color: #fff;
+    padding: 2px 9px; border-radius: 4px; font-weight: 500; font-size: 11.5px; letter-spacing: 0.4px;
+    text-transform: uppercase; flex-shrink: 0; }
+
+  /* Footer */
+  .doc-footer { background: var(--tasaf-primary-dark); color: rgba(255,255,255,0.9); padding: 26px 56px;
+    font-size: 13px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .doc-footer .brand { display: flex; align-items: center; gap: 12px; }
+  .doc-footer img { width: 36px; height: 36px; background: #fff; padding: 4px; border-radius: 8px; }
+  .doc-footer a { color: #cbedf2; border-bottom: none; }
+
+  @media (max-width: 700px) {
+    .cover, .subhead, .content, .doc-footer { padding-left: 22px; padding-right: 22px; }
+    .toc ol { columns: 1; }
+    .cover { flex-direction: column; text-align: center; }
+  }
+  @media print {
+    body { background: #fff; } .page-wrap { box-shadow: none; margin: 0; border-radius: 0; }
+    a { color: inherit; border-bottom: none; } table, .callout, figure.shot { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <header class="cover">
+    <div class="cover-logo"><img src="../assets/tasaf-logo.png" alt="TASAF — Tanzania Social Action Fund" /></div>
+    <div class="cover-text">
+      <h1>Case Management Module</h1>
+      <h2>TASAF MIS — Operational End-User Manual</h2>
+      <div class="cover-meta">
+        <span class="badge">Tanzania Social Action Fund</span>
+        <span class="badge">Mfuko wa Maendeleo ya Jamii</span>
+        <span class="badge">Version 1.0 · 22 October 2026</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="subhead">
+    <span><strong>Audience:</strong> Field and district officers · grievance officers · approvers · supervisors</span>
+    <span><strong>Module:</strong> <code>openimis-be-case_management_py</code></span>
+  </div>
+
+  <main class="content">
+    <p><strong>Daily procedures for household casework: correcting payment details, deactivating and
+    reactivating households and members, tracking follow-ups and deciding pending updates.</strong>
+    Case Management keeps <em>why</em> a household's record changed and <em>who approved it</em>. The
+    household, its members and its payment account stay in the Registry and Payment modules; every
+    change is made through the same rules from the web and the mobile app.</p>
+
+    <nav class="toc">
+      <h3>Contents</h3>
+      <ol>
+        <li><a href="#purpose">Purpose, roles &amp; access</a></li>
+        <li><a href="#navigation">Where Case Management appears</a></li>
+        <li><a href="#dashboard">Dashboard</a></li>
+        <li><a href="#payment">Change payment details or contact phone</a></li>
+        <li><a href="#corrections">Account Corrections</a></li>
+        <li><a href="#deactivation">Deactivate and reactivate</a></li>
+        <li><a href="#followups">Follow-ups</a></li>
+        <li><a href="#pending">Pending updates (approvals)</a></li>
+        <li><a href="#reference">Reasons and statuses</a></li>
+        <li><a href="#troubleshooting">Troubleshooting &amp; good practice</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="purpose">1. Purpose, Roles, and Access</h2>
+    <p>A household changes over time: its mobile-money number goes wrong, a member dies, the family moves,
+    a payment fails verification. Case Management lets staff record those changes with a reason, sends
+    the ones that move money or end a membership to a second person, and keeps the full history.</p>
+
+    <h3>Typical user roles</h3>
+    <table>
+      <thead><tr><th>Role</th><th>Typical work</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Field / district officer</strong> (PAA Facilitator, TMO, Council Coordinator)</td><td>Propose payment corrections and deactivations; add follow-ups. Sees the households of their own districts.</td></tr>
+        <tr><td><strong>Grievance officer</strong></td><td>Work the Account Corrections list.</td></tr>
+        <tr><td><strong>Approver</strong> (e.g. Payment Approver, HQ)</td><td>Approve or reject pending updates.</td></tr>
+        <tr><td><strong>Supervisor / M&amp;E</strong></td><td>Dashboard and history.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Access &amp; permissions</h3>
+    <table>
+      <thead><tr><th>Right</th><th>Grants</th></tr></thead>
+      <tbody>
+        <tr><td><code>290101</code></td><td>The Case Management <strong>Dashboard</strong>.</td></tr>
+        <tr><td><code>290201</code></td><td>See the payment-change history of a household.</td></tr>
+        <tr><td><code>290203</code></td><td>Change payment details (account number, provider, account name).</td></tr>
+        <tr><td><code>290204</code></td><td>Update the contact phone only.</td></tr>
+        <tr><td><code>290205</code></td><td>The <strong>Account Corrections</strong> list.</td></tr>
+        <tr><td><code>290301</code> / <code>290302</code> / <code>290303</code></td><td>See / request / reverse deactivations.</td></tr>
+        <tr><td><code>290401</code> / <code>290402</code> / <code>290403</code></td><td>See / add / update follow-ups.</td></tr>
+        <tr><td><code>290501</code> / <code>290502</code></td><td>See <strong>Pending updates</strong> / approve or reject them.</td></tr>
+      </tbody>
+    </table>
+    <div class="callout note"><strong>Two-person rule.</strong> A change that moves money (account number,
+    provider, account name) and every deactivation waits for a second person. Nobody can approve their
+    own submission.</div>
+
+    <h2 id="navigation">2. Where Case Management Appears</h2>
+    <p>Case Management has no household list of its own. You work from the Registry screens you already know:</p>
+    <table>
+      <thead><tr><th>Where</th><th>What you can do</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Case Management menu</strong></td><td>Dashboard, Follow-ups, Pending Updates, Account Corrections.</td></tr>
+        <tr><td><strong>Household page → Case Management tab</strong></td><td>Change payment details or phone; see payment-change and deactivation history; deactivate or reactivate the household.</td></tr>
+        <tr><td><strong>Households, Members and the household's Members table</strong></td><td>Row actions to deactivate or reactivate a household or a member.</td></tr>
+        <tr><td><strong>Payments → Verification → Failed</strong></td><td>Double-click opens the same correction page as Account Corrections.</td></tr>
+      </tbody>
+    </table>
+    <figure class="shot">
+      <a href="img/cm-01-household-tab.png"><img src="img/cm-01-household-tab.png" alt="The Case Management tab on a household page." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 1</span> The Case Management tab on a household page.</figcaption>
+    </figure>
+
+    <h2 id="dashboard">3. Dashboard</h2>
+    <p>Four cards: <strong>Account Corrections</strong> (accounts that could not be verified),
+    <strong>Open Follow-ups</strong>, <strong>Overdue</strong> (past their due date) and
+    <strong>Pending Updates</strong> (awaiting a decision). Below them, follow-ups and pending updates by
+    status, pending updates by source (web or mobile app), and case activity: payment changes,
+    households deactivated, members deactivated. Click a card to open its list; <strong>Refresh</strong>
+    reloads the figures.</p>
+    <figure class="shot">
+      <a href="img/cm-02-dashboard.png"><img src="img/cm-02-dashboard.png" alt="The Case Management dashboard." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 2</span> The Case Management dashboard.</figcaption>
+    </figure>
+
+    <h2 id="payment">4. Change Payment Details or Contact Phone</h2>
+    <p>A household has two phone numbers, and only one of them pays:</p>
+    <table>
+      <thead><tr><th>Field</th><th>Used for</th><th>Changing it</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Mobile money number</strong> / bank account number</td><td>Where the money is sent</td><td>Needs a reason and approval; the account is verified again before the next payment.</td></tr>
+        <tr><td><strong>Contact phone</strong></td><td>Reaching the household only</td><td>Applies at once; never re-verifies the account. Recorded for review.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Correct payment details</h3>
+    <ol class="steps">
+      <li>Open the household, go to the <strong>Case Management</strong> tab and choose <strong>Change payment details</strong> (or <strong>Edit payment details</strong> on a correction page).</li>
+      <li>Change the account number, channel (Bank / Mobile money), provider or account name.</li>
+      <li>Choose a <strong>Reason</strong> (e.g. <em>Account number wrong or invalid</em>) and add details.</li>
+      <li>Press <strong>Save</strong>. The change is <em>submitted for approval</em>; the account keeps its current details until it is approved.</li>
+      <li>After approval the account goes back to <em>Pending</em> verification and pre-audit, and is checked with GePG again.</li>
+    </ol>
+    <figure class="shot">
+      <a href="img/cm-03-payment-dialog.png"><img src="img/cm-03-payment-dialog.png" alt="Correct payment details for the household's account." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 3</span> Correct payment details for the household's account.</figcaption>
+    </figure>
+
+    <h3>Update the contact phone</h3>
+    <p>Choose <strong>Update contact phone</strong>. Enter a Tanzanian mobile number (0712345678 or
+    255712345678); the dialog shows how it will be saved. Numbers must be 255 followed by 9 digits
+    starting with 6 or 7.</p>
+
+    <div class="callout warn"><strong>Paid and in-progress accounts.</strong> Once an account has been paid
+    it shows <em>Locked · paid on {date}</em>: its details change only through this dialog, with a reason
+    and approval. While a payment to it is still on an unfinished paylist it shows <em>Payment in
+    progress</em> and cannot be changed until the paylist finishes.</div>
+
+    <h2 id="corrections">5. Account Corrections</h2>
+    <p>Every account that failed verification, or was not sent because its number is invalid or belongs
+    to another provider, is listed here until it is corrected. There is nothing to add or remove by hand:
+    an account leaves the list once its approved correction sends it back for verification.</p>
+    <table>
+      <thead><tr><th>Why it failed</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td>Failed verification</td><td>GePG, or a reviewer, rejected the name or account.</td></tr>
+        <tr><td>Not sent to GePG</td><td>Withdrawn before sending.</td></tr>
+        <tr><td>Invalid mobile number</td><td>Not 255 + 9 digits starting with 6 or 7.</td></tr>
+        <tr><td>Number and provider don't match</td><td>e.g. an Airtel number recorded as M-Pesa.</td></tr>
+        <tr><td>No account</td><td>Shows the households that have no payment account at all; double-click opens the household.</td></tr>
+      </tbody>
+    </table>
+    <p>Filter by Household ID, representative, FSP, channel or account / phone. A row marked
+    <em>Waiting for approval</em> already has a correction submitted.</p>
+    <figure class="shot">
+      <a href="img/cm-04-corrections.png"><img src="img/cm-04-corrections.png" alt="Account Corrections with the “Why it failed” filter." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 4</span> Account Corrections with the “Why it failed” filter.</figcaption>
+    </figure>
+    <ol class="steps">
+      <li>Double-click a row to open the <strong>Account Correction</strong> page: account details, verification history (each attempt with its result and reason) and any change waiting for approval.</li>
+      <li>Use <strong>Edit payment details</strong> or <strong>Update phone</strong>.</li>
+      <li>While a correction waits, the page shows <em>Now</em> and <em>After approval</em> side by side, and a link to Pending updates.</li>
+    </ol>
+    <figure class="shot">
+      <a href="img/cm-05-correction.png"><img src="img/cm-05-correction.png" alt="The Account Correction page with its verification history." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 5</span> The Account Correction page with its verification history.</figcaption>
+    </figure>
+
+    <h2 id="deactivation">6. Deactivate and Reactivate</h2>
+    <p>Deactivation records a programme decision: the household or member stops being paid, but stays
+    visible with its reason and history, and can be reactivated. It is not deletion, and it is not
+    graduation.</p>
+
+    <h3>Deactivate a household</h3>
+    <ol class="steps">
+      <li>From the household's row action or its Case Management tab, choose <strong>Deactivate household</strong>.</li>
+      <li>Choose the type, <strong>Temporary</strong> or <strong>Permanent</strong>, a reason and the <strong>Effective from</strong> date; add details.</li>
+      <li>Press <strong>Deactivate</strong> and confirm. The request waits for approval; nothing changes until it is approved.</li>
+    </ol>
+    <ul>
+      <li>A <strong>Permanent</strong> deactivation is refused while members are still active, or while a payment to the household is in progress. The dialog lists the members to deactivate first.</li>
+      <li><strong>Deceased</strong> applies to a household only when it has a single member.</li>
+    </ul>
+    <figure class="shot">
+      <a href="img/cm-06-deactivate-household.png"><img src="img/cm-06-deactivate-household.png" alt="Deactivate household: type, reason and effective date." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 6</span> Deactivate household: type, reason and effective date.</figcaption>
+    </figure>
+
+    <h3>Deactivate a member</h3>
+    <ol class="steps">
+      <li>Choose <strong>Deactivate member</strong> on the member's row.</li>
+      <li>Choose the reason (<em>Shifted</em> or <em>Deceased</em>) and the effective date; for Deceased, the date of death.</li>
+      <li>If the member is the household's representative (payment recipient), choose the <strong>Successor</strong> who takes over.</li>
+      <li>Confirm. The request waits for approval.</li>
+    </ol>
+    <div class="callout warn"><strong>Recording a death</strong> ends the person's membership in every
+    household they belong to and suspends their benefits. If it was recorded in error, reactivating the
+    member reverses the whole change as one action.</div>
+    <figure class="shot">
+      <a href="img/cm-07-deactivate-member.png"><img src="img/cm-07-deactivate-member.png" alt="Deactivate member, with the successor field for a representative." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 7</span> Deactivate member, with the successor field for a representative.</figcaption>
+    </figure>
+
+    <h3>Reactivate</h3>
+    <p>Choose <strong>Reactivate household</strong> or <strong>Reactivate member</strong>. The menu shows
+    why it was deactivated. The household returns to its previous status and can be paid again. Each
+    deactivation and reactivation stays in the <strong>Deactivation history</strong>.</p>
+
+    <h2 id="followups">7. Follow-ups</h2>
+    <p>A follow-up is a tracked piece of casework on a household, such as a payment failure to chase or
+    a beneficiary to contact. Each has a category, priority, status, an assignee and a due date (7 days
+    by default).</p>
+    <ol class="steps">
+      <li>Open <strong>Case Management → Follow-ups</strong>; filter by household, status, category or priority, or tick <strong>Overdue only</strong>.</li>
+      <li>Open a follow-up to read it, then <strong>Update</strong> its status: Open → In progress → Resolved (or Escalated / Cancelled).</li>
+      <li>When resolving, write a <strong>Resolution note</strong>. <strong>Open household</strong> goes to the household page.</li>
+    </ol>
+    <figure class="shot">
+      <a href="img/cm-08-followup.png"><img src="img/cm-08-followup.png" alt="Follow-ups, with an overdue follow-up open." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 8</span> Follow-ups, with an overdue follow-up open.</figcaption>
+    </figure>
+
+    <h2 id="pending">8. Pending Updates (Approvals)</h2>
+    <p>Every change that needs a decision is listed here, rated by severity: <strong>Critical</strong>
+    (it moves money), <strong>Warning</strong> (e.g. a new representative) or <strong>Info</strong> (e.g.
+    a contact phone). Changes sent from the mobile app are all listed here and change nothing until they
+    are approved.</p>
+    <table>
+      <thead><tr><th>Kind</th><th>Buttons</th><th>Effect</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Waiting for approval</strong></td><td>Approve / Reject</td><td>Approve applies the change; Reject discards it.</td></tr>
+        <tr><td><strong>Already applied</strong></td><td>Acknowledge / Flag</td><td>Flag opens a data-quality follow-up.</td></tr>
+      </tbody>
+    </table>
+    <ol class="steps">
+      <li>Filter by kind, status, severity or source, and press <strong>Review</strong> on a row.</li>
+      <li>Compare <em>Before</em> and <em>After</em> for each field.</li>
+      <li>Write a decision note (required to reject or flag) and decide.</li>
+    </ol>
+    <figure class="shot">
+      <a href="img/cm-09-review.png"><img src="img/cm-09-review.png" alt="The review dialog with before and after values." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 9</span> The review dialog with before and after values.</figcaption>
+    </figure>
+    <p>A district officer sees and decides only the households of their own districts. If an approved
+    change could not be saved to the record, the row reads <em>Approved but NOT applied</em> and a
+    data-quality follow-up is opened.</p>
+
+    <h2 id="reference">9. Reasons and Statuses</h2>
+    <h3>Reasons</h3>
+    <table>
+      <thead><tr><th>Used for</th><th>Reasons</th></tr></thead>
+      <tbody>
+        <tr><td>Payment changes</td><td>Account closed · Account number wrong or invalid · Beneficiary changed provider · Requested by the beneficiary · Name does not match the account · Data correction · Other</td></tr>
+        <tr><td>Household deactivation</td><td>Shifted · Graduated · Committee member · Not attended 2 consecutive CS · Deceased (single-member households)</td></tr>
+        <tr><td>Member deactivation</td><td>Shifted · Deceased</td></tr>
+      </tbody>
+    </table>
+    <h3>Statuses</h3>
+    <table>
+      <thead><tr><th>Record</th><th>Statuses</th></tr></thead>
+      <tbody>
+        <tr><td>Follow-up</td><td>Open · In progress · Resolved · Escalated · Cancelled</td></tr>
+        <tr><td>Pending update</td><td>Pending · Approved · Rejected · Cancelled · Superseded (a newer change replaced it)</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="troubleshooting">10. Troubleshooting and Good Practice</h2>
+    <table>
+      <thead><tr><th>Message or problem</th><th>What to do</th></tr></thead>
+      <tbody>
+        <tr><td>“You submitted this change, so someone else must decide it.”</td><td>By design; another approver must decide it.</td></tr>
+        <tr><td>“This change was already decided in the Tasks inbox.”</td><td>Refresh the list.</td></tr>
+        <tr><td>Save is disabled: <em>Payment in progress</em></td><td>Wait until the paylist holding the payment finishes.</td></tr>
+        <tr><td>Permanent deactivation refused</td><td>Deactivate the listed members first.</td></tr>
+        <tr><td>Someone else changed the record first</td><td>Reopen the record and make the change again; edits are never merged silently.</td></tr>
+        <tr><td>A corrected account is still on Account Corrections</td><td>The correction is waiting for approval; see Pending updates.</td></tr>
+      </tbody>
+    </table>
+    <div class="callout tip"><strong>Good practice.</strong> Put the contact number in <em>Contact phone</em>,
+    never in the payment number. Always explain the reason in a sentence an auditor would understand.
+    Work the Account Corrections list before each payment cycle.</div>
+
+  </main>
+
+  <footer class="doc-footer">
+    <div class="brand">
+      <img src="../assets/tasaf-logo.png" alt="TASAF" />
+      <span>Tanzania Social Action Fund · Case Management Module End-User Manual · Version 1.0</span>
+    </div>
+    <div><a href="../index.html">← Back to documentation hub</a></div>
+  </footer>
+
+</div>
+</body>
+</html>

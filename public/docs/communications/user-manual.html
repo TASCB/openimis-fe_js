@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>TASAF MIS — Communication Module User Manual</title>
+<link rel="icon" type="image/png" href="../assets/tasaf-logo.png" />
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    /* TASAF corporateTeal palette (matches the main app) */
+    --tasaf-primary: #00695C;
+    --tasaf-primary-dark: #004D40;
+    --tasaf-primary-light: #4DB6AC;
+    --tasaf-accent: #B83232;
+    --tasaf-bg: #F4FAF9;
+    --tasaf-header: #D6ECE9;
+    --tasaf-highlight: #E4F2EF;
+    --tasaf-text: #202B2A;
+    --tasaf-muted: #5F6368;
+    --tasaf-white: #FFFFFF;
+    --tasaf-border: #D6ECE9;
+    --tasaf-toggled: #546E7A;
+    --tasaf-success: #2E7D32;
+    --tasaf-warning: #ED6C02;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: 'Rubik', 'Roboto', 'Helvetica Neue', sans-serif;
+    font-weight: 300; color: var(--tasaf-text); background: var(--tasaf-bg);
+    line-height: 1.65; font-size: 15px;
+  }
+  img, svg { max-width: 100%; }
+  a { color: var(--tasaf-primary); text-decoration: none; border-bottom: 1px dotted var(--tasaf-primary); }
+  a:hover { color: var(--tasaf-accent); border-bottom-style: solid; }
+  code, kbd { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 0.9em;
+    background: var(--tasaf-highlight); color: var(--tasaf-primary-dark); padding: 1px 6px; border-radius: 4px; }
+
+  .page-wrap { max-width: 1180px; margin: 24px auto; background: var(--tasaf-white);
+    box-shadow: 0 8px 40px rgba(0,105,92,0.12); border-radius: 14px; overflow: hidden; }
+
+  /* Cover */
+  .cover { background: linear-gradient(135deg, #00695C 0%, #004F45 100%); color: #fff;
+    padding: 40px 56px; display: flex; align-items: center; gap: 28px; }
+  .cover-logo img { width: 76px; height: 76px; background: #fff; padding: 8px; border-radius: 14px; }
+  .cover-text h1 { margin: 0; font-size: 30px; font-weight: 600; letter-spacing: 0.2px; }
+  .cover-text h2 { margin: 4px 0 12px; font-size: 16px; font-weight: 400; color: var(--tasaf-header); }
+  .cover-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+  .badge { background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.25);
+    padding: 3px 11px; border-radius: 999px; font-size: 12px; }
+
+  .subhead { background: var(--tasaf-header); color: var(--tasaf-primary-dark);
+    padding: 12px 56px; font-size: 13px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+  .content { padding: 36px 56px 48px; }
+  h2 { color: var(--tasaf-primary); font-size: 22px; font-weight: 600; margin: 40px 0 12px;
+    padding-bottom: 8px; border-bottom: 2px solid var(--tasaf-header); }
+  h2:first-of-type { margin-top: 8px; }
+  h3 { color: var(--tasaf-primary-dark); font-size: 16.5px; font-weight: 600; margin: 24px 0 8px; }
+  p { margin: 10px 0; }
+  ul, ol { margin: 10px 0; padding-left: 22px; }
+  li { margin: 5px 0; }
+
+  /* TOC */
+  .toc { background: var(--tasaf-header); border-radius: 8px; padding: 18px 24px; margin: 0 0 24px;
+    border-left: 5px solid var(--tasaf-primary); }
+  .toc h3 { margin: 0 0 8px; color: var(--tasaf-primary); font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .toc ol { columns: 2; column-gap: 32px; padding-left: 18px; margin: 0; }
+  .toc li { margin: 3px 0; break-inside: avoid; }
+  .toc a { border-bottom: none; }
+
+  /* Step procedures */
+  ol.steps { counter-reset: step; list-style: none; padding-left: 0; }
+  ol.steps > li { counter-increment: step; position: relative; padding: 5px 0 5px 42px; margin: 5px 0; }
+  ol.steps > li::before { content: counter(step); position: absolute; left: 0; top: 4px;
+    width: 28px; height: 28px; background: var(--tasaf-primary); color: #fff; border-radius: 50%;
+    text-align: center; line-height: 28px; font-weight: 500; font-size: 13px; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 24px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 14px; border: 1px solid var(--tasaf-border); vertical-align: top; }
+  th { background: var(--tasaf-primary); color: #fff; font-weight: 500; }
+  tbody tr:nth-child(even) { background: var(--tasaf-bg); }
+  td code { white-space: nowrap; }
+
+  /* Callouts */
+  .callout { border-radius: 8px; padding: 14px 18px; margin: 16px 0; border-left: 5px solid; font-size: 14px; }
+  .callout.note { background: var(--tasaf-highlight); border-color: var(--tasaf-primary); }
+  .callout.warn { background: #FDF0D4; border-color: var(--tasaf-warning); }
+  .callout.tip { background: #E8F5E9; border-color: var(--tasaf-success); }
+  .callout strong { color: var(--tasaf-primary-dark); }
+
+  /* Status / reporter chips */
+  .chip { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 500; }
+  .chip.received { background: #ECEFF1; color: var(--tasaf-toggled); }
+  .chip.open { background: #E3F2FD; color: #0D47A1; }
+  .chip.progress { background: #FFF3E0; color: var(--tasaf-warning); }
+  .chip.resolved { background: #E8F5E9; color: var(--tasaf-success); }
+  .chip.closed { background: #FDECEA; color: var(--tasaf-accent); }
+
+  /* Figure / screenshot placeholders (replace the .ph div with <img> when screenshots are ready) */
+  figure.shot { margin: 18px 0 26px; background: var(--tasaf-white); border: 1px solid var(--tasaf-border);
+    border-radius: 10px; overflow: hidden; box-shadow: 0 4px 14px rgba(0,105,92,0.10); }
+  figure.shot img { display: block; max-width: 100%; height: auto; margin: 0 auto; border-bottom: 1px solid var(--tasaf-border); }
+  figure.shot a { border-bottom: none; }
+  figure.shot .ph { display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 220px; gap: 6px; text-align: center; color: var(--tasaf-primary);
+    background: repeating-linear-gradient(135deg, transparent 0 14px, rgba(0,105,92,0.045) 14px 28px), var(--tasaf-bg);
+    border-bottom: 1px dashed var(--tasaf-primary-light); font-style: italic; }
+  figure.shot .ph .cam { font-size: 30px; font-style: normal; }
+  figure.shot .ph .lbl { font-size: 13px; letter-spacing: 0.3px; }
+  figure.shot figcaption { padding: 10px 16px; background: var(--tasaf-header); color: var(--tasaf-primary-dark);
+    font-size: 13px; display: flex; gap: 10px; align-items: baseline; }
+  figure.shot figcaption .num { display: inline-block; background: var(--tasaf-primary); color: #fff;
+    padding: 2px 9px; border-radius: 4px; font-weight: 500; font-size: 11.5px; letter-spacing: 0.4px;
+    text-transform: uppercase; flex-shrink: 0; }
+
+  /* Footer */
+  .doc-footer { background: var(--tasaf-primary-dark); color: rgba(255,255,255,0.9); padding: 26px 56px;
+    font-size: 13px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .doc-footer .brand { display: flex; align-items: center; gap: 12px; }
+  .doc-footer img { width: 36px; height: 36px; background: #fff; padding: 4px; border-radius: 8px; }
+  .doc-footer a { color: #cbedf2; border-bottom: none; }
+
+  @media (max-width: 700px) {
+    .cover, .subhead, .content, .doc-footer { padding-left: 22px; padding-right: 22px; }
+    .toc ol { columns: 1; }
+    .cover { flex-direction: column; text-align: center; }
+  }
+  @media print {
+    body { background: #fff; } .page-wrap { box-shadow: none; margin: 0; border-radius: 0; }
+    a { color: inherit; border-bottom: none; } table, .callout, figure.shot { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <header class="cover">
+    <div class="cover-logo"><img src="../assets/tasaf-logo.png" alt="TASAF — Tanzania Social Action Fund" /></div>
+    <div class="cover-text">
+      <h1>Communication Module</h1>
+      <h2>TASAF MIS — Operational End-User Manual</h2>
+      <div class="cover-meta">
+        <span class="badge">Tanzania Social Action Fund</span>
+        <span class="badge">Mfuko wa Maendeleo ya Jamii</span>
+        <span class="badge">Version 1.0 · 22 October 2026</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="subhead">
+    <span><strong>Audience:</strong> Communication officers · approvers · staff · management</span>
+    <span><strong>Module:</strong> <code>openimis-be-communications_py</code></span>
+  </div>
+
+  <main class="content">
+    <p><strong>Daily procedures for planning communication activities and events, posting to the staff
+    News Feed, and keeping the media house and journalist registries.</strong> An activity goes from a
+    draft through approval to a completed record with its audience, media coverage, objectives and
+    feedback.</p>
+
+    <nav class="toc">
+      <h3>Contents</h3>
+      <ol>
+        <li><a href="#purpose">Purpose, roles &amp; access</a></li>
+        <li><a href="#navigation">Menus &amp; pages</a></li>
+        <li><a href="#activity">Create an activity</a></li>
+        <li><a href="#tabs">Activity tabs</a></li>
+        <li><a href="#workflow">Status workflow</a></li>
+        <li><a href="#events">Events and the participant register</a></li>
+        <li><a href="#feed">News Feed and announcements</a></li>
+        <li><a href="#media">Media houses and journalists</a></li>
+        <li><a href="#library">Library: templates, assets, stakeholder lists</a></li>
+        <li><a href="#calendar">Calendar and dashboard</a></li>
+        <li><a href="#troubleshooting">Troubleshooting &amp; good practice</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="purpose">1. Purpose, Roles, and Access</h2>
+    <table>
+      <thead><tr><th>Role</th><th>Typical work</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Communication officer</strong></td><td>Plan activities and events, record outcomes, keep the media registries.</td></tr>
+        <tr><td><strong>Communication approver</strong></td><td>Approve activities and News Feed posts.</td></tr>
+        <tr><td><strong>Staff</strong></td><td>Read the News Feed; post updates for approval.</td></tr>
+        <tr><td><strong>Management / M&amp;E</strong></td><td>Calendar and dashboard.</td></tr>
+      </tbody>
+    </table>
+    <h3>Access &amp; permissions</h3>
+    <table>
+      <thead><tr><th>Right</th><th>Grants</th></tr></thead>
+      <tbody>
+        <tr><td><code>220101</code>–<code>220104</code></td><td>Search / create / update / delete activities and events.</td></tr>
+        <tr><td><code>220110</code></td><td>Approve or reject activities.</td></tr>
+        <tr><td><code>220402</code> · <code>220502</code> · <code>220602</code> · <code>221402</code> · <code>220802</code></td><td>Manage an activity's channels · objectives · staff · audience · feedback.</td></tr>
+        <tr><td><code>220701</code> / <code>220702</code></td><td>See / upload attachments.</td></tr>
+        <tr><td><code>221901</code>–<code>221904</code></td><td>The participant register of an event.</td></tr>
+        <tr><td><code>221501</code> / <code>221502</code> / <code>221505</code></td><td>Read the News Feed / write posts / publish posts.</td></tr>
+        <tr><td><code>221601</code>–<code>221604</code> · <code>221801</code>–<code>221804</code></td><td>Media houses · journalists.</td></tr>
+        <tr><td><code>220901</code> / <code>220902</code> · <code>221101</code> / <code>221102</code></td><td>Templates · library assets.</td></tr>
+        <tr><td><code>221201</code></td><td>Calendar and dashboard.</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="navigation">2. Menus and Pages</h2>
+    <table>
+      <thead><tr><th>Menu</th><th>Used for</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Activities</strong></td><td>Media missions, press releases, briefings, campaigns and other activities.</td></tr>
+        <tr><td><strong>Events</strong></td><td>Public, internal and CSR events, with their participant register.</td></tr>
+        <tr><td><strong>News Feed</strong></td><td>Announcements and updates for TASAF staff.</td></tr>
+        <tr><td><strong>Media Houses</strong> / <strong>Journalists</strong></td><td>The media registries.</td></tr>
+        <tr><td><strong>Library</strong></td><td>Templates, brand assets and stakeholder lists.</td></tr>
+        <tr><td><strong>Calendar</strong> / <strong>Dashboard</strong></td><td>Planning view and summary.</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="activity">3. Create an Activity</h2>
+    <ol class="steps">
+      <li>Open <strong>Activities</strong> and press <strong>+</strong> (or <strong>New activity</strong> on the calendar).</li>
+      <li>Under <em>Planning — before the activity</em>: code, title, activity type (e.g. Media Mission, Press Release, Community Awareness Session), programme area, description, objective, start and end, venue or virtual platform, location, target audience and planned audience.</li>
+      <li>Watch the conflict banner: <em>Conflicts that block saving</em> (red) or <em>Warnings</em>.</li>
+      <li>Press <strong>Save</strong>. The tabs appear; they can only be filled after the first save.</li>
+      <li>After the activity, fill <em>Outcome — recorded after the activity</em>: actual audience and media houses reported. Some figures are worked out from the Audience tab or the participant register.</li>
+    </ol>
+    <figure class="shot">
+      <a href="img/co-01-activity.png"><img src="img/co-01-activity.png" alt="An activity's details, with the planning and outcome sections." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 1</span> An activity's details, with the planning and outcome sections.</figcaption>
+    </figure>
+
+    <h2 id="tabs">4. Activity Tabs</h2>
+    <table>
+      <thead><tr><th>Tab</th><th>Records</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Channels</strong></td><td>Where the message goes: email, SMS, social media, radio, TV, print, website, community event; with the target (e.g. <em>@tasaf_tz</em>, <em>TBC Taifa, 7pm news</em>) and its dispatch status.</td></tr>
+        <tr><td><strong>Objectives</strong></td><td>Each objective with its indicator, target and what was achieved.</td></tr>
+        <tr><td><strong>Audience</strong></td><td>Stakeholder types and level (national, zonal, regional, PAA, community), planned and actual reach.</td></tr>
+        <tr><td><strong>Staff</strong></td><td>Staff assigned, with role (Owner, Contributor, Reviewer, Approver, Support) and status.</td></tr>
+        <tr><td><strong>Media Coverage</strong></td><td>Per media house: invited, attended, reported, coverage type, quality and link.</td></tr>
+        <tr><td><strong>Participants</strong></td><td>The register of people (events; section 6).</td></tr>
+        <tr><td><strong>Attachments</strong></td><td>Files, with preview and download.</td></tr>
+        <tr><td><strong>Feedback</strong></td><td>Feedback received: source (e.g. post-event survey, radio call-in), respondent, rating and comment.</td></tr>
+      </tbody>
+    </table>
+    <figure class="shot">
+      <a href="img/co-02-media.png"><img src="img/co-02-media.png" alt="The Media Coverage tab of an activity." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 2</span> The Media Coverage tab of an activity.</figcaption>
+    </figure>
+    <div class="callout note"><strong>Dispatch.</strong> The dispatch status shows whether a channel's message
+    was sent. Automatic sending depends on the server's email and SMS set-up.</div>
+
+    <h2 id="workflow">5. Status Workflow</h2>
+    <table>
+      <thead><tr><th>Status</th><th>Next</th></tr></thead>
+      <tbody>
+        <tr><td>Draft</td><td>Submit · Cancel</td></tr>
+        <tr><td>Submitted</td><td>Approve · Reject (approver, 220110)</td></tr>
+        <tr><td>Rejected</td><td>Revise (back to Draft)</td></tr>
+        <tr><td>Approved</td><td>Schedule · Cancel</td></tr>
+        <tr><td>Scheduled</td><td>Start · Cancel</td></tr>
+        <tr><td>Ongoing</td><td>Complete · Cancel</td></tr>
+        <tr><td>Completed</td><td>Close</td></tr>
+        <tr><td>Closed</td><td>Archive</td></tr>
+        <tr><td>Cancelled · Archived</td><td>Final</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="events">6. Events and the Participant Register</h2>
+    <p>An event is created the same way under <strong>Events</strong>, with an event type: Public,
+    Internal or Corporate Social Responsibility, and can be virtual or hybrid.</p>
+    <ol class="steps">
+      <li>Open the event's <strong>Participants</strong> tab and press <strong>Add participant</strong>: full name, stakeholder type, organisation and designation, phone, email. A participant can be linked to a beneficiary.</li>
+      <li>Or choose <strong>Invite from a stakeholder list</strong> to add every member of a saved list at once.</li>
+      <li>Set each person's attendance: Invited, Confirmed, Attended, Absent or Replaced.</li>
+    </ol>
+    <p>The tab shows how many are on the register and how many attended; the actual audience of the
+    event is taken from it.</p>
+    <figure class="shot">
+      <a href="img/co-03-participants.png"><img src="img/co-03-participants.png" alt="An event's participant register." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 3</span> An event's participant register.</figcaption>
+    </figure>
+
+    <h2 id="feed">7. News Feed and Announcements</h2>
+    <h3>Post an update</h3>
+    <ol class="steps">
+      <li>Open <strong>News Feed</strong> and click <strong>Post an update…</strong>.</li>
+      <li>Optionally start from a template. Write the title and message; the editor has headings, bold, colour, links, images, lists and alignment. Attach files if needed.</li>
+      <li>Choose the type: Announcement, Update, Media Highlight or Newsletter.</li>
+      <li>Press <strong>Post</strong> (or <strong>Save draft</strong>). Posts wait for a communication officer's approval before others see them; the feed shows how many are awaiting approval.</li>
+    </ol>
+    <figure class="shot">
+      <a href="img/co-04-composer.png"><img src="img/co-04-composer.png" alt="The post composer." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 4</span> The post composer.</figcaption>
+    </figure>
+    <p>Posts can be pinned to the top, edited, unpublished or deleted from the ⋮ menu. The search box
+    looks through the latest posts.</p>
+    <h3>Announcements at login</h3>
+    <p>Published announcements a user has not read yet open in a window after they log in, one after the
+    other (<em>Announcement 1 of 3</em>). <strong>Read</strong> moves to the next.</p>
+    <figure class="shot">
+      <a href="img/co-05-announcement.png"><img src="img/co-05-announcement.png" alt="The announcement window shown at login." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 5</span> The announcement window shown at login.</figcaption>
+    </figure>
+
+    <h2 id="media">8. Media Houses and Journalists</h2>
+    <h3>Media houses</h3>
+    <p>Each media house has a name, category, medium (newspaper, radio, TV, social media, website, blog),
+    reach scope, language, frequency or channel, location, contact person, phone, email, website, and a
+    primary journalist. Its page shows its coverage records and their quality.</p>
+    <h3>Journalists</h3>
+    <p>First and last name, gender, media house (or <em>Freelance</em>), role (Reporter, Editor, Presenter,
+    Producer, Camera Operator, Photographer, Correspondent), beat, languages, phones, email, and
+    accreditation number and expiry. Its page shows the stories filed and the last coverage.</p>
+    <figure class="shot">
+      <a href="img/co-06-mediahouse.png"><img src="img/co-06-mediahouse.png" alt="A media house record." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 6</span> A media house record.</figcaption>
+    </figure>
+
+    <h2 id="library">9. Library</h2>
+    <table>
+      <thead><tr><th>Tab</th><th>Holds</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Templates</strong></td><td>A name, subject and message that fill a News Feed post when chosen. Inactive templates are hidden from the composer.</td></tr>
+        <tr><td><strong>Assets</strong></td><td>Brand assets, images, videos and documents for reuse.</td></tr>
+        <tr><td><strong>Stakeholder lists</strong></td><td>Named lists of people (name, organisation, location, phone, email) to invite to events. Deleting a list leaves people already invited on their events.</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="calendar">10. Calendar and Dashboard</h2>
+    <p>The <strong>Calendar</strong> shows activities in month, week or agenda view, filtered by status, with
+    Training and Coordination activities alongside so clashes are visible. The <strong>Dashboard</strong>
+    summarises activities by status and type, audience reach and media coverage.</p>
+    <figure class="shot">
+      <a href="img/co-07-calendar.png"><img src="img/co-07-calendar.png" alt="The Communications Calendar." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 7</span> The Communications Calendar.</figcaption>
+    </figure>
+
+    <h2 id="troubleshooting">11. Troubleshooting and Good Practice</h2>
+    <table>
+      <thead><tr><th>Problem</th><th>What to do</th></tr></thead>
+      <tbody>
+        <tr><td>The tabs are missing</td><td>Save the activity first.</td></tr>
+        <tr><td>Save is disabled</td><td>Read the red conflict banner and change the time, venue or staff.</td></tr>
+        <tr><td>My post is not visible to others</td><td>It is awaiting approval.</td></tr>
+        <tr><td>An attachment fails to upload</td><td>The file is too large; reduce it or upload a link.</td></tr>
+      </tbody>
+    </table>
+    <div class="callout tip"><strong>Good practice.</strong> Record media coverage with its link the same week.
+    Keep stakeholder lists up to date so event invitations take one click.</div>
+
+  </main>
+
+  <footer class="doc-footer">
+    <div class="brand">
+      <img src="../assets/tasaf-logo.png" alt="TASAF" />
+      <span>Tanzania Social Action Fund · Communication Module End-User Manual · Version 1.0</span>
+    </div>
+    <div><a href="../index.html">← Back to documentation hub</a></div>
+  </footer>
+
+</div>
+</body>
+</html>

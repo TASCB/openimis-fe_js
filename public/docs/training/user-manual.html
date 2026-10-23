@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>TASAF MIS — Training Module User Manual</title>
+<link rel="icon" type="image/png" href="../assets/tasaf-logo.png" />
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    /* TASAF corporateTeal palette (matches the main app) */
+    --tasaf-primary: #00695C;
+    --tasaf-primary-dark: #004D40;
+    --tasaf-primary-light: #4DB6AC;
+    --tasaf-accent: #B83232;
+    --tasaf-bg: #F4FAF9;
+    --tasaf-header: #D6ECE9;
+    --tasaf-highlight: #E4F2EF;
+    --tasaf-text: #202B2A;
+    --tasaf-muted: #5F6368;
+    --tasaf-white: #FFFFFF;
+    --tasaf-border: #D6ECE9;
+    --tasaf-toggled: #546E7A;
+    --tasaf-success: #2E7D32;
+    --tasaf-warning: #ED6C02;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: 'Rubik', 'Roboto', 'Helvetica Neue', sans-serif;
+    font-weight: 300; color: var(--tasaf-text); background: var(--tasaf-bg);
+    line-height: 1.65; font-size: 15px;
+  }
+  img, svg { max-width: 100%; }
+  a { color: var(--tasaf-primary); text-decoration: none; border-bottom: 1px dotted var(--tasaf-primary); }
+  a:hover { color: var(--tasaf-accent); border-bottom-style: solid; }
+  code, kbd { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 0.9em;
+    background: var(--tasaf-highlight); color: var(--tasaf-primary-dark); padding: 1px 6px; border-radius: 4px; }
+
+  .page-wrap { max-width: 1180px; margin: 24px auto; background: var(--tasaf-white);
+    box-shadow: 0 8px 40px rgba(0,105,92,0.12); border-radius: 14px; overflow: hidden; }
+
+  /* Cover */
+  .cover { background: linear-gradient(135deg, #00695C 0%, #004F45 100%); color: #fff;
+    padding: 40px 56px; display: flex; align-items: center; gap: 28px; }
+  .cover-logo img { width: 76px; height: 76px; background: #fff; padding: 8px; border-radius: 14px; }
+  .cover-text h1 { margin: 0; font-size: 30px; font-weight: 600; letter-spacing: 0.2px; }
+  .cover-text h2 { margin: 4px 0 12px; font-size: 16px; font-weight: 400; color: var(--tasaf-header); }
+  .cover-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+  .badge { background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.25);
+    padding: 3px 11px; border-radius: 999px; font-size: 12px; }
+
+  .subhead { background: var(--tasaf-header); color: var(--tasaf-primary-dark);
+    padding: 12px 56px; font-size: 13px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+  .content { padding: 36px 56px 48px; }
+  h2 { color: var(--tasaf-primary); font-size: 22px; font-weight: 600; margin: 40px 0 12px;
+    padding-bottom: 8px; border-bottom: 2px solid var(--tasaf-header); }
+  h2:first-of-type { margin-top: 8px; }
+  h3 { color: var(--tasaf-primary-dark); font-size: 16.5px; font-weight: 600; margin: 24px 0 8px; }
+  p { margin: 10px 0; }
+  ul, ol { margin: 10px 0; padding-left: 22px; }
+  li { margin: 5px 0; }
+
+  /* TOC */
+  .toc { background: var(--tasaf-header); border-radius: 8px; padding: 18px 24px; margin: 0 0 24px;
+    border-left: 5px solid var(--tasaf-primary); }
+  .toc h3 { margin: 0 0 8px; color: var(--tasaf-primary); font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .toc ol { columns: 2; column-gap: 32px; padding-left: 18px; margin: 0; }
+  .toc li { margin: 3px 0; break-inside: avoid; }
+  .toc a { border-bottom: none; }
+
+  /* Step procedures */
+  ol.steps { counter-reset: step; list-style: none; padding-left: 0; }
+  ol.steps > li { counter-increment: step; position: relative; padding: 5px 0 5px 42px; margin: 5px 0; }
+  ol.steps > li::before { content: counter(step); position: absolute; left: 0; top: 4px;
+    width: 28px; height: 28px; background: var(--tasaf-primary); color: #fff; border-radius: 50%;
+    text-align: center; line-height: 28px; font-weight: 500; font-size: 13px; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 24px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 14px; border: 1px solid var(--tasaf-border); vertical-align: top; }
+  th { background: var(--tasaf-primary); color: #fff; font-weight: 500; }
+  tbody tr:nth-child(even) { background: var(--tasaf-bg); }
+  td code { white-space: nowrap; }
+
+  /* Callouts */
+  .callout { border-radius: 8px; padding: 14px 18px; margin: 16px 0; border-left: 5px solid; font-size: 14px; }
+  .callout.note { background: var(--tasaf-highlight); border-color: var(--tasaf-primary); }
+  .callout.warn { background: #FDF0D4; border-color: var(--tasaf-warning); }
+  .callout.tip { background: #E8F5E9; border-color: var(--tasaf-success); }
+  .callout strong { color: var(--tasaf-primary-dark); }
+
+  /* Status / reporter chips */
+  .chip { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 500; }
+  .chip.received { background: #ECEFF1; color: var(--tasaf-toggled); }
+  .chip.open { background: #E3F2FD; color: #0D47A1; }
+  .chip.progress { background: #FFF3E0; color: var(--tasaf-warning); }
+  .chip.resolved { background: #E8F5E9; color: var(--tasaf-success); }
+  .chip.closed { background: #FDECEA; color: var(--tasaf-accent); }
+
+  /* Figure / screenshot placeholders (replace the .ph div with <img> when screenshots are ready) */
+  figure.shot { margin: 18px 0 26px; background: var(--tasaf-white); border: 1px solid var(--tasaf-border);
+    border-radius: 10px; overflow: hidden; box-shadow: 0 4px 14px rgba(0,105,92,0.10); }
+  figure.shot img { display: block; max-width: 100%; height: auto; margin: 0 auto; border-bottom: 1px solid var(--tasaf-border); }
+  figure.shot a { border-bottom: none; }
+  figure.shot .ph { display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 220px; gap: 6px; text-align: center; color: var(--tasaf-primary);
+    background: repeating-linear-gradient(135deg, transparent 0 14px, rgba(0,105,92,0.045) 14px 28px), var(--tasaf-bg);
+    border-bottom: 1px dashed var(--tasaf-primary-light); font-style: italic; }
+  figure.shot .ph .cam { font-size: 30px; font-style: normal; }
+  figure.shot .ph .lbl { font-size: 13px; letter-spacing: 0.3px; }
+  figure.shot figcaption { padding: 10px 16px; background: var(--tasaf-header); color: var(--tasaf-primary-dark);
+    font-size: 13px; display: flex; gap: 10px; align-items: baseline; }
+  figure.shot figcaption .num { display: inline-block; background: var(--tasaf-primary); color: #fff;
+    padding: 2px 9px; border-radius: 4px; font-weight: 500; font-size: 11.5px; letter-spacing: 0.4px;
+    text-transform: uppercase; flex-shrink: 0; }
+
+  /* Footer */
+  .doc-footer { background: var(--tasaf-primary-dark); color: rgba(255,255,255,0.9); padding: 26px 56px;
+    font-size: 13px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .doc-footer .brand { display: flex; align-items: center; gap: 12px; }
+  .doc-footer img { width: 36px; height: 36px; background: #fff; padding: 4px; border-radius: 8px; }
+  .doc-footer a { color: #cbedf2; border-bottom: none; }
+
+  @media (max-width: 700px) {
+    .cover, .subhead, .content, .doc-footer { padding-left: 22px; padding-right: 22px; }
+    .toc ol { columns: 1; }
+    .cover { flex-direction: column; text-align: center; }
+  }
+  @media print {
+    body { background: #fff; } .page-wrap { box-shadow: none; margin: 0; border-radius: 0; }
+    a { color: inherit; border-bottom: none; } table, .callout, figure.shot { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <header class="cover">
+    <div class="cover-logo"><img src="../assets/tasaf-logo.png" alt="TASAF — Tanzania Social Action Fund" /></div>
+    <div class="cover-text">
+      <h1>Training Module</h1>
+      <h2>TASAF MIS — Operational End-User Manual</h2>
+      <div class="cover-meta">
+        <span class="badge">Tanzania Social Action Fund</span>
+        <span class="badge">Mfuko wa Maendeleo ya Jamii</span>
+        <span class="badge">Version 1.0 · 22 October 2026</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="subhead">
+    <span><strong>Audience:</strong> Training officers · approvers · trainers · supervisors</span>
+    <span><strong>Module:</strong> <code>openimis-be-training_py</code></span>
+  </div>
+
+  <main class="content">
+    <p><strong>Daily procedures for planning, approving, delivering and recording TASAF trainings.</strong>
+    A training goes from a draft to an approved and scheduled event, with its trainers, sessions,
+    participants and attendance, then to a completed record with its materials and evidence.</p>
+
+    <nav class="toc">
+      <h3>Contents</h3>
+      <ol>
+        <li><a href="#purpose">Purpose, roles &amp; access</a></li>
+        <li><a href="#navigation">Menus &amp; pages</a></li>
+        <li><a href="#create">Create a training</a></li>
+        <li><a href="#workflow">Status workflow</a></li>
+        <li><a href="#trainers">Trainers</a></li>
+        <li><a href="#sessions">Sessions</a></li>
+        <li><a href="#participants">Participants &amp; attendance</a></li>
+        <li><a href="#qr">QR check-in</a></li>
+        <li><a href="#files">Materials &amp; evidence</a></li>
+        <li><a href="#calendar">Calendar, attendance list &amp; dashboard</a></li>
+        <li><a href="#troubleshooting">Troubleshooting &amp; good practice</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="purpose">1. Purpose, Roles, and Access</h2>
+    <table>
+      <thead><tr><th>Role</th><th>Typical work</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Training officer</strong></td><td>Create trainings, add trainers, sessions and participants, record attendance, upload files.</td></tr>
+        <tr><td><strong>Training approver</strong></td><td>Approve or reject submitted trainings.</td></tr>
+        <tr><td><strong>Trainer / facilitator</strong></td><td>Open check-in for a session and show its QR code.</td></tr>
+        <tr><td><strong>Supervisor / M&amp;E</strong></td><td>Calendar, attendance list and dashboard.</td></tr>
+      </tbody>
+    </table>
+    <h3>Access &amp; permissions</h3>
+    <table>
+      <thead><tr><th>Right</th><th>Grants</th></tr></thead>
+      <tbody>
+        <tr><td><code>210101</code></td><td>Search and open trainings (and the Trainings menu).</td></tr>
+        <tr><td><code>210102</code> / <code>210103</code> / <code>210104</code></td><td>Create / update / delete a training.</td></tr>
+        <tr><td><code>210110</code></td><td>Approve or reject a training.</td></tr>
+        <tr><td><code>210301</code> / <code>210302</code></td><td>See / manage trainer profiles.</td></tr>
+        <tr><td><code>210402</code></td><td>Assign trainers and staff to a training.</td></tr>
+        <tr><td><code>210701</code> / <code>210702</code></td><td>See / manage participants and attendance.</td></tr>
+        <tr><td><code>210901</code>–<code>210904</code></td><td>See / add / update / delete sessions.</td></tr>
+        <tr><td><code>210501</code> / <code>210502</code> / <code>210802</code></td><td>See materials / upload materials / upload evidence.</td></tr>
+        <tr><td><code>210601</code></td><td>The Training Dashboard.</td></tr>
+      </tbody>
+    </table>
+    <div class="callout note"><strong>Rights are read at login.</strong> If a right was just granted, log
+    out and back in.</div>
+
+    <h2 id="navigation">2. Menus and Pages</h2>
+    <table>
+      <thead><tr><th>Menu</th><th>Used for</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Trainings</strong></td><td>Search, open or create a training.</td></tr>
+        <tr><td><strong>Calendar</strong></td><td>Month, week or agenda view of trainings and other activities.</td></tr>
+        <tr><td><strong>Trainers</strong></td><td>Reusable trainer profiles.</td></tr>
+        <tr><td><strong>Attendance</strong></td><td>Every participant of every training, with filters.</td></tr>
+        <tr><td><strong>Training Dashboard</strong></td><td>Summary counts.</td></tr>
+      </tbody>
+    </table>
+    <p>On the Trainings list, filter by code, title, status, training area, trainer, start date and
+    location. A single click shows a quick preview; a double click opens the training.</p>
+    <figure class="shot">
+      <a href="img/tr-01-list.png"><img src="img/tr-01-list.png" alt="The Trainings list with its filters." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 1</span> The Trainings list with its filters.</figcaption>
+    </figure>
+
+    <h2 id="create">3. Create a Training</h2>
+    <p>You do not need a trainer first. Only <strong>Code</strong>, <strong>Title</strong>,
+    <strong>Start</strong> and <strong>End</strong> are required.</p>
+    <ol class="steps">
+      <li>Open <strong>Trainings</strong> and press <strong>+</strong> (or <strong>New training</strong> on the calendar).</li>
+      <li>Fill the details: code (unique), title, <strong>Training Area</strong> (what kind of training, e.g. Targeting, Payment), description, start and end dates, venue, expected participants.</li>
+      <li>Choose the <strong>PAA location</strong>: Region and District are required, Ward and Village optional. The PAA is worked out from the district.</li>
+      <li>Watch the conflict banner. <em>Conflicts that block saving</em> (red) mean a trainer, venue or staff member is already booked in that window. <em>Warnings</em> allow saving.</li>
+      <li>Press <strong>Save</strong>. The training is a <strong>Draft</strong>, and its tabs appear: Trainers, Participants, Sessions, Materials, Evidence.</li>
+    </ol>
+    <figure class="shot">
+      <a href="img/tr-02-new.png"><img src="img/tr-02-new.png" alt="A new training. The conflict banner appears above the form when the dates clash." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 2</span> A new training. The conflict banner appears above the form when the dates clash.</figcaption>
+    </figure>
+
+    <h2 id="workflow">4. Status Workflow</h2>
+    <p>The status changes only through the buttons at the top of the training.</p>
+    <table>
+      <thead><tr><th>Status</th><th>Buttons</th><th>Who</th></tr></thead>
+      <tbody>
+        <tr><td>Draft</td><td>Submit · Cancel</td><td>Officer</td></tr>
+        <tr><td>Submitted</td><td>Approve · Reject</td><td>Approver (210110)</td></tr>
+        <tr><td>Rejected</td><td>Revise (back to Draft)</td><td>Officer</td></tr>
+        <tr><td>Approved</td><td>Schedule · Cancel</td><td>Officer</td></tr>
+        <tr><td>Scheduled</td><td>Start · Reschedule · Cancel</td><td>Officer</td></tr>
+        <tr><td>Ongoing</td><td>Complete · Cancel</td><td>Officer</td></tr>
+        <tr><td>Completed</td><td>Close</td><td>Officer</td></tr>
+        <tr><td>Cancelled · Closed</td><td>None (final)</td><td></td></tr>
+      </tbody>
+    </table>
+    <ul>
+      <li>The training's details can be edited only while it is Draft or Rejected.</li>
+      <li><strong>Schedule</strong> checks for conflicts again and is refused if a trainer, venue or staff clash exists.</li>
+      <li><strong>Reschedule</strong> asks for the new dates and a reason, moves the sessions with them, and tells you how many sessions now fall outside the new window. Every reschedule is kept in the <em>Reschedule history</em>.</li>
+    </ul>
+    <figure class="shot">
+      <a href="img/tr-03-training.png"><img src="img/tr-03-training.png" alt="A draft training; the buttons in the header change with its status." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 3</span> A draft training; the buttons in the header change with its status.</figcaption>
+    </figure>
+
+    <h2 id="trainers">5. Trainers</h2>
+    <h3>Trainer profiles</h3>
+    <p>Under <strong>Trainers</strong>, create a profile once for anyone you assign repeatedly: code,
+    full name, type, organization, position, specialization, phone, email and a short bio. A profile
+    can be linked to a staff user and marked Active or Inactive.</p>
+    <h3>Assign trainers to a training</h3>
+    <ol class="steps">
+      <li>Open the training's <strong>Trainers</strong> tab.</li>
+      <li>Pick a trainer profile, or a staff user.</li>
+      <li>Choose the role (Lead Trainer, Assistant Trainer, Facilitator, Coordinator, Observer, Support Staff) and status, and save.</li>
+    </ol>
+    <p>Active assignments are used in the conflict check, so the same trainer cannot be booked twice at once.</p>
+
+    <h2 id="sessions">6. Sessions</h2>
+    <p>A training can run over several sessions, each with a date, start and end time. On the
+    <strong>Sessions</strong> tab, use <strong>Add session</strong>. Deleting a session keeps the people
+    registered for it on the training's register. Each session has <strong>Registration</strong> (on or
+    off) and an <strong>Attendance QR</strong> (section 8).</p>
+    <figure class="shot">
+      <a href="img/tr-04-sessions.png"><img src="img/tr-04-sessions.png" alt="The Sessions tab with registration and Attendance QR." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 4</span> The Sessions tab with registration and Attendance QR.</figcaption>
+    </figure>
+
+    <h2 id="participants">7. Participants and Attendance</h2>
+    <ol class="steps">
+      <li>Open the <strong>Participants</strong> tab and choose <strong>Add participant</strong>.</li>
+      <li>Enter the full name, category, organization and phone, or pick a system user.</li>
+      <li>Add the person to one session or to the <strong>Whole training</strong>.</li>
+      <li>Set the attendance: Invited → Confirmed → Attended, Absent or Replaced.</li>
+    </ol>
+    <p>People who check in with the QR code are added here automatically as Attended.</p>
+    <figure class="shot">
+      <a href="img/tr-05-participants.png"><img src="img/tr-05-participants.png" alt="The Participants tab." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 5</span> The Participants tab.</figcaption>
+    </figure>
+
+    <h2 id="qr">8. QR Check-in</h2>
+    <p>Attendees can register their own attendance from their phones, with no login.</p>
+    <ol class="steps">
+      <li>On the Sessions tab press <strong>Attendance QR</strong>.</li>
+      <li>Check-in opens by itself while the session is running. Press <strong>Open check-in</strong> to open it earlier or on another day, and <strong>Close check-in</strong> to stop it.</li>
+      <li>Show the code on screen, <strong>Print QR</strong>, or <strong>Copy link</strong> to share it. The dialog counts how many have checked in.</li>
+      <li>Attendees scan the code, check the session details and enter their full name, gender, phone and, optionally, email, organization and title. They can show the confirmation screen at the door.</li>
+    </ol>
+    <figure class="shot">
+      <a href="img/tr-06-qr.png"><img src="img/tr-06-qr.png" alt="The Attendance QR dialog." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 6</span> The Attendance QR dialog.</figcaption>
+    </figure>
+    <figure class="shot">
+      <a href="img/tr-07-checkin.png"><img src="img/tr-07-checkin.png" width="390" alt="The public check-in page on a phone." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 7</span> The public check-in page on a phone.</figcaption>
+    </figure>
+    <div class="callout note">A person can check in once per session. When check-in is closed the page says
+    so; repeated attempts from the same phone are slowed down.</div>
+
+    <h2 id="files">9. Materials and Evidence</h2>
+    <ul>
+      <li><strong>Materials</strong>: files used before or during the training, such as the agenda or slides.</li>
+      <li><strong>Evidence</strong>: proof after the training, each with a type: Training Report, Attendance Sheet, Photo, Signed Form, Evaluation Summary, Trainer Report or Other.</li>
+    </ul>
+    <p>Each file is listed with who uploaded it and when.</p>
+
+    <h2 id="calendar">10. Calendar, Attendance List and Dashboard</h2>
+    <h3>Calendar</h3>
+    <p>Switch between <strong>Month</strong>, <strong>Week</strong> and <strong>Agenda</strong>, and filter by
+    status. Trainings are shown with Coordination and Communications activities, coloured by source, so
+    clashes across modules are visible. Click an event to open it.</p>
+    <figure class="shot">
+      <a href="img/tr-08-calendar.png"><img src="img/tr-08-calendar.png" alt="The Training Calendar in month view." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 8</span> The Training Calendar in month view.</figcaption>
+    </figure>
+    <h3>Attendance</h3>
+    <p>Every participant of every training, filtered by name, attendance, category and location.
+    <strong>View Training</strong> opens the training of a row. Attendance itself is recorded on each
+    training's Participants tab.</p>
+    <h3>Training Dashboard</h3>
+    <p>Total trainings, this week, upcoming, ongoing, completed, cancelled and active trainers, with
+    charts by status and by programme area.</p>
+    <figure class="shot">
+      <a href="img/tr-09-dashboard.png"><img src="img/tr-09-dashboard.png" alt="The Training Dashboard." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 9</span> The Training Dashboard.</figcaption>
+    </figure>
+
+    <h2 id="troubleshooting">11. Troubleshooting and Good Practice</h2>
+    <table>
+      <thead><tr><th>Problem</th><th>What to do</th></tr></thead>
+      <tbody>
+        <tr><td>Save is disabled</td><td>Read the red conflict banner; change the dates, venue or trainer.</td></tr>
+        <tr><td>I can't edit the details</td><td>Only Draft or Rejected trainings can be edited. Use Reschedule to change dates later.</td></tr>
+        <tr><td>Schedule is refused</td><td>A conflict appeared since the training was approved. Open the conflict and resolve it.</td></tr>
+        <tr><td>Attendees see “Registration for this session is closed”</td><td>Open check-in in the Attendance QR dialog.</td></tr>
+        <tr><td>A menu or button is missing</td><td>Ask the administrator to check your role, then log in again.</td></tr>
+      </tbody>
+    </table>
+    <div class="callout tip"><strong>Good practice.</strong> Add sessions before the day so the QR code works.
+    Upload the attendance sheet and the training report as Evidence before closing the training.</div>
+
+  </main>
+
+  <footer class="doc-footer">
+    <div class="brand">
+      <img src="../assets/tasaf-logo.png" alt="TASAF" />
+      <span>Tanzania Social Action Fund · Training Module End-User Manual · Version 1.0</span>
+    </div>
+    <div><a href="../index.html">← Back to documentation hub</a></div>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,675 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>TASAF MIS — Payment Module User Manual</title>
+<link rel="icon" type="image/png" href="../assets/tasaf-logo.png" />
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    /* TASAF corporateTeal palette (matches the main app) */
+    --tasaf-primary: #00695C;
+    --tasaf-primary-dark: #004D40;
+    --tasaf-primary-light: #4DB6AC;
+    --tasaf-accent: #B83232;
+    --tasaf-bg: #F4FAF9;
+    --tasaf-header: #D6ECE9;
+    --tasaf-highlight: #E4F2EF;
+    --tasaf-text: #202B2A;
+    --tasaf-muted: #5F6368;
+    --tasaf-white: #FFFFFF;
+    --tasaf-border: #D6ECE9;
+    --tasaf-toggled: #546E7A;
+    --tasaf-success: #2E7D32;
+    --tasaf-warning: #ED6C02;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: 'Rubik', 'Roboto', 'Helvetica Neue', sans-serif;
+    font-weight: 300; color: var(--tasaf-text); background: var(--tasaf-bg);
+    line-height: 1.65; font-size: 15px;
+  }
+  img, svg { max-width: 100%; }
+  a { color: var(--tasaf-primary); text-decoration: none; border-bottom: 1px dotted var(--tasaf-primary); }
+  a:hover { color: var(--tasaf-accent); border-bottom-style: solid; }
+  code, kbd { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 0.9em;
+    background: var(--tasaf-highlight); color: var(--tasaf-primary-dark); padding: 1px 6px; border-radius: 4px; }
+
+  .page-wrap { max-width: 1180px; margin: 24px auto; background: var(--tasaf-white);
+    box-shadow: 0 8px 40px rgba(0,105,92,0.12); border-radius: 14px; overflow: hidden; }
+
+  /* Cover */
+  .cover { background: linear-gradient(135deg, #00695C 0%, #004F45 100%); color: #fff;
+    padding: 40px 56px; display: flex; align-items: center; gap: 28px; }
+  .cover-logo img { width: 76px; height: 76px; background: #fff; padding: 8px; border-radius: 14px; }
+  .cover-text h1 { margin: 0; font-size: 30px; font-weight: 600; letter-spacing: 0.2px; }
+  .cover-text h2 { margin: 4px 0 12px; font-size: 16px; font-weight: 400; color: var(--tasaf-header); }
+  .cover-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+  .badge { background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.25);
+    padding: 3px 11px; border-radius: 999px; font-size: 12px; }
+
+  .subhead { background: var(--tasaf-header); color: var(--tasaf-primary-dark);
+    padding: 12px 56px; font-size: 13px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+  .content { padding: 36px 56px 48px; }
+  h2 { color: var(--tasaf-primary); font-size: 22px; font-weight: 600; margin: 40px 0 12px;
+    padding-bottom: 8px; border-bottom: 2px solid var(--tasaf-header); }
+  h2:first-of-type { margin-top: 8px; }
+  h3 { color: var(--tasaf-primary-dark); font-size: 16.5px; font-weight: 600; margin: 24px 0 8px; }
+  p { margin: 10px 0; }
+  ul, ol { margin: 10px 0; padding-left: 22px; }
+  li { margin: 5px 0; }
+
+  /* TOC */
+  .toc { background: var(--tasaf-header); border-radius: 8px; padding: 18px 24px; margin: 0 0 24px;
+    border-left: 5px solid var(--tasaf-primary); }
+  .toc h3 { margin: 0 0 8px; color: var(--tasaf-primary); font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .toc ol { columns: 2; column-gap: 32px; padding-left: 18px; margin: 0; }
+  .toc li { margin: 3px 0; break-inside: avoid; }
+  .toc a { border-bottom: none; }
+
+  /* Step procedures */
+  ol.steps { counter-reset: step; list-style: none; padding-left: 0; }
+  ol.steps > li { counter-increment: step; position: relative; padding: 5px 0 5px 42px; margin: 5px 0; }
+  ol.steps > li::before { content: counter(step); position: absolute; left: 0; top: 4px;
+    width: 28px; height: 28px; background: var(--tasaf-primary); color: #fff; border-radius: 50%;
+    text-align: center; line-height: 28px; font-weight: 500; font-size: 13px; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 24px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 14px; border: 1px solid var(--tasaf-border); vertical-align: top; }
+  th { background: var(--tasaf-primary); color: #fff; font-weight: 500; }
+  tbody tr:nth-child(even) { background: var(--tasaf-bg); }
+  td code { white-space: nowrap; }
+
+  /* Callouts */
+  .callout { border-radius: 8px; padding: 14px 18px; margin: 16px 0; border-left: 5px solid; font-size: 14px; }
+  .callout.note { background: var(--tasaf-highlight); border-color: var(--tasaf-primary); }
+  .callout.warn { background: #FDF0D4; border-color: var(--tasaf-warning); }
+  .callout.tip { background: #E8F5E9; border-color: var(--tasaf-success); }
+  .callout strong { color: var(--tasaf-primary-dark); }
+
+  /* Status / reporter chips */
+  .chip { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 500; }
+  .chip.received { background: #ECEFF1; color: var(--tasaf-toggled); }
+  .chip.open { background: #E3F2FD; color: #0D47A1; }
+  .chip.progress { background: #FFF3E0; color: var(--tasaf-warning); }
+  .chip.resolved { background: #E8F5E9; color: var(--tasaf-success); }
+  .chip.closed { background: #FDECEA; color: var(--tasaf-accent); }
+
+  /* Figure / screenshot placeholders (replace the .ph div with <img> when screenshots are ready) */
+  figure.shot { margin: 18px 0 26px; background: var(--tasaf-white); border: 1px solid var(--tasaf-border);
+    border-radius: 10px; overflow: hidden; box-shadow: 0 4px 14px rgba(0,105,92,0.10); }
+  figure.shot img { display: block; max-width: 100%; height: auto; margin: 0 auto; border-bottom: 1px solid var(--tasaf-border); }
+  figure.shot a { border-bottom: none; }
+  figure.shot .ph { display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 220px; gap: 6px; text-align: center; color: var(--tasaf-primary);
+    background: repeating-linear-gradient(135deg, transparent 0 14px, rgba(0,105,92,0.045) 14px 28px), var(--tasaf-bg);
+    border-bottom: 1px dashed var(--tasaf-primary-light); font-style: italic; }
+  figure.shot .ph .cam { font-size: 30px; font-style: normal; }
+  figure.shot .ph .lbl { font-size: 13px; letter-spacing: 0.3px; }
+  figure.shot figcaption { padding: 10px 16px; background: var(--tasaf-header); color: var(--tasaf-primary-dark);
+    font-size: 13px; display: flex; gap: 10px; align-items: baseline; }
+  figure.shot figcaption .num { display: inline-block; background: var(--tasaf-primary); color: #fff;
+    padding: 2px 9px; border-radius: 4px; font-weight: 500; font-size: 11.5px; letter-spacing: 0.4px;
+    text-transform: uppercase; flex-shrink: 0; }
+
+  /* Footer */
+  .doc-footer { background: var(--tasaf-primary-dark); color: rgba(255,255,255,0.9); padding: 26px 56px;
+    font-size: 13px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .doc-footer .brand { display: flex; align-items: center; gap: 12px; }
+  .doc-footer img { width: 36px; height: 36px; background: #fff; padding: 4px; border-radius: 8px; }
+  .doc-footer a { color: #cbedf2; border-bottom: none; }
+
+  @media (max-width: 700px) {
+    .cover, .subhead, .content, .doc-footer { padding-left: 22px; padding-right: 22px; }
+    .toc ol { columns: 1; }
+    .cover { flex-direction: column; text-align: center; }
+  }
+  @media print {
+    body { background: #fff; } .page-wrap { box-shadow: none; margin: 0; border-radius: 0; }
+    a { color: inherit; border-bottom: none; } table, .callout, figure.shot { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- ========== COVER ========== -->
+  <header class="cover">
+    <div class="cover-logo"><img src="../assets/tasaf-logo.png" alt="TASAF — Tanzania Social Action Fund" /></div>
+    <div class="cover-text">
+      <h1>Payment Module</h1>
+      <h2>TASAF MIS — Operational End-User Manual</h2>
+      <div class="cover-meta">
+        <span class="badge">Tanzania Social Action Fund</span>
+        <span class="badge">Mfuko wa Maendeleo ya Jamii</span>
+        <span class="badge">Version 1.0 · 22 October 2026</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="subhead">
+    <span><strong>Audience:</strong> Payment officers · pre-audit officers · paylist approvers · finance · auditors</span>
+    <span><strong>Module:</strong> <code>openimis-be-tasaf_payment_py</code></span>
+  </div>
+
+  <main class="content">
+
+    <p><strong>Daily procedures for getting PCT benefits from an approved payroll to the households' bank
+    and mobile-money accounts.</strong> The module checks every payment account with GePG, audits the
+    payments of a payment window, builds the Bank and MNO batches (paylists), takes them through two
+    approvals and sends them to MUSE, and follows each payment until it is paid or returned. Server
+    set-up (GovESB keys, scheduled jobs) is covered in the administrator guide.</p>
+
+    <!-- TOC -->
+    <nav class="toc">
+      <h3>Contents</h3>
+      <ol>
+        <li><a href="#purpose">Purpose, roles &amp; access</a></li>
+        <li><a href="#navigation">Navigation &amp; the payment pipeline</a></li>
+        <li><a href="#verification">Verify payment accounts (GePG)</a></li>
+        <li><a href="#review">Review name checks</a></li>
+        <li><a href="#preaudit">Pre-audit a payment window</a></li>
+        <li><a href="#disbursement">Generate a disbursement batch</a></li>
+        <li><a href="#paylists">Approve and submit paylists</a></li>
+        <li><a href="#unapplied">Unapplied payments</a></li>
+        <li><a href="#dashboard">Payment dashboard</a></li>
+        <li><a href="#charges">Charges: FSPs and withdrawal charges</a></li>
+        <li><a href="#reports">Reports</a></li>
+        <li><a href="#integrations">Integrations: MUSE and GePG</a></li>
+        <li><a href="#statuses">Status reference</a></li>
+        <li><a href="#troubleshooting">Troubleshooting &amp; good practice</a></li>
+        <li><a href="#glossary">Glossary</a></li>
+      </ol>
+    </nav>
+
+    <!-- 1 -->
+    <h2 id="purpose">1. Purpose, Roles, and Access</h2>
+    <p>The Payment module starts where Payroll ends: a payroll calculated by the PCT rule and approved
+    for payment. It ends when MUSE reports every payment as paid or unapplied.</p>
+
+    <h3>Typical user roles</h3>
+    <table>
+      <thead><tr><th>Role</th><th>Typical work</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Verification officer</strong></td><td>Send payment accounts to GePG, follow the requests, review name checks.</td></tr>
+        <tr><td><strong>Pre-audit officer</strong></td><td>Choose the payment window, run the account checks, review compliance and duplicates.</td></tr>
+        <tr><td><strong>Paylist officer</strong></td><td>Generate the Bank and MNO batches from an approved payroll.</td></tr>
+        <tr><td><strong>Approvers</strong> (e.g. Director of Finance, Executive Director)</td><td>Give the two approvals each paylist needs.</td></tr>
+        <tr><td><strong>Finance officer</strong></td><td>Submit approved paylists to MUSE; follow unapplied payments.</td></tr>
+        <tr><td><strong>Settings maker / checker</strong></td><td>Propose and approve MUSE, GePG, FSP and charge changes. The checker must be a different person.</td></tr>
+        <tr><td><strong>Auditor / M&amp;E</strong> (read-only)</td><td>Dashboard and reports.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Access &amp; permissions</h3>
+    <p>Each tab appears only for users holding its right. If a tab or button is missing, ask the
+    system administrator to review your role; do not use another person's account.</p>
+    <table>
+      <thead><tr><th>Right</th><th>Grants</th></tr></thead>
+      <tbody>
+        <tr><td><code>270001</code></td><td>See payment accounts: the <strong>Verification</strong> tab.</td></tr>
+        <tr><td><code>270101</code></td><td>Send accounts to GePG for verification.</td></tr>
+        <tr><td><code>270102</code></td><td>Confirm or reject name checks (<em>Needs review</em>).</td></tr>
+        <tr><td><code>270202</code> / <code>270201</code></td><td>See the <strong>Pre-Audit</strong> tab / run pre-audit.</td></tr>
+        <tr><td><code>270302</code></td><td>The <strong>Disbursement</strong> tab: generate paylists.</td></tr>
+        <tr><td><code>270301</code> / <code>270303</code> / <code>270304</code></td><td>See paylists / approve a paylist / submit a paylist to MUSE.</td></tr>
+        <tr><td><code>270401</code></td><td>The <strong>Unapplied Payments</strong> tab.</td></tr>
+        <tr><td><code>270501</code></td><td>The <strong>Dashboard</strong> tab.</td></tr>
+        <tr><td><code>270701</code> / <code>270702</code></td><td>See the <strong>Charges</strong> tab / propose FSP names and charge bands.</td></tr>
+        <tr><td><code>270801</code></td><td>The <strong>Reports</strong> tab.</td></tr>
+        <tr><td><code>270901</code> / <code>270902</code> / <code>270903</code></td><td>See <strong>Integrations</strong> / propose a settings change / approve one.</td></tr>
+      </tbody>
+    </table>
+
+    <!-- 2 -->
+    <h2 id="navigation">2. Navigation and the Payment Pipeline</h2>
+    <p>Open <strong>Payments → TASAF Payments</strong> in the left menu. Everything in this manual is a
+    tab of that one page:</p>
+    <table>
+      <thead><tr><th>Tab</th><th>Used for</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Dashboard</strong></td><td>Counts of accounts and paylists at each stage.</td></tr>
+        <tr><td><strong>Verification</strong></td><td>Checking payment accounts with GePG.</td></tr>
+        <tr><td><strong>Pre-Audit</strong></td><td>Checking a payment window before money moves.</td></tr>
+        <tr><td><strong>Disbursement</strong></td><td>Generating the Bank and MNO batches from a payroll.</td></tr>
+        <tr><td><strong>Paylists</strong></td><td>Approving and submitting batches; following MUSE's replies.</td></tr>
+        <tr><td><strong>Unapplied Payments</strong></td><td>Payments the bank or operator could not credit.</td></tr>
+        <tr><td><strong>Charges</strong></td><td>Banks and mobile operators (FSPs), their names and withdrawal charges.</td></tr>
+        <tr><td><strong>Reports</strong></td><td>Summary of e-payment by FSP, with drill-down.</td></tr>
+        <tr><td><strong>Integrations</strong></td><td>MUSE and GePG settings, and the changes awaiting approval.</td></tr>
+      </tbody>
+    </table>
+
+    <figure class="shot">
+      <a href="img/pay-01-workspace.png"><img src="img/pay-01-workspace.png" alt="The TASAF Payments page with its tabs." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 1</span> The TASAF Payments page with its tabs.</figcaption>
+    </figure>
+
+    <h3>The pipeline</h3>
+    <ol class="steps">
+      <li><strong>Verify accounts.</strong> Each household's primary account is checked with GePG, which returns the name the bank or operator holds. The system compares it with the household's recipient.</li>
+      <li><strong>Review name checks</strong> that are not a clear match.</li>
+      <li><strong>Pre-audit</strong> the payment window: account checks, amounts per household, duplicates.</li>
+      <li><strong>Generate</strong> the Bank and MNO paylists from the approved payroll.</li>
+      <li><strong>Approve</strong> each paylist twice, by two different people.</li>
+      <li><strong>Submit</strong> to MUSE. MUSE's replies update the paylist and each payment automatically.</li>
+      <li><strong>Follow up</strong> unapplied payments through Case Management.</li>
+    </ol>
+
+    <div class="callout note"><strong>Two-person rule.</strong> Paylists, and every change to MUSE or
+    GePG settings, FSP details, FSP names and withdrawal charges, need a second person. The person who
+    proposed a change can never approve it.</div>
+
+    <!-- 3 -->
+    <h2 id="verification">3. Verify Payment Accounts (GePG)</h2>
+    <p>A payment account can only be paid once it is <strong>Verified</strong>. The <strong>Verification</strong>
+    tab has five lists:</p>
+    <table>
+      <thead><tr><th>List</th><th>Shows</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Awaiting verification</strong></td><td>Accounts not yet checked, or sent and waiting for GePG (<em>Pending GePG</em>).</td></tr>
+        <tr><td><strong>Success</strong></td><td>Verified accounts. Accounts due their check before the first payment are marked <em>Re-verify due</em>.</td></tr>
+        <tr><td><strong>Failed</strong></td><td>Accounts GePG or a reviewer rejected. They are fixed in Case Management → Account Corrections.</td></tr>
+        <tr><td><strong>Needs review</strong></td><td>Accounts whose returned name does not clearly match (section 4).</td></tr>
+        <tr><td><strong>GePG requests</strong></td><td>Every request sent to GePG, with its answer.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Send accounts</h3>
+    <ol class="steps">
+      <li>Open <strong>Awaiting verification</strong> and filter by location, FSP or account type.</li>
+      <li>Tick accounts and press <strong>Verify</strong>, or press <strong>Verify all matching (N)</strong> to send every account that matches the filters, on every page.</li>
+      <li>Confirm. A summary shows what was sent, refused, skipped, or withdrawn because the number is invalid or belongs to another operator.</li>
+      <li>Results arrive when GePG answers. You get a notification for each request; the accounts move to Success, Failed or Needs review.</li>
+    </ol>
+
+    <figure class="shot">
+      <a href="img/pay-02-awaiting.png"><img src="img/pay-02-awaiting.png" alt="Awaiting verification, with the Verify and Verify all matching buttons." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 2</span> Awaiting verification, with the Verify and Verify all matching buttons.</figcaption>
+    </figure>
+
+    <figure class="shot">
+      <div class="ph"><span class="cam">📷</span><span class="lbl">Fig. 3 — screenshot to be added</span></div>
+      <figcaption><span class="num">Fig. 3</span> The summary after sending: sent, refused, skipped and withdrawn accounts.</figcaption>
+    </figure>
+
+    <div class="callout warn"><strong>Wrong-operator numbers are not sent.</strong> A mobile number whose
+    prefix belongs to another operator (e.g. an Airtel number recorded as M-Pesa), or that is not
+    255 + 9 digits, is withdrawn, marked Failed and listed in Case Management → Account Corrections.</div>
+
+    <h3>Show payload</h3>
+    <p><strong>Show payload</strong> (⋮ menu) shows exactly what <em>Verify all matching</em> would send for the
+    current filters. Nothing is sent and no account changes.</p>
+
+    <h3>Re-verify before the first payment</h3>
+    <p>Every account is checked once more just before it is first paid. On <strong>Success</strong>, use
+    <strong>Re-verify before payment</strong> (ticked rows) or <strong>Re-verify all due</strong>. Until GePG
+    answers, the account cannot pass pre-audit.</p>
+
+    <h3>GePG requests</h3>
+    <p>Each row is one request to one FSP, with its accounts and results (<em>verified, to review, failed</em>).
+    An account in a request is <em>Pending GePG</em> and cannot be sent again. If GePG never answers,
+    press <strong>Release</strong>: the accounts go back to Awaiting verification. A late answer is still applied.</p>
+
+    <figure class="shot">
+      <div class="ph"><span class="cam">📷</span><span class="lbl">Fig. 4 — screenshot to be added</span></div>
+      <figcaption><span class="num">Fig. 4</span> GePG requests, with Release on a request that was not answered.</figcaption>
+    </figure>
+
+    <!-- 4 -->
+    <h2 id="review">4. Review Name Checks</h2>
+    <p>When the name returned by the bank or operator does not clearly match the household's recipient,
+    the account goes to <strong>Needs review</strong>. Open it to see the recipient name in the MIS, the
+    name returned, the match score and the reason (e.g. <em>Surname differs</em>, <em>Name of another
+    household member</em>), plus earlier attempts.</p>
+    <ol class="steps">
+      <li>Compare the names with supporting documents if needed.</li>
+      <li>Press <strong>Confirm match</strong>: the account becomes Verified and goes on to pre-audit and payment.</li>
+      <li>Or press <strong>Reject</strong>: it becomes Failed and goes to Case Management → Account Corrections.</li>
+      <li>Add a note on why; it is kept in the audit trail.</li>
+    </ol>
+    <figure class="shot">
+      <a href="img/pay-05-review.png"><img src="img/pay-05-review.png" alt="The name check review dialog." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 5</span> The name check review dialog.</figcaption>
+    </figure>
+
+    <!-- 5 -->
+    <h2 id="preaudit">5. Pre-audit a Payment Window</h2>
+    <p>At the top of <strong>Pre-Audit</strong>, choose the <strong>payment window</strong> (the payment cycle,
+    e.g. <em>Sep – Oct 2026</em>). Every tab looks at all payrolls of that window except rejected ones.</p>
+
+    <h3>5.1 Overview</h3>
+    <p>Cards for <strong>Total MNOs</strong>, <strong>Total Banks</strong> and <strong>Total</strong>, each with
+    the amount, households and payments. A note below counts payments whose household has no primary
+    payment account. To look at one household, type its <strong>HHID</strong> (or part of it) and press
+    <strong>Open household</strong>.</p>
+    <figure class="shot">
+      <a href="img/pay-06-preaudit-overview.png"><img src="img/pay-06-preaudit-overview.png" alt="Pre-Audit Overview for a payment window." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 6</span> Pre-Audit Overview for a payment window.</figcaption>
+    </figure>
+
+    <h3>5.2 Accounts: run the account checks</h3>
+    <p>Only accounts that <em>Passed</em> are paid. Tick accounts (or all) and press <strong>Run Pre-Audit</strong>.</p>
+    <table>
+      <thead><tr><th>Check</th><th>If it fails</th></tr></thead>
+      <tbody>
+        <tr><td>Account is verified</td><td>Verify it first (section 3).</td></tr>
+        <tr><td>It is the household's primary account</td><td>Only primary accounts are paid.</td></tr>
+        <tr><td>Linked to a household that is active in the benefit plan</td><td>The household is missing or suspended.</td></tr>
+        <tr><td>Mobile number is valid (255 + 9 digits, starting 6 or 7)</td><td>Correct it in Case Management → Account Corrections.</td></tr>
+        <tr><td>Re-verified before the first payment</td><td>Use Re-verify on the Success list.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>5.3 Compliance: is each household paid the right amount?</h3>
+    <p>Every payment is recalculated from the household details saved when the payroll was calculated:</p>
+    <table>
+      <thead><tr><th>Part</th><th>Rule</th></tr></thead>
+      <tbody>
+        <tr><td>Base</td><td>14,000</td></tr>
+        <tr><td>Disability</td><td>5,000 once per household</td></tr>
+        <tr><td>Health</td><td>7,000 per child aged 0–5, at most 3</td></tr>
+        <tr><td>Primary</td><td>5,000 per primary student, at most 3</td></tr>
+        <tr><td>Secondary</td><td>8,000 per secondary student, at most 3</td></tr>
+        <tr><td>Household cap</td><td>50,000 in total, then penalties are deducted</td></tr>
+      </tbody>
+    </table>
+    <p>Four cards count <strong>Match</strong>, <strong>Overpaid</strong>, <strong>Underpaid</strong> and
+    <strong>Data error</strong> (a payment that cannot be checked). A table shows each part for the whole
+    window; below it, the payments that do not match, with the expected and paid amounts and the part
+    that differs. <strong>Recalculate</strong> refreshes the figures; <strong>Export</strong> downloads every
+    payment part by part (CSV).</p>
+    <figure class="shot">
+      <a href="img/pay-07-compliance.png"><img src="img/pay-07-compliance.png" alt="Compliance: result cards, the parts table and the payments that do not match." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 7</span> Compliance: result cards, the parts table and the payments that do not match.</figcaption>
+    </figure>
+
+    <h3>5.4 Duplicates: is anyone paid twice?</h3>
+    <table>
+      <thead><tr><th>Card</th><th>Finds</th></tr></thead>
+      <tbody>
+        <tr><td>Household paid more than once</td><td>The same HHID with more than one payment in the window, with the extra cost.</td></tr>
+        <tr><td>Account shared by households</td><td>The same account number on different households (0744… and 255744… are treated as the same).</td></tr>
+        <tr><td>Same person in two households</td><td>A member with the same names and date of birth in two paid households.</td></tr>
+      </tbody>
+    </table>
+    <p>Click a match to see its payments, and an HHID to open the household.</p>
+
+    <h3>5.5 The household view</h3>
+    <p>Shows the head, village, payment account and its status; the <strong>Findings</strong> in plain
+    sentences; one table per payment with <strong>Recorded</strong> (saved at calculation),
+    <strong>Expected</strong> (the rule applied to it) and <strong>Today</strong> (the rule applied to the
+    members now, changed parts in red); the members; and every payment of the household in all windows.</p>
+    <figure class="shot">
+      <a href="img/pay-08-household.png"><img src="img/pay-08-household.png" alt="The household view: findings, payment tables and members." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 8</span> The household view: findings, payment tables and members.</figcaption>
+    </figure>
+    <div class="callout note"><strong>Findings do not stop a paylist yet.</strong> They are for review.
+    Clearing or excluding a finding with a second person's approval is planned.</div>
+
+    <!-- 6 -->
+    <h2 id="disbursement">6. Generate a Disbursement Batch</h2>
+    <p>A paylist is one batch sent to MUSE, either <strong>Bank</strong> or <strong>MNO</strong>, never both;
+    one payroll normally gives two. Very large batches are split into parts of at most 50,000 payments.
+    A benefit is paid from one paylist only.</p>
+    <ol class="steps">
+      <li><strong>Select Payroll</strong>: only payrolls approved for payment are listed.</li>
+      <li><strong>Batch Type &amp; Scope</strong>: Bank or MNO, and the destination.</li>
+      <li><strong>Review</strong>: what the batch will hold. Nothing is created yet.</li>
+      <li><strong>Generate</strong>: creates the paylist(s) as <em>Pending Approval</em>. Nothing is sent.</li>
+    </ol>
+    <figure class="shot">
+      <a href="img/pay-09-review.png"><img src="img/pay-09-review.png" alt="The Review step. Here nothing is left to generate, and it lists the households left out and where to fix them." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 9</span> The Review step. Here nothing is left to generate, and it lists the households left out and where to fix them.</figcaption>
+    </figure>
+
+    <h3>Reading the Review step</h3>
+    <table>
+      <thead><tr><th>Section</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Will be included</strong> (green)</td><td>Payments and amount, by FSP.</td></tr>
+        <tr><td><strong>Warnings</strong> (amber)</td><td>The batch can be generated but will run into trouble: an FSP without MUSE details (Submit will be refused), or no withdrawal-charge band for an amount (the household would get less). Fix them on the <strong>Charges</strong> tab first.</td></tr>
+        <tr><td><strong>Needs attention</strong></td><td>Households left out, and where to fix them: account not verified, pre-audit not passed, invalid mobile number, no primary account.</td></tr>
+        <tr><td><strong>Not in this batch</strong> (grey)</td><td>Paid through the other channel, or already on a paylist. No action needed.</td></tr>
+      </tbody>
+    </table>
+    <div class="callout tip"><strong>Households left out are not lost.</strong> Once fixed, generate again
+    for the same payroll: only households not yet on a paylist are picked up.</div>
+
+    <!-- 7 -->
+    <h2 id="paylists">7. Approve and Submit Paylists</h2>
+    <p>On <strong>Paylists</strong>, double-click a paylist to open it. The header shows the batch type,
+    status, MUSE batch reference and MUSE's last reply; the summary shows the gross amount sent to MUSE,
+    the net amount to households and the withdrawal charges.</p>
+    <figure class="shot">
+      <a href="img/pay-10-paylist.png"><img src="img/pay-10-paylist.png" alt="The paylist page with Approve Paylist, Submit to MUSE, MUSE message and the exports." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 10</span> The paylist page with Approve Paylist, Submit to MUSE, MUSE message and the exports.</figcaption>
+    </figure>
+    <ol class="steps">
+      <li><strong>Approve Paylist</strong>, twice, by two different people. After the first approval it stays <em>Pending Approval</em>; after the second it is <em>Approved</em>. Approvals can also be given from the Tasks inbox.</li>
+      <li>Press <strong>MUSE message</strong> to see the exact message and anything MUSE would reject in it. Nothing is sent. Fix every listed problem.</li>
+      <li>Press <strong>Submit to MUSE</strong> and confirm. The paylist becomes <em>Submitted to MUSE</em> only once it has really been sent.</li>
+      <li>MUSE's replies move it to <em>Received</em>, <em>Accepted</em> and <em>Sent to bank / MNO</em>, and mark each payment paid or unapplied. When every payment has an outcome the paylist is <em>Closed</em>.</li>
+    </ol>
+    <div class="callout warn"><strong>Submit is refused</strong>, with the reason, when MUSE would reject the
+    message, when some payments are already on another paylist being paid, or when GovESB is not set up
+    on the server. If the connection fails, press Submit again: the same message is resent, so nobody is
+    paid twice.</div>
+    <p><strong>Rejected at approval</strong> is final: its households are released for a new batch.
+    <strong>Rejected by MUSE</strong> can be fixed and submitted again. <strong>Export Paylist (PDF)</strong>
+    and <strong>Export items (CSV)</strong> download the batch.</p>
+
+    <!-- 8 -->
+    <h2 id="unapplied">8. Unapplied Payments</h2>
+    <p>A payment the bank or operator could not credit (wrong or closed account, name mismatch, returned
+    by the bank) is listed here with MUSE's reason code and description. These records come from MUSE and
+    cannot be edited.</p>
+    <ol class="steps">
+      <li>Open the payment and find its account.</li>
+      <li>Correct the account in Case Management → Account Corrections; it is then verified again.</li>
+      <li>The household is paid in a later batch once the account passes again.</li>
+    </ol>
+    <figure class="shot">
+      <a href="img/pay-11-unapplied.png"><img src="img/pay-11-unapplied.png" alt="Unapplied Payments with reason codes." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 11</span> Unapplied Payments with reason codes.</figcaption>
+    </figure>
+
+    <!-- 9 -->
+    <h2 id="dashboard">9. Payment Dashboard</h2>
+    <p><strong>Verification Status</strong> counts accounts that are Pending, Awaiting GePG, Verified, in
+    Manual Review and Failed. <strong>Paylist Status</strong> has five cards with count and amount:
+    Pending Approval, Approved, With MUSE, Rejected by MUSE and Closed. Click a card to open the list
+    behind it.</p>
+    <figure class="shot">
+      <a href="img/pay-12-dashboard.png"><img src="img/pay-12-dashboard.png" alt="The Payment Operations Dashboard." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 12</span> The Payment Operations Dashboard.</figcaption>
+    </figure>
+    <div class="callout tip"><strong>At the start of a cycle</strong>, bring Pending and Awaiting GePG close to
+    zero and clear Manual Review before generating paylists.</div>
+
+    <!-- 10 -->
+    <h2 id="charges">10. Charges: FSPs and Withdrawal Charges</h2>
+    <p>Each household is paid its benefit <strong>plus</strong> the withdrawal charge of its bank or
+    operator, so it can withdraw the full entitlement. The <strong>Charges</strong> tab lists every bank and
+    mobile operator (FSP).</p>
+    <table>
+      <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td>Ready</td><td>Nothing blocks payments to this FSP.</td></tr>
+        <tr><td>No charge bands</td><td>Payments to its accounts are refused at generation.</td></tr>
+        <tr><td>No band for 19,001–19,999</td><td>A gap: a payment in that range is refused.</td></tr>
+        <tr><td>MUSE details missing</td><td>A bank without bank name or BIC: Submit to MUSE is refused.</td></tr>
+        <tr><td>Awaiting MUSE</td><td>A mobile operator without a BIC from MUSE yet.</td></tr>
+        <tr><td>Awaiting approval</td><td>A change to it waits for a second person.</td></tr>
+        <tr><td>No accounts</td><td>No payment account uses it.</td></tr>
+      </tbody>
+    </table>
+    <p>Tick <strong>Only FSPs that need attention</strong> to hide the rest.</p>
+    <figure class="shot">
+      <a href="img/pay-13-fsp-list.png"><img src="img/pay-13-fsp-list.png" alt="The FSP list with the Status column." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 13</span> The FSP list with the Status column.</figcaption>
+    </figure>
+
+    <h3>Edit an FSP</h3>
+    <p>Click a row (or ✎) to open it:</p>
+    <ul>
+      <li><strong>Details</strong>: code, name, channel, MUSE bank name, BIC; for operators, the <strong>mobile prefixes</strong> (e.g. 068, 069, 078).</li>
+      <li><strong>Other names</strong>: other spellings found on accounts (e.g. "M-Pesa", "Vodacom M-Pesa"), all treated as this FSP.</li>
+      <li><strong>Charge bands</strong>: the charge for each amount range. A gap between bands is shown in red as you edit.</li>
+    </ul>
+    <figure class="shot">
+      <a href="img/pay-14-fsp-dialog.png"><img src="img/pay-14-fsp-dialog.png" alt="The FSP dialog: details, other names and charge bands." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 14</span> The FSP dialog: details, other names and charge bands.</figcaption>
+    </figure>
+    <ol class="steps">
+      <li>Make the change, add a reason, and press <strong>Submit for approval</strong>.</li>
+      <li>The FSP shows <em>Awaiting approval</em> and cannot be changed again until the change is decided.</li>
+      <li>A second person approves it under <strong>Integrations → MUSE → Changes</strong>; only then does it apply.</li>
+    </ol>
+
+    <h3>Import charge bands (CSV)</h3>
+    <p>The ⬆ icon imports a file with columns <code>EPAYMENT_CODE, LOWER_AMOUNT, UPPER_AMOUNT, WITHDRAWAL</code>
+    (<strong>Download template</strong> gives an example). Choose <em>Add to current bands</em> or <em>Replace
+    the bands of these FSPs</em>; FSPs not in the file are never touched. Each FSP in the file becomes one
+    change awaiting approval. A file with any bad row, or with overlapping bands, is refused as a whole.</p>
+    <div class="callout note"><strong>Adding an FSP</strong> (the round + button) sends two changes for
+    approval: its name and its MUSE details. An FSP can be deleted only when no account uses it.</div>
+
+    <!-- 11 -->
+    <h2 id="reports">11. Reports</h2>
+    <p><strong>Summary of e-Payment by FSP</strong>: one row per FSP with households, withdrawal charges, the
+    PCT benefit parts and the total paid. Only payments the gateway has confirmed are counted. Benefit parts
+    are before the household cap, so they can add up to more than was paid.</p>
+    <ol class="steps">
+      <li>Select an FSP to see the payments behind its row; <strong>Include unpaid</strong> adds returned and pending ones.</li>
+      <li>Select a beneficiary to see the benefit breakdown and every payment ever attempted.</li>
+      <li><strong>Download</strong> exports the summary as CSV with a totals row.</li>
+    </ol>
+    <figure class="shot">
+      <a href="img/pay-15-reports.png"><img src="img/pay-15-reports.png" alt="Summary of e-Payment by FSP." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 15</span> Summary of e-Payment by FSP.</figcaption>
+    </figure>
+
+    <!-- 12 -->
+    <h2 id="integrations">12. Integrations: MUSE and GePG</h2>
+    <h3>MUSE</h3>
+    <p>The institution code, payer account, sub-budget classes, payment description, straight-through
+    processing and GL accounts used in every message to MUSE. Below them, <strong>Changes</strong> lists every
+    proposed change (MUSE settings, FSP details, other names, charges) with what changes from what to what.
+    For charge bands, only the bands that differ are shown: removed ones struck through, then the new ones.</p>
+    <ol class="steps">
+      <li>The maker edits, gives a reason and presses <strong>Submit for approval</strong>.</li>
+      <li>A checker presses <strong>Approve</strong> or <strong>Reject</strong> (with a comment). The maker can <strong>Cancel request</strong>.</li>
+    </ol>
+    <figure class="shot">
+      <a href="img/pay-16-muse.png"><img src="img/pay-16-muse.png" alt="MUSE settings and the Changes list awaiting approval." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 16</span> MUSE settings and the Changes list awaiting approval.</figcaption>
+    </figure>
+    <h3>GePG</h3>
+    <p>TASAF's <strong>SP code</strong>, <strong>SP system ID</strong> and <strong>Service code</strong> at GePG,
+    all supplied by GePG, changed with the same two-person rule. Warnings at the top appear only when
+    something needs fixing (GovESB not configured, no API code yet, settings approved on another server,
+    providers skipped because they have no BIC). <strong>Verification requests</strong> is the same list as
+    Verification → GePG requests.</p>
+
+    <!-- 13 -->
+    <h2 id="statuses">13. Status Reference</h2>
+    <h3>Payment account verification</h3>
+    <table>
+      <thead><tr><th>Status</th><th>Meaning</th><th>Next</th></tr></thead>
+      <tbody>
+        <tr><td>Pending</td><td>Not yet checked</td><td>Verify</td></tr>
+        <tr><td>Awaiting GePG</td><td>Sent, no answer yet</td><td>Wait, or Release the request</td></tr>
+        <tr><td>Verified</td><td>Name confirmed</td><td>Pre-audit</td></tr>
+        <tr><td>Manual Review</td><td>Name not clearly matching</td><td>Confirm match or Reject</td></tr>
+        <tr><td>Failed</td><td>Rejected</td><td>Case Management → Account Corrections</td></tr>
+      </tbody>
+    </table>
+    <h3>Pre-audit</h3>
+    <table>
+      <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td>Pending</td><td>Not yet run</td></tr>
+        <tr><td>Passed</td><td>All checks passed; can be paid</td></tr>
+        <tr><td>Failed</td><td>A check failed; the reason is shown on the account</td></tr>
+      </tbody>
+    </table>
+    <h3>Paylist</h3>
+    <table>
+      <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td>Pending Approval</td><td>Waiting for two approvals by two different people</td></tr>
+        <tr><td>Approved</td><td>Ready to submit</td></tr>
+        <tr><td>Submitted to MUSE</td><td>Sent; no reply yet</td></tr>
+        <tr><td>Received by MUSE</td><td>MUSE accepted the message</td></tr>
+        <tr><td>Accepted by MUSE</td><td>MUSE created the batch</td></tr>
+        <tr><td>Sent to bank / MNO</td><td>Passed to the banks and operators</td></tr>
+        <tr><td>Rejected by MUSE</td><td>Fix and submit again</td></tr>
+        <tr><td>Closed</td><td>Every payment has an outcome</td></tr>
+        <tr><td>Rejected at approval</td><td>Final; its households are released</td></tr>
+      </tbody>
+    </table>
+    <h3>Payment (paylist item)</h3>
+    <table>
+      <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td>Pending</td><td>In a paylist, no outcome yet</td></tr>
+        <tr><td>Processed</td><td>Paid</td></tr>
+        <tr><td>Unapplied</td><td>Could not be credited; see Unapplied Payments</td></tr>
+      </tbody>
+    </table>
+
+    <!-- 14 -->
+    <h2 id="troubleshooting">14. Troubleshooting and Good Practice</h2>
+    <table>
+      <thead><tr><th>Problem</th><th>What to do</th></tr></thead>
+      <tbody>
+        <tr><td>My payroll is not in Select Payroll</td><td>Only payrolls approved for payment are listed. Have it approved first.</td></tr>
+        <tr><td>A paylist has fewer households than expected</td><td>Read <em>Needs attention</em> on the Review step: the accounts are not verified, not pre-audited, have invalid numbers, or there is no primary account.</td></tr>
+        <tr><td>An account cannot be sent again</td><td>It is waiting for GePG. Release its request on GePG requests.</td></tr>
+        <tr><td>No answer from GePG after a day</td><td>Release the request and send again; tell the administrator if it repeats.</td></tr>
+        <tr><td>Submit to MUSE is refused</td><td>Open MUSE message and fix what it lists; check the FSP's status on Charges.</td></tr>
+        <tr><td>A change I made is not applied</td><td>It waits for a second person under Integrations → MUSE → Changes.</td></tr>
+        <tr><td>I cannot approve my own change</td><td>By design; another approver must decide it.</td></tr>
+      </tbody>
+    </table>
+    <div class="callout tip"><strong>Good practice.</strong> Pre-audit every window before generating.
+    Check the Charges tab for <em>No band</em> and <em>MUSE details missing</em> before the cycle. Always open
+    MUSE message before submitting.</div>
+
+    <!-- 15 -->
+    <h2 id="glossary">15. Glossary</h2>
+    <table>
+      <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><strong>FSP</strong></td><td>Financial service provider: a bank or mobile-money operator (MNO).</td></tr>
+        <tr><td><strong>GePG / GovESB</strong></td><td>Government payment gateway, reached through the Government Enterprise Service Bus; used to check accounts.</td></tr>
+        <tr><td><strong>MUSE</strong></td><td>The government accounting system that pays the batches.</td></tr>
+        <tr><td><strong>Payment window</strong></td><td>A payment cycle, e.g. Sep – Oct 2026.</td></tr>
+        <tr><td><strong>Paylist</strong></td><td>One Bank or MNO batch sent to MUSE.</td></tr>
+        <tr><td><strong>Withdrawal charge</strong></td><td>The fee an FSP takes to withdraw; added on top of the benefit.</td></tr>
+        <tr><td><strong>Charge band</strong></td><td>An amount range and its withdrawal charge.</td></tr>
+        <tr><td><strong>BIC</strong></td><td>Bank identifier code MUSE uses to route a payment.</td></tr>
+        <tr><td><strong>Unapplied</strong></td><td>A payment the FSP could not credit.</td></tr>
+        <tr><td><strong>HHID</strong></td><td>Household identifier, e.g. P3-010501204-11281575.</td></tr>
+      </tbody>
+    </table>
+
+  </main>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="doc-footer">
+    <div class="brand">
+      <img src="../assets/tasaf-logo.png" alt="TASAF" />
+      <span>Tanzania Social Action Fund · Payment Module End-User Manual · Version 1.0</span>
+    </div>
+    <div><a href="../index.html">← Back to documentation hub</a></div>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>TASAF MIS — Access Request Module User Manual</title>
+<link rel="icon" type="image/png" href="../assets/tasaf-logo.png" />
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    /* TASAF corporateTeal palette (matches the main app) */
+    --tasaf-primary: #00695C;
+    --tasaf-primary-dark: #004D40;
+    --tasaf-primary-light: #4DB6AC;
+    --tasaf-accent: #B83232;
+    --tasaf-bg: #F4FAF9;
+    --tasaf-header: #D6ECE9;
+    --tasaf-highlight: #E4F2EF;
+    --tasaf-text: #202B2A;
+    --tasaf-muted: #5F6368;
+    --tasaf-white: #FFFFFF;
+    --tasaf-border: #D6ECE9;
+    --tasaf-toggled: #546E7A;
+    --tasaf-success: #2E7D32;
+    --tasaf-warning: #ED6C02;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: 'Rubik', 'Roboto', 'Helvetica Neue', sans-serif;
+    font-weight: 300; color: var(--tasaf-text); background: var(--tasaf-bg);
+    line-height: 1.65; font-size: 15px;
+  }
+  img, svg { max-width: 100%; }
+  a { color: var(--tasaf-primary); text-decoration: none; border-bottom: 1px dotted var(--tasaf-primary); }
+  a:hover { color: var(--tasaf-accent); border-bottom-style: solid; }
+  code, kbd { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 0.9em;
+    background: var(--tasaf-highlight); color: var(--tasaf-primary-dark); padding: 1px 6px; border-radius: 4px; }
+
+  .page-wrap { max-width: 1180px; margin: 24px auto; background: var(--tasaf-white);
+    box-shadow: 0 8px 40px rgba(0,105,92,0.12); border-radius: 14px; overflow: hidden; }
+
+  /* Cover */
+  .cover { background: linear-gradient(135deg, #00695C 0%, #004F45 100%); color: #fff;
+    padding: 40px 56px; display: flex; align-items: center; gap: 28px; }
+  .cover-logo img { width: 76px; height: 76px; background: #fff; padding: 8px; border-radius: 14px; }
+  .cover-text h1 { margin: 0; font-size: 30px; font-weight: 600; letter-spacing: 0.2px; }
+  .cover-text h2 { margin: 4px 0 12px; font-size: 16px; font-weight: 400; color: var(--tasaf-header); }
+  .cover-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+  .badge { background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.25);
+    padding: 3px 11px; border-radius: 999px; font-size: 12px; }
+
+  .subhead { background: var(--tasaf-header); color: var(--tasaf-primary-dark);
+    padding: 12px 56px; font-size: 13px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+  .content { padding: 36px 56px 48px; }
+  h2 { color: var(--tasaf-primary); font-size: 22px; font-weight: 600; margin: 40px 0 12px;
+    padding-bottom: 8px; border-bottom: 2px solid var(--tasaf-header); }
+  h2:first-of-type { margin-top: 8px; }
+  h3 { color: var(--tasaf-primary-dark); font-size: 16.5px; font-weight: 600; margin: 24px 0 8px; }
+  p { margin: 10px 0; }
+  ul, ol { margin: 10px 0; padding-left: 22px; }
+  li { margin: 5px 0; }
+
+  /* TOC */
+  .toc { background: var(--tasaf-header); border-radius: 8px; padding: 18px 24px; margin: 0 0 24px;
+    border-left: 5px solid var(--tasaf-primary); }
+  .toc h3 { margin: 0 0 8px; color: var(--tasaf-primary); font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .toc ol { columns: 2; column-gap: 32px; padding-left: 18px; margin: 0; }
+  .toc li { margin: 3px 0; break-inside: avoid; }
+  .toc a { border-bottom: none; }
+
+  /* Step procedures */
+  ol.steps { counter-reset: step; list-style: none; padding-left: 0; }
+  ol.steps > li { counter-increment: step; position: relative; padding: 5px 0 5px 42px; margin: 5px 0; }
+  ol.steps > li::before { content: counter(step); position: absolute; left: 0; top: 4px;
+    width: 28px; height: 28px; background: var(--tasaf-primary); color: #fff; border-radius: 50%;
+    text-align: center; line-height: 28px; font-weight: 500; font-size: 13px; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 24px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 14px; border: 1px solid var(--tasaf-border); vertical-align: top; }
+  th { background: var(--tasaf-primary); color: #fff; font-weight: 500; }
+  tbody tr:nth-child(even) { background: var(--tasaf-bg); }
+  td code { white-space: nowrap; }
+
+  /* Callouts */
+  .callout { border-radius: 8px; padding: 14px 18px; margin: 16px 0; border-left: 5px solid; font-size: 14px; }
+  .callout.note { background: var(--tasaf-highlight); border-color: var(--tasaf-primary); }
+  .callout.warn { background: #FDF0D4; border-color: var(--tasaf-warning); }
+  .callout.tip { background: #E8F5E9; border-color: var(--tasaf-success); }
+  .callout strong { color: var(--tasaf-primary-dark); }
+
+  /* Status / reporter chips */
+  .chip { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 500; }
+  .chip.received { background: #ECEFF1; color: var(--tasaf-toggled); }
+  .chip.open { background: #E3F2FD; color: #0D47A1; }
+  .chip.progress { background: #FFF3E0; color: var(--tasaf-warning); }
+  .chip.resolved { background: #E8F5E9; color: var(--tasaf-success); }
+  .chip.closed { background: #FDECEA; color: var(--tasaf-accent); }
+
+  /* Figure / screenshot placeholders (replace the .ph div with <img> when screenshots are ready) */
+  figure.shot { margin: 18px 0 26px; background: var(--tasaf-white); border: 1px solid var(--tasaf-border);
+    border-radius: 10px; overflow: hidden; box-shadow: 0 4px 14px rgba(0,105,92,0.10); }
+  figure.shot img { display: block; max-width: 100%; height: auto; margin: 0 auto; border-bottom: 1px solid var(--tasaf-border); }
+  figure.shot a { border-bottom: none; }
+  figure.shot .ph { display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 220px; gap: 6px; text-align: center; color: var(--tasaf-primary);
+    background: repeating-linear-gradient(135deg, transparent 0 14px, rgba(0,105,92,0.045) 14px 28px), var(--tasaf-bg);
+    border-bottom: 1px dashed var(--tasaf-primary-light); font-style: italic; }
+  figure.shot .ph .cam { font-size: 30px; font-style: normal; }
+  figure.shot .ph .lbl { font-size: 13px; letter-spacing: 0.3px; }
+  figure.shot figcaption { padding: 10px 16px; background: var(--tasaf-header); color: var(--tasaf-primary-dark);
+    font-size: 13px; display: flex; gap: 10px; align-items: baseline; }
+  figure.shot figcaption .num { display: inline-block; background: var(--tasaf-primary); color: #fff;
+    padding: 2px 9px; border-radius: 4px; font-weight: 500; font-size: 11.5px; letter-spacing: 0.4px;
+    text-transform: uppercase; flex-shrink: 0; }
+
+  /* Footer */
+  .doc-footer { background: var(--tasaf-primary-dark); color: rgba(255,255,255,0.9); padding: 26px 56px;
+    font-size: 13px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .doc-footer .brand { display: flex; align-items: center; gap: 12px; }
+  .doc-footer img { width: 36px; height: 36px; background: #fff; padding: 4px; border-radius: 8px; }
+  .doc-footer a { color: #cbedf2; border-bottom: none; }
+
+  @media (max-width: 700px) {
+    .cover, .subhead, .content, .doc-footer { padding-left: 22px; padding-right: 22px; }
+    .toc ol { columns: 1; }
+    .cover { flex-direction: column; text-align: center; }
+  }
+  @media print {
+    body { background: #fff; } .page-wrap { box-shadow: none; margin: 0; border-radius: 0; }
+    a { color: inherit; border-bottom: none; } table, .callout, figure.shot { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <header class="cover">
+    <div class="cover-logo"><img src="../assets/tasaf-logo.png" alt="TASAF — Tanzania Social Action Fund" /></div>
+    <div class="cover-text">
+      <h1>Access Request Module</h1>
+      <h2>TASAF MIS — Operational End-User Manual</h2>
+      <div class="cover-meta">
+        <span class="badge">Tanzania Social Action Fund</span>
+        <span class="badge">Mfuko wa Maendeleo ya Jamii</span>
+        <span class="badge">Version 1.0 · 22 October 2026</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="subhead">
+    <span><strong>Audience:</strong> Applicants · section managers · ICT officers · administrators</span>
+    <span><strong>Module:</strong> <code>openimis-be-access_request_py</code></span>
+  </div>
+
+  <main class="content">
+    <p><strong>How a person applies for a TASAF MIS account, how managers and ICT approve it, and how ICT
+    creates or activates the account.</strong> Nobody gets an account without two approvals: the
+    applicant's section manager, then the ICT department.</p>
+
+    <nav class="toc">
+      <h3>Contents</h3>
+      <ol>
+        <li><a href="#purpose">Purpose, roles &amp; access</a></li>
+        <li><a href="#apply">Apply for an account (applicant)</a></li>
+        <li><a href="#track">Check the application status</a></li>
+        <li><a href="#list">The Access Requests list</a></li>
+        <li><a href="#approve">Approve or reject a request</a></li>
+        <li><a href="#provision">Create or activate the account (ICT)</a></li>
+        <li><a href="#sections">Section managers</a></li>
+        <li><a href="#statuses">Statuses</a></li>
+        <li><a href="#troubleshooting">Troubleshooting</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="purpose">1. Purpose, Roles, and Access</h2>
+    <table>
+      <thead><tr><th>Role</th><th>Typical work</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Applicant</strong> (no login)</td><td>Fill the public form; check the status.</td></tr>
+        <tr><td><strong>Section manager</strong> (Access Request Sponsor)</td><td>First approval, for applicants of their own section.</td></tr>
+        <tr><td><strong>ICT officer</strong></td><td>Second approval; create or activate the account and choose its roles and districts.</td></tr>
+        <tr><td><strong>Administrator</strong></td><td>Name section managers; sign when a section has none.</td></tr>
+      </tbody>
+    </table>
+    <table>
+      <thead><tr><th>Right</th><th>Grants</th></tr></thead>
+      <tbody>
+        <tr><td><code>230101</code> / <code>230102</code></td><td>The Access Requests list / open a request.</td></tr>
+        <tr><td><code>230201</code></td><td>Manager approval.</td></tr>
+        <tr><td><code>230202</code></td><td>ICT approval and account creation.</td></tr>
+        <tr><td><code>230301</code></td><td>Manage access profiles and section managers.</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="apply">2. Apply for an Account (Applicant)</h2>
+    <ol class="steps">
+      <li>On the TASAF MIS login page click <strong>Request Access</strong>, then <strong>Start application</strong>.</li>
+      <li>Choose <strong>New user</strong>, or <strong>Activate existing</strong> if you had an account that is no longer active.</li>
+      <li>Fill your details: full name, email (twice), phone (e.g. +255 712 345 678), section, job title, user category (TASAF Staff, PAA Staff, Other) and administrative level with its location. External applicants give their organization name.</li>
+      <li>Press <strong>Submit application</strong>. Keep the <strong>reference code</strong> shown on screen.</li>
+    </ol>
+    <figure class="shot">
+      <a href="img/ar-01-form.png"><img src="img/ar-01-form.png" alt="The public account application form." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 1</span> The public account application form.</figcaption>
+    </figure>
+    <div class="callout note">Only one application per email can be in progress. If yours is already
+    being processed, use its reference code to check the status.</div>
+
+    <h2 id="track">3. Check the Application Status</h2>
+    <p>Click <strong>Application status</strong> on the access page and enter the reference code exactly as
+    it appears on the confirmation.</p>
+    <table>
+      <thead><tr><th>Shown</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td>Received</td><td>Queued for review.</td></tr>
+        <tr><td>In review</td><td>Your manager and ICT are reviewing it.</td></tr>
+        <tr><td>Approved</td><td>Your account is ready; you receive your username and how to set your password.</td></tr>
+        <tr><td>Not approved</td><td>Contact ICT support for details.</td></tr>
+      </tbody>
+    </table>
+    <figure class="shot">
+      <a href="img/ar-02-status.png"><img src="img/ar-02-status.png" alt="The application status page." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 2</span> The application status page.</figcaption>
+    </figure>
+
+    <h2 id="list">4. The Access Requests List</h2>
+    <p>Open <strong>Administration → Access Requests</strong>. Filter by status, request type and user
+    category; double-click a request to open it.</p>
+    <figure class="shot">
+      <a href="img/ar-03-list.png"><img src="img/ar-03-list.png" alt="The Access Requests list." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 3</span> The Access Requests list.</figcaption>
+    </figure>
+
+    <h2 id="approve">5. Approve or Reject a Request</h2>
+    <p>Approvers act from the <strong>Tasks</strong> inbox or from the request page. The page has three tabs:</p>
+    <ul>
+      <li><strong>Overview</strong>: the applicant, request details, and <em>Before you approve</em> checks, e.g. <em>Email already has an account</em> (consider an activation instead), <em>No account to activate</em>, <em>Missing</em> fields.</li>
+      <li><strong>Approvals</strong>: the approval chain. Each step unlocks the next; the header says which step is waiting.</li>
+      <li><strong>History</strong>: every decision, in order.</li>
+    </ul>
+    <ol class="steps">
+      <li>Read the checks on the Overview tab.</li>
+      <li>Write a <strong>Decision note</strong>; it is required to reject and visible to the next approver.</li>
+      <li>Press <strong>Approve</strong> or <strong>Reject</strong>.</li>
+    </ol>
+    <figure class="shot">
+      <a href="img/ar-04-request.png"><img src="img/ar-04-request.png" alt="A request page with the approval chain and the checks." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 4</span> A request page with the approval chain and the checks.</figcaption>
+    </figure>
+
+    <h2 id="provision">6. Create or Activate the Account (ICT)</h2>
+    <p>When both approvals are recorded the header reads <em>ready to provision</em>.</p>
+    <ol class="steps">
+      <li>Check the <strong>Username</strong> (at most 8 characters).</li>
+      <li>Choose the <strong>Roles to assign</strong>. The same person should not hold both maker and approver roles.</li>
+      <li>Check the <strong>Districts</strong> where the user may work; they are prefilled from the requested location.</li>
+      <li>Press <strong>Create account</strong> (or <strong>Activate account</strong>).</li>
+      <li>The <em>Account ready</em> window shows the username. If a temporary password is shown, it is shown only once: give it to the user privately and ask them to change it after first login (Profile → Change password). Otherwise the user sets the password from the emailed link.</li>
+    </ol>
+    <figure class="shot">
+      <a href="img/ar-05-provision.png"><img src="img/ar-05-provision.png" alt="The Provision Account form, shown once both approvals are recorded." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 5</span> The Provision Account form, shown once both approvals are recorded.</figcaption>
+    </figure>
+
+    <h2 id="sections">7. Section Managers</h2>
+    <p>On the <strong>Section managers</strong> tab of the Access Requests page, add the users who approve
+    requests for each section. A section with no manager is signed by an administrator. A user listed
+    without the Access Request Sponsor role cannot approve and is marked so.</p>
+
+    <h2 id="statuses">8. Statuses</h2>
+    <table>
+      <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td>Submitted</td><td>Waiting for the section manager</td></tr>
+        <tr><td>Manager Approved</td><td>Waiting for ICT</td></tr>
+        <tr><td>ICT Approved</td><td>Ready to provision</td></tr>
+        <tr><td>Provisioned</td><td>The account exists</td></tr>
+        <tr><td>Rejected</td><td>No account will be created</td></tr>
+        <tr><td>Provisioning Failed</td><td>See the provisioning error in the request details</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="troubleshooting">9. Troubleshooting</h2>
+    <table>
+      <thead><tr><th>Problem</th><th>What to do</th></tr></thead>
+      <tbody>
+        <tr><td>“Too many attempts”</td><td>Wait a minute and try again.</td></tr>
+        <tr><td>The reference code is not found</td><td>Check it character by character.</td></tr>
+        <tr><td>No manager can approve a request</td><td>Add a section manager, or an administrator signs.</td></tr>
+        <tr><td>Provisioning failed</td><td>Read the error (often a username already in use), correct it and provision again.</td></tr>
+      </tbody>
+    </table>
+
+  </main>
+
+  <footer class="doc-footer">
+    <div class="brand">
+      <img src="../assets/tasaf-logo.png" alt="TASAF" />
+      <span>Tanzania Social Action Fund · Access Request Module End-User Manual · Version 1.0</span>
+    </div>
+    <div><a href="../index.html">← Back to documentation hub</a></div>
+  </footer>
+
+</div>
+</body>
+</html>

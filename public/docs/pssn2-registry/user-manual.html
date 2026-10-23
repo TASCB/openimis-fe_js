@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>TASAF MIS — PSSN II Registry User Manual</title>
+<link rel="icon" type="image/png" href="../assets/tasaf-logo.png" />
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    /* TASAF corporateTeal palette (matches the main app) */
+    --tasaf-primary: #00695C;
+    --tasaf-primary-dark: #004D40;
+    --tasaf-primary-light: #4DB6AC;
+    --tasaf-accent: #B83232;
+    --tasaf-bg: #F4FAF9;
+    --tasaf-header: #D6ECE9;
+    --tasaf-highlight: #E4F2EF;
+    --tasaf-text: #202B2A;
+    --tasaf-muted: #5F6368;
+    --tasaf-white: #FFFFFF;
+    --tasaf-border: #D6ECE9;
+    --tasaf-toggled: #546E7A;
+    --tasaf-success: #2E7D32;
+    --tasaf-warning: #ED6C02;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: 'Rubik', 'Roboto', 'Helvetica Neue', sans-serif;
+    font-weight: 300; color: var(--tasaf-text); background: var(--tasaf-bg);
+    line-height: 1.65; font-size: 15px;
+  }
+  img, svg { max-width: 100%; }
+  a { color: var(--tasaf-primary); text-decoration: none; border-bottom: 1px dotted var(--tasaf-primary); }
+  a:hover { color: var(--tasaf-accent); border-bottom-style: solid; }
+  code, kbd { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 0.9em;
+    background: var(--tasaf-highlight); color: var(--tasaf-primary-dark); padding: 1px 6px; border-radius: 4px; }
+
+  .page-wrap { max-width: 1180px; margin: 24px auto; background: var(--tasaf-white);
+    box-shadow: 0 8px 40px rgba(0,105,92,0.12); border-radius: 14px; overflow: hidden; }
+
+  /* Cover */
+  .cover { background: linear-gradient(135deg, #00695C 0%, #004F45 100%); color: #fff;
+    padding: 40px 56px; display: flex; align-items: center; gap: 28px; }
+  .cover-logo img { width: 76px; height: 76px; background: #fff; padding: 8px; border-radius: 14px; }
+  .cover-text h1 { margin: 0; font-size: 30px; font-weight: 600; letter-spacing: 0.2px; }
+  .cover-text h2 { margin: 4px 0 12px; font-size: 16px; font-weight: 400; color: var(--tasaf-header); }
+  .cover-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+  .badge { background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.25);
+    padding: 3px 11px; border-radius: 999px; font-size: 12px; }
+
+  .subhead { background: var(--tasaf-header); color: var(--tasaf-primary-dark);
+    padding: 12px 56px; font-size: 13px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+  .content { padding: 36px 56px 48px; }
+  h2 { color: var(--tasaf-primary); font-size: 22px; font-weight: 600; margin: 40px 0 12px;
+    padding-bottom: 8px; border-bottom: 2px solid var(--tasaf-header); }
+  h2:first-of-type { margin-top: 8px; }
+  h3 { color: var(--tasaf-primary-dark); font-size: 16.5px; font-weight: 600; margin: 24px 0 8px; }
+  p { margin: 10px 0; }
+  ul, ol { margin: 10px 0; padding-left: 22px; }
+  li { margin: 5px 0; }
+
+  /* TOC */
+  .toc { background: var(--tasaf-header); border-radius: 8px; padding: 18px 24px; margin: 0 0 24px;
+    border-left: 5px solid var(--tasaf-primary); }
+  .toc h3 { margin: 0 0 8px; color: var(--tasaf-primary); font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .toc ol { columns: 2; column-gap: 32px; padding-left: 18px; margin: 0; }
+  .toc li { margin: 3px 0; break-inside: avoid; }
+  .toc a { border-bottom: none; }
+
+  /* Step procedures */
+  ol.steps { counter-reset: step; list-style: none; padding-left: 0; }
+  ol.steps > li { counter-increment: step; position: relative; padding: 5px 0 5px 42px; margin: 5px 0; }
+  ol.steps > li::before { content: counter(step); position: absolute; left: 0; top: 4px;
+    width: 28px; height: 28px; background: var(--tasaf-primary); color: #fff; border-radius: 50%;
+    text-align: center; line-height: 28px; font-weight: 500; font-size: 13px; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 24px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 14px; border: 1px solid var(--tasaf-border); vertical-align: top; }
+  th { background: var(--tasaf-primary); color: #fff; font-weight: 500; }
+  tbody tr:nth-child(even) { background: var(--tasaf-bg); }
+  td code { white-space: nowrap; }
+
+  /* Callouts */
+  .callout { border-radius: 8px; padding: 14px 18px; margin: 16px 0; border-left: 5px solid; font-size: 14px; }
+  .callout.note { background: var(--tasaf-highlight); border-color: var(--tasaf-primary); }
+  .callout.warn { background: #FDF0D4; border-color: var(--tasaf-warning); }
+  .callout.tip { background: #E8F5E9; border-color: var(--tasaf-success); }
+  .callout strong { color: var(--tasaf-primary-dark); }
+
+  /* Status / reporter chips */
+  .chip { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 500; }
+  .chip.received { background: #ECEFF1; color: var(--tasaf-toggled); }
+  .chip.open { background: #E3F2FD; color: #0D47A1; }
+  .chip.progress { background: #FFF3E0; color: var(--tasaf-warning); }
+  .chip.resolved { background: #E8F5E9; color: var(--tasaf-success); }
+  .chip.closed { background: #FDECEA; color: var(--tasaf-accent); }
+
+  /* Figure / screenshot placeholders (replace the .ph div with <img> when screenshots are ready) */
+  figure.shot { margin: 18px 0 26px; background: var(--tasaf-white); border: 1px solid var(--tasaf-border);
+    border-radius: 10px; overflow: hidden; box-shadow: 0 4px 14px rgba(0,105,92,0.10); }
+  figure.shot img { display: block; max-width: 100%; height: auto; margin: 0 auto; border-bottom: 1px solid var(--tasaf-border); }
+  figure.shot a { border-bottom: none; }
+  figure.shot .ph { display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 220px; gap: 6px; text-align: center; color: var(--tasaf-primary);
+    background: repeating-linear-gradient(135deg, transparent 0 14px, rgba(0,105,92,0.045) 14px 28px), var(--tasaf-bg);
+    border-bottom: 1px dashed var(--tasaf-primary-light); font-style: italic; }
+  figure.shot .ph .cam { font-size: 30px; font-style: normal; }
+  figure.shot .ph .lbl { font-size: 13px; letter-spacing: 0.3px; }
+  figure.shot figcaption { padding: 10px 16px; background: var(--tasaf-header); color: var(--tasaf-primary-dark);
+    font-size: 13px; display: flex; gap: 10px; align-items: baseline; }
+  figure.shot figcaption .num { display: inline-block; background: var(--tasaf-primary); color: #fff;
+    padding: 2px 9px; border-radius: 4px; font-weight: 500; font-size: 11.5px; letter-spacing: 0.4px;
+    text-transform: uppercase; flex-shrink: 0; }
+
+  /* Footer */
+  .doc-footer { background: var(--tasaf-primary-dark); color: rgba(255,255,255,0.9); padding: 26px 56px;
+    font-size: 13px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .doc-footer .brand { display: flex; align-items: center; gap: 12px; }
+  .doc-footer img { width: 36px; height: 36px; background: #fff; padding: 4px; border-radius: 8px; }
+  .doc-footer a { color: #cbedf2; border-bottom: none; }
+
+  @media (max-width: 700px) {
+    .cover, .subhead, .content, .doc-footer { padding-left: 22px; padding-right: 22px; }
+    .toc ol { columns: 1; }
+    .cover { flex-direction: column; text-align: center; }
+  }
+  @media print {
+    body { background: #fff; } .page-wrap { box-shadow: none; margin: 0; border-radius: 0; }
+    a { color: inherit; border-bottom: none; } table, .callout, figure.shot { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <header class="cover">
+    <div class="cover-logo"><img src="../assets/tasaf-logo.png" alt="TASAF — Tanzania Social Action Fund" /></div>
+    <div class="cover-text">
+      <h1>PSSN II Registry</h1>
+      <h2>TASAF MIS — Operational End-User Manual</h2>
+      <div class="cover-meta">
+        <span class="badge">Tanzania Social Action Fund</span>
+        <span class="badge">Mfuko wa Maendeleo ya Jamii</span>
+        <span class="badge">Version 1.0 · 22 October 2026</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="subhead">
+    <span><strong>Audience:</strong> Registry and M&amp;E officers · import operators</span>
+    <span><strong>Module:</strong> <code>openimis-be-legacy_individual_py</code></span>
+  </div>
+
+  <main class="content">
+    <p><strong>How to bring the PSSN II historical records into TASAF MIS and look them up.</strong> The
+    PSSN II registry is an <em>archive</em>: households and members imported from the legacy tasafMIS,
+    kept for reference and comparison. They are not live TASAF MIS beneficiaries and are never written
+    to the live registry tables.</p>
+
+    <nav class="toc">
+      <h3>Contents</h3>
+      <ol>
+        <li><a href="#purpose">Purpose, roles &amp; access</a></li>
+        <li><a href="#navigation">Menus &amp; pages</a></li>
+        <li><a href="#csv">Import from CSV files</a></li>
+        <li><a href="#api">Import from the legacy API</a></li>
+        <li><a href="#batches">Follow an import batch</a></li>
+        <li><a href="#search">Search households and individuals</a></li>
+        <li><a href="#troubleshooting">Troubleshooting</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="purpose">1. Purpose, Roles, and Access</h2>
+    <table>
+      <thead><tr><th>Right</th><th>Grants</th></tr></thead>
+      <tbody>
+        <tr><td><code>260001</code> / <code>260011</code></td><td>Search PSSN II individuals / households.</td></tr>
+        <tr><td><code>260002</code>–<code>260004</code> · <code>260012</code>–<code>260014</code></td><td>Create / update / delete archive records.</td></tr>
+        <tr><td><code>260021</code></td><td>Run imports (CSV or API).</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="navigation">2. Menus and Pages</h2>
+    <table>
+      <thead><tr><th>Menu</th><th>Shows</th></tr></thead>
+      <tbody>
+        <tr><td><strong>PSSN II Individuals</strong></td><td>Every archived person.</td></tr>
+        <tr><td><strong>PSSN II Households</strong></td><td>Every archived household with its head, village, PMT score and classification.</td></tr>
+        <tr><td><strong>Legacy Imports</strong></td><td>Every import batch, and the button to start a new one.</td></tr>
+      </tbody>
+    </table>
+    <p>Each page carries the banner <em>PSSN historical archive — these records are not live TASAF MIS
+    beneficiaries.</em></p>
+
+    <h2 id="csv">3. Import from CSV Files</h2>
+    <ol class="steps">
+      <li>Open <strong>Legacy Imports</strong> and press <strong>+</strong> (<em>Import legacy PSSN data</em>).</li>
+      <li>Choose <strong>CSV files</strong> (household + member exports).</li>
+      <li>Drop or browse the <strong>Household file</strong> and the <strong>Member file</strong>; the two are uploaded together. <em>Household template</em> and <em>Member template</em> show the expected columns. Each file shows its rows and whether the required columns were found.</li>
+      <li>Keep or edit the <strong>Batch code</strong>, which is generated automatically.</li>
+      <li>Press <strong>Preview import</strong>, check the row counts and recognised columns, then import.</li>
+    </ol>
+    <figure class="shot">
+      <a href="img/lg-01-csv.png"><img src="img/lg-01-csv.png" alt="The import dialog: CSV files." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 1</span> The import dialog: CSV files.</figcaption>
+    </figure>
+    <div class="callout note">The two files together must be under 64 MB. A file missing a required
+    column is refused before anything is imported.</div>
+
+    <h2 id="api">4. Import from the Legacy API</h2>
+    <ol class="steps">
+      <li>In the same dialog choose <strong>Legacy tasafMIS API</strong>.</li>
+      <li>Choose the <strong>Region</strong> and <strong>District / PAA</strong>.</li>
+      <li>Leave <strong>Dry run</strong> ticked and press <strong>Dry Run</strong>: it fetches and shows the rows, households and members, and imports nothing.</li>
+      <li>Untick Dry run and press <strong>Start Import</strong>. Large districts run in the background.</li>
+    </ol>
+    <figure class="shot">
+      <a href="img/lg-02-api.png"><img src="img/lg-02-api.png" alt="Import from the legacy API: choose the region and district." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 2</span> Import from the legacy API: choose the region and district.</figcaption>
+    </figure>
+
+    <h2 id="batches">5. Follow an Import Batch</h2>
+    <p>The Legacy Imports list shows each batch's district or PAA, method (API or CSV), status,
+    households, members, issues and date. Refresh it to follow a running import; open a batch for its
+    counts (read and saved), files and the list of errors and warnings.</p>
+    <table>
+      <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td>Pending · In progress</td><td>Waiting or running</td></tr>
+        <tr><td>Success</td><td>Every record saved</td></tr>
+        <tr><td>Completed with issues</td><td>Saved, with warnings or errors listed on the batch</td></tr>
+        <tr><td>Failed</td><td>Nothing usable was saved; read the errors</td></tr>
+      </tbody>
+    </table>
+    <figure class="shot">
+      <a href="img/lg-03-batch.png"><img src="img/lg-03-batch.png" alt="A legacy import batch with its counts." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 3</span> A legacy import batch with its counts.</figcaption>
+    </figure>
+
+    <h2 id="search">6. Search Households and Individuals</h2>
+    <ul>
+      <li><strong>Households</strong>: filter by household code (REGISTRATIONNO). The household page shows its details (size, status, phone, wave) and its members with role, NIN, Prem No. and the recipient.</li>
+      <li><strong>Individuals</strong>: filter by first and last name, NIN, Prem No., phone and gender. The person's page shows personal details, disability, facility, the NIDA verification and School Information System data recorded in PSSN II.</li>
+    </ul>
+    <p>Both pages also show the raw record as it came from PSSN II, for checking.</p>
+    <figure class="shot">
+      <a href="img/lg-04-household.png"><img src="img/lg-04-household.png" alt="A PSSN II household with its members." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 4</span> A PSSN II household with its members.</figcaption>
+    </figure>
+
+    <h2 id="troubleshooting">7. Troubleshooting</h2>
+    <table>
+      <thead><tr><th>Problem</th><th>What to do</th></tr></thead>
+      <tbody>
+        <tr><td>“Missing required column(s)”</td><td>Export again with the template's columns.</td></tr>
+        <tr><td>An API import stays In progress</td><td>Large districts take time; refresh later. If it stops, start it again for that district.</td></tr>
+        <tr><td>A person is not found in the live Registry</td><td>Archive records never enter the live registry; use the Registry module's imports for live data.</td></tr>
+      </tbody>
+    </table>
+
+  </main>
+
+  <footer class="doc-footer">
+    <div class="brand">
+      <img src="../assets/tasaf-logo.png" alt="TASAF" />
+      <span>Tanzania Social Action Fund · PSSN II Registry End-User Manual · Version 1.0</span>
+    </div>
+    <div><a href="../index.html">← Back to documentation hub</a></div>
+  </footer>
+
+</div>
+</body>
+</html>

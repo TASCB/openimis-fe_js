@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>TASAF MIS — Payroll Module User Manual</title>
+<link rel="icon" type="image/png" href="../assets/tasaf-logo.png" />
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    /* TASAF corporateTeal palette (matches the main app) */
+    --tasaf-primary: #00695C;
+    --tasaf-primary-dark: #004D40;
+    --tasaf-primary-light: #4DB6AC;
+    --tasaf-accent: #B83232;
+    --tasaf-bg: #F4FAF9;
+    --tasaf-header: #D6ECE9;
+    --tasaf-highlight: #E4F2EF;
+    --tasaf-text: #202B2A;
+    --tasaf-muted: #5F6368;
+    --tasaf-white: #FFFFFF;
+    --tasaf-border: #D6ECE9;
+    --tasaf-toggled: #546E7A;
+    --tasaf-success: #2E7D32;
+    --tasaf-warning: #ED6C02;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: 'Rubik', 'Roboto', 'Helvetica Neue', sans-serif;
+    font-weight: 300; color: var(--tasaf-text); background: var(--tasaf-bg);
+    line-height: 1.65; font-size: 15px;
+  }
+  img, svg { max-width: 100%; }
+  a { color: var(--tasaf-primary); text-decoration: none; border-bottom: 1px dotted var(--tasaf-primary); }
+  a:hover { color: var(--tasaf-accent); border-bottom-style: solid; }
+  code, kbd { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 0.9em;
+    background: var(--tasaf-highlight); color: var(--tasaf-primary-dark); padding: 1px 6px; border-radius: 4px; }
+
+  .page-wrap { max-width: 1180px; margin: 24px auto; background: var(--tasaf-white);
+    box-shadow: 0 8px 40px rgba(0,105,92,0.12); border-radius: 14px; overflow: hidden; }
+
+  /* Cover */
+  .cover { background: linear-gradient(135deg, #00695C 0%, #004F45 100%); color: #fff;
+    padding: 40px 56px; display: flex; align-items: center; gap: 28px; }
+  .cover-logo img { width: 76px; height: 76px; background: #fff; padding: 8px; border-radius: 14px; }
+  .cover-text h1 { margin: 0; font-size: 30px; font-weight: 600; letter-spacing: 0.2px; }
+  .cover-text h2 { margin: 4px 0 12px; font-size: 16px; font-weight: 400; color: var(--tasaf-header); }
+  .cover-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+  .badge { background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.25);
+    padding: 3px 11px; border-radius: 999px; font-size: 12px; }
+
+  .subhead { background: var(--tasaf-header); color: var(--tasaf-primary-dark);
+    padding: 12px 56px; font-size: 13px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+  .content { padding: 36px 56px 48px; }
+  h2 { color: var(--tasaf-primary); font-size: 22px; font-weight: 600; margin: 40px 0 12px;
+    padding-bottom: 8px; border-bottom: 2px solid var(--tasaf-header); }
+  h2:first-of-type { margin-top: 8px; }
+  h3 { color: var(--tasaf-primary-dark); font-size: 16.5px; font-weight: 600; margin: 24px 0 8px; }
+  p { margin: 10px 0; }
+  ul, ol { margin: 10px 0; padding-left: 22px; }
+  li { margin: 5px 0; }
+
+  /* TOC */
+  .toc { background: var(--tasaf-header); border-radius: 8px; padding: 18px 24px; margin: 0 0 24px;
+    border-left: 5px solid var(--tasaf-primary); }
+  .toc h3 { margin: 0 0 8px; color: var(--tasaf-primary); font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .toc ol { columns: 2; column-gap: 32px; padding-left: 18px; margin: 0; }
+  .toc li { margin: 3px 0; break-inside: avoid; }
+  .toc a { border-bottom: none; }
+
+  /* Step procedures */
+  ol.steps { counter-reset: step; list-style: none; padding-left: 0; }
+  ol.steps > li { counter-increment: step; position: relative; padding: 5px 0 5px 42px; margin: 5px 0; }
+  ol.steps > li::before { content: counter(step); position: absolute; left: 0; top: 4px;
+    width: 28px; height: 28px; background: var(--tasaf-primary); color: #fff; border-radius: 50%;
+    text-align: center; line-height: 28px; font-weight: 500; font-size: 13px; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 24px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 14px; border: 1px solid var(--tasaf-border); vertical-align: top; }
+  th { background: var(--tasaf-primary); color: #fff; font-weight: 500; }
+  tbody tr:nth-child(even) { background: var(--tasaf-bg); }
+  td code { white-space: nowrap; }
+
+  /* Callouts */
+  .callout { border-radius: 8px; padding: 14px 18px; margin: 16px 0; border-left: 5px solid; font-size: 14px; }
+  .callout.note { background: var(--tasaf-highlight); border-color: var(--tasaf-primary); }
+  .callout.warn { background: #FDF0D4; border-color: var(--tasaf-warning); }
+  .callout.tip { background: #E8F5E9; border-color: var(--tasaf-success); }
+  .callout strong { color: var(--tasaf-primary-dark); }
+
+  /* Status / reporter chips */
+  .chip { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 500; }
+  .chip.received { background: #ECEFF1; color: var(--tasaf-toggled); }
+  .chip.open { background: #E3F2FD; color: #0D47A1; }
+  .chip.progress { background: #FFF3E0; color: var(--tasaf-warning); }
+  .chip.resolved { background: #E8F5E9; color: var(--tasaf-success); }
+  .chip.closed { background: #FDECEA; color: var(--tasaf-accent); }
+
+  /* Figure / screenshot placeholders (replace the .ph div with <img> when screenshots are ready) */
+  figure.shot { margin: 18px 0 26px; background: var(--tasaf-white); border: 1px solid var(--tasaf-border);
+    border-radius: 10px; overflow: hidden; box-shadow: 0 4px 14px rgba(0,105,92,0.10); }
+  figure.shot img { display: block; max-width: 100%; height: auto; margin: 0 auto; border-bottom: 1px solid var(--tasaf-border); }
+  figure.shot a { border-bottom: none; }
+  figure.shot .ph { display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 220px; gap: 6px; text-align: center; color: var(--tasaf-primary);
+    background: repeating-linear-gradient(135deg, transparent 0 14px, rgba(0,105,92,0.045) 14px 28px), var(--tasaf-bg);
+    border-bottom: 1px dashed var(--tasaf-primary-light); font-style: italic; }
+  figure.shot .ph .cam { font-size: 30px; font-style: normal; }
+  figure.shot .ph .lbl { font-size: 13px; letter-spacing: 0.3px; }
+  figure.shot figcaption { padding: 10px 16px; background: var(--tasaf-header); color: var(--tasaf-primary-dark);
+    font-size: 13px; display: flex; gap: 10px; align-items: baseline; }
+  figure.shot figcaption .num { display: inline-block; background: var(--tasaf-primary); color: #fff;
+    padding: 2px 9px; border-radius: 4px; font-weight: 500; font-size: 11.5px; letter-spacing: 0.4px;
+    text-transform: uppercase; flex-shrink: 0; }
+
+  /* Footer */
+  .doc-footer { background: var(--tasaf-primary-dark); color: rgba(255,255,255,0.9); padding: 26px 56px;
+    font-size: 13px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .doc-footer .brand { display: flex; align-items: center; gap: 12px; }
+  .doc-footer img { width: 36px; height: 36px; background: #fff; padding: 4px; border-radius: 8px; }
+  .doc-footer a { color: #cbedf2; border-bottom: none; }
+
+  @media (max-width: 700px) {
+    .cover, .subhead, .content, .doc-footer { padding-left: 22px; padding-right: 22px; }
+    .toc ol { columns: 1; }
+    .cover { flex-direction: column; text-align: center; }
+  }
+  @media print {
+    body { background: #fff; } .page-wrap { box-shadow: none; margin: 0; border-radius: 0; }
+    a { color: inherit; border-bottom: none; } table, .callout, figure.shot { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <header class="cover">
+    <div class="cover-logo"><img src="../assets/tasaf-logo.png" alt="TASAF — Tanzania Social Action Fund" /></div>
+    <div class="cover-text">
+      <h1>Payroll Module</h1>
+      <h2>TASAF MIS — Operational End-User Manual</h2>
+      <div class="cover-meta">
+        <span class="badge">Tanzania Social Action Fund</span>
+        <span class="badge">Mfuko wa Maendeleo ya Jamii</span>
+        <span class="badge">Version 1.0 · 22 October 2026</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="subhead">
+    <span><strong>Audience:</strong> Payroll officers · approvers · finance</span>
+    <span><strong>Module:</strong> <code>openimis-be-payroll_py</code></span>
+  </div>
+
+  <main class="content">
+    <p><strong>How a payroll is created for a payment cycle, calculated, approved and handed to TASAF
+    Payments.</strong> A payroll takes the enrolled households of a benefit plan and location, and the PCT
+    rule works out each household's benefit. Once approved, it is paid through
+    <a href="../tasaf-payment/user-manual.html">TASAF Payments</a>.</p>
+
+    <nav class="toc">
+      <h3>Contents</h3>
+      <ol>
+        <li><a href="#purpose">Purpose, roles &amp; access</a></li>
+        <li><a href="#navigation">Menus &amp; pages</a></li>
+        <li><a href="#create">Create a payroll</a></li>
+        <li><a href="#review">Review the benefits</a></li>
+        <li><a href="#approve">Approve or reject</a></li>
+        <li><a href="#after">After approval</a></li>
+        <li><a href="#statuses">Statuses</a></li>
+        <li><a href="#troubleshooting">Troubleshooting</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="purpose">1. Purpose, Roles, and Access</h2>
+    <table>
+      <thead><tr><th>Role</th><th>Typical work</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Payroll officer</strong></td><td>Create payrolls and review their benefits.</td></tr>
+        <tr><td><strong>Payroll approver</strong></td><td>Approve or reject payrolls from the Tasks inbox.</td></tr>
+        <tr><td><strong>Finance / audit</strong></td><td>Read payrolls and their benefits.</td></tr>
+      </tbody>
+    </table>
+    <table>
+      <thead><tr><th>Right</th><th>Grants</th></tr></thead>
+      <tbody>
+        <tr><td><code>202001</code> / <code>202002</code> / <code>202004</code></td><td>Search / create / delete payrolls.</td></tr>
+        <tr><td><code>201001</code>–<code>201004</code></td><td>Payment points.</td></tr>
+        <tr><td><code>206001</code> / <code>206002</code></td><td>See / upload reconciliation files.</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="navigation">2. Menus and Pages</h2>
+    <table>
+      <thead><tr><th>Menu</th><th>Shows</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Payrolls</strong></td><td>Every payroll; create a new one with +.</td></tr>
+        <tr><td><strong>Pending Payrolls</strong></td><td>Waiting for approval.</td></tr>
+        <tr><td><strong>Approved Payrolls</strong></td><td>Approved for payment.</td></tr>
+        <tr><td><strong>Reconciled Payrolls</strong></td><td>Paid and closed.</td></tr>
+        <tr><td><strong>Payment Points</strong></td><td>Where payments are made.</td></tr>
+        <tr><td><strong>Tasks</strong></td><td>Approve Payroll Tasks, Payroll Reconciliation Tasks, Rejected Payrolls, Delete Payroll Tasks.</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="create">3. Create a Payroll</h2>
+    <ol class="steps">
+      <li>Open <strong>Payrolls</strong> and press <strong>+</strong>.</li>
+      <li>Enter the <strong>Name</strong> and choose the <strong>Payment Plan</strong> (it sets the benefit plan and the PCT calculation), the <strong>Payment Point</strong>, the <strong>Payment Cycle</strong> (e.g. Sep – Oct 2026) and the <strong>Payment Method</strong>.</li>
+      <li>Set <strong>Valid From</strong> and <strong>Valid To</strong>.</li>
+      <li>Under <strong>Filter Criteria</strong>, choose the locations. Only beneficiaries of the selected plan and locations are included. <strong>Advanced Criteria</strong> narrow it further; a beneficiary must meet all of them.</li>
+      <li>Press <strong>Save</strong>. The benefits are calculated in the background, and the payroll becomes <em>Pending Approval</em> with an approval task.</li>
+    </ol>
+    <figure class="shot">
+      <a href="img/py-01-new.png"><img src="img/py-01-new.png" alt="Creating a payroll: plan, cycle, locations and criteria." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 1</span> Creating a payroll: plan, cycle, locations and criteria.</figcaption>
+    </figure>
+    <div class="callout note"><strong>The household details are saved at calculation.</strong> Pre-audit later
+    checks each amount against those saved details, so a change to a household after the payroll was
+    calculated does not change its amount.</div>
+
+    <h2 id="review">4. Review the Benefits</h2>
+    <p>Open the payroll. The <strong>Benefit Consumptions</strong> tab lists one line per beneficiary with
+    its code, individual, amount, date due and status; filter it by name, status or amount. The
+    <strong>Tasks</strong> tab shows the payroll's approval task, and <strong>Payment Files</strong> any
+    files attached.</p>
+    <figure class="shot">
+      <a href="img/py-02-benefits.png"><img src="img/py-02-benefits.png" alt="The Benefit Consumptions tab of a payroll." loading="lazy" /></a>
+      <figcaption><span class="num">Fig. 2</span> The Benefit Consumptions tab of a payroll.</figcaption>
+    </figure>
+
+    <h2 id="approve">5. Approve or Reject</h2>
+    <ol class="steps">
+      <li>Open <strong>Tasks → Approve Payroll Tasks</strong> (or the payroll's Tasks tab).</li>
+      <li>Open the task, check the number of beneficiaries and the total.</li>
+      <li>Approve, or reject with a reason. A rejected payroll appears under <strong>Rejected Payrolls</strong>.</li>
+    </ol>
+    <p>The person who created the payroll cannot approve it.</p>
+
+    <h2 id="after">6. After Approval</h2>
+    <p>An approved payroll is <em>Approve for payment</em> and appears under <strong>Approved Payrolls</strong>.
+    It is paid through <strong>TASAF Payments</strong>:</p>
+    <ol class="steps">
+      <li><strong>Pre-Audit</strong> checks the payment window's accounts, amounts and duplicates.</li>
+      <li><strong>Disbursement</strong> generates the Bank and MNO paylists from the payroll.</li>
+      <li>The paylists are approved twice and submitted to MUSE; MUSE's replies mark each benefit paid or unapplied.</li>
+    </ol>
+    <p>Do not use <em>Make Payment</em> or upload reconciliation files for TASAF payrolls: payment and
+    reconciliation come from MUSE.</p>
+
+    <h2 id="statuses">7. Statuses</h2>
+    <table>
+      <thead><tr><th>Payroll</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td>Pending approval</td><td>Calculated, waiting for the approver</td></tr>
+        <tr><td>Approve for payment</td><td>Can be pre-audited and paid</td></tr>
+        <tr><td>Rejected</td><td>Will not be paid; its households can go into a new payroll</td></tr>
+        <tr><td>Reconciled</td><td>Paid and closed</td></tr>
+      </tbody>
+    </table>
+    <table>
+      <thead><tr><th>Benefit</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td>Accepted / Created</td><td>Calculated</td></tr>
+        <tr><td>Approve for payment</td><td>On an approved payroll</td></tr>
+        <tr><td>Duplicate</td><td>The household already has a benefit in this cycle</td></tr>
+        <tr><td>Rejected</td><td>Will not be paid</td></tr>
+        <tr><td>Reconciled</td><td>Paid</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="troubleshooting">8. Troubleshooting</h2>
+    <table>
+      <thead><tr><th>Problem</th><th>What to do</th></tr></thead>
+      <tbody>
+        <tr><td>The payroll has fewer beneficiaries than expected</td><td>Check the locations and criteria, and that the households are enrolled (active) in the benefit plan.</td></tr>
+        <tr><td>The payroll is not in TASAF Payments → Disbursement</td><td>It must be approved for payment first.</td></tr>
+        <tr><td>Benefits marked Duplicate</td><td>Another payroll of the same cycle already includes those households.</td></tr>
+      </tbody>
+    </table>
+
+  </main>
+
+  <footer class="doc-footer">
+    <div class="brand">
+      <img src="../assets/tasaf-logo.png" alt="TASAF" />
+      <span>Tanzania Social Action Fund · Payroll Module End-User Manual · Version 1.0</span>
+    </div>
+    <div><a href="../index.html">← Back to documentation hub</a></div>
+  </footer>
+
+</div>
+</body>
+</html>
