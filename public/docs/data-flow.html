@@ -1,0 +1,1744 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>TASAF MIS — The Data Flow (Survey Solutions → TASAF MIS)</title>
+<link rel="icon" type="image/png" href="assets/tasaf-logo.png" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Public+Sans:wght@300;400;500;600;700&family=Intel+One+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+/* ══════════════════════════════════════════════════════════════
+   TASAF house style — palette, type and slide furniture taken
+   from TASAF_Systems_Presentation_Redesigned.pptx
+   ══════════════════════════════════════════════════════════════ */
+:root{
+  /* ── TASAF brand ── */
+  --green:#1DB150; --green-2:#17913F; --green-3:#4AB267; --green-pale:#E3F5E9;
+  --blue:#1963AD; --blue-2:#12508F; --blue-pale:#DCE8F7;
+  --navy:#211A52; --navy-2:#2E2670;
+  --amber:#F5C32C; --amber-2:#B8860B; --amber-pale:#FFF8E1;
+  /* ── slate ink (pptx slate scale) ── */
+  --ink:#1E293B; --ink-2:#334155; --ink-3:#64748B; --ink-4:#94A3B8;
+  --paper:#F4F7FA; --paper-2:#F1F5F9; --paper-3:#E2E8F0;
+  --rule:#E2E8F0; --rule-2:#EDF2F7; --rule-3:#CBD5E1;
+  --white:#FFFFFF;
+  --red:#B03030; --red-deep:#8E2424; --red-pale:#FBEDEC;
+  /* ── header band, sampled from the deck artwork ── */
+  --band:linear-gradient(90deg,#1963AD 0%,#1862AD 22%,#3478A7 36%,#6FAA97 48%,#B0D9A8 58%,#ECF6EA 66%,#FFFFFF 74%,#FFFFFF 100%);
+  /* ── data marks ── */
+  --mark-ss:#1DB150; --mark-ss-hot:#17913F;
+  --mark-lg:#F5C32C; --mark-lg-hot:#B8860B;
+  --mark-py:#1963AD; --mark-py-hot:#12508F;
+  --mark-rt:#B03030; --mark-rt-hot:#8E2424;
+  /* ── type ── */
+  --display:'Montserrat',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --sans:'Public Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --intel:'Intel One Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --gut:clamp(22px,4.4vw,68px);
+  --colw:1460px;
+  --bandpad:clamp(16px,2vw,30px);
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--ink);background:var(--paper-2);
+  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3,.display{font-family:var(--display);font-weight:700;letter-spacing:-.01em;text-wrap:balance}
+a{color:var(--blue);text-decoration:none}
+a:hover{color:var(--blue-2);text-decoration:underline;text-underline-offset:3px}
+.sprite{position:absolute;width:0;height:0;overflow:hidden}
+.ic{width:1em;height:1em;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round}
+b,strong{font-weight:600;color:inherit}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+
+/* ══ topbar ══ */
+.topbar{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;
+  gap:14px;padding:10px clamp(16px,3vw,32px);flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--ink);font-size:14px;font-family:var(--display)}
+.brand img{width:27px;height:27px;object-fit:contain}
+.topbar nav{display:flex;flex-wrap:wrap;gap:4px 22px;font-size:13.5px;color:var(--ink-3);font-weight:500}
+.topbar-actions{display:flex;gap:8px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:7px;font-family:var(--sans);font-size:13px;font-weight:600;
+  border:1px solid var(--rule-3);background:var(--white);color:var(--ink-2);border-radius:4px;
+  padding:9px 14px;cursor:pointer;line-height:1;transition:border-color .18s,background .18s,color .18s}
+.btn:hover{border-color:var(--green);color:var(--green-2);text-decoration:none}
+.btn-primary{background:var(--green);border-color:var(--green);color:var(--white)}
+.btn-primary:hover{background:var(--green-2);border-color:var(--green-2);color:var(--white)}
+.btn .ic{width:15px;height:15px}
+
+/* ══ slide shell — band / body / band ══ */
+#deck{display:flex;flex-direction:column;gap:16px;padding:16px clamp(8px,2vw,24px) 44px}
+.slide{position:relative;display:flex;flex-direction:column;background:var(--white);
+  border:1px solid var(--rule);border-radius:4px;overflow:hidden;scroll-margin-top:64px}
+
+/* ── header band ── */
+.slide-head{position:relative;display:flex;align-items:flex-start;gap:clamp(14px,1.6vw,22px);
+  background:var(--band);padding:var(--bandpad) var(--gut) var(--bandpad);min-height:clamp(88px,10vw,132px)}
+.slide-head::after{content:"";position:absolute;top:50%;right:clamp(16px,2.2vw,34px);transform:translateY(-50%);
+  width:clamp(46px,4.4vw,66px);height:clamp(46px,4.4vw,66px);border-radius:50%;background:var(--white)
+  url("assets/tasaf-logo.png") center/78% no-repeat;box-shadow:0 1px 4px rgba(30,41,59,.16)}
+.slide-head .badge{display:flex;align-items:center;justify-content:center;flex:none;
+  width:clamp(32px,2.7vw,40px);height:clamp(32px,2.7vw,40px);border-radius:4px;
+  background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.42);color:var(--white)}
+.slide-head .badge .ic{width:18px;height:18px}
+.slide-head .htxt{flex:1;min-width:0;max-width:30ch}
+.eyebrow{display:block;font-size:11px;font-weight:700;letter-spacing:.16em;
+  text-transform:uppercase;color:rgba(255,255,255,.86)}
+.slide-title{font-family:var(--display);font-weight:700;font-size:clamp(23px,2.5vw,36px);
+  line-height:1.16;margin-top:7px;max-width:21ch;color:var(--white)}
+.moves{display:flex;gap:5px;margin-top:13px}
+.moves i{display:block;width:clamp(18px,1.8vw,28px);height:3px;border-radius:2px;background:rgba(255,255,255,.34)}
+.moves i.done{background:rgba(255,255,255,.72)}
+.moves i.on{background:var(--amber)}
+/* hint + legend sit on the white end of the band, so they take slate ink */
+.slide-head .hint{flex:none;margin-left:auto;align-self:center;text-align:right;
+  font-size:12.5px;color:var(--ink-3);font-weight:500;max-width:20ch;
+  margin-right:clamp(70px,7vw,112px)}
+.slide-head .legend{flex:none;margin-left:auto;align-self:center;display:grid;
+  grid-template-columns:auto auto;gap:5px 18px;font-size:12px;color:var(--ink-2);font-weight:500;
+  margin-right:clamp(70px,7vw,112px)}
+.slide-head .legend span{display:flex;align-items:center;gap:7px;white-space:nowrap}
+.slide-head .legend i{width:13px;height:3px;border-radius:2px;flex:none}
+
+/* ── body ── */
+.slide-body{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:flex-start;
+  padding:clamp(20px,2.6vw,36px) var(--gut) clamp(20px,2.4vw,34px);
+  width:100%;max-width:calc(var(--colw) + 2*var(--gut));margin-inline:auto}
+
+/* ── footer band ── */
+.slide-foot{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:auto;
+  background:var(--green);color:var(--white);padding:clamp(10px,1.1vw,15px) var(--gut);
+  font-size:12.5px;font-weight:500}
+.slide-foot .fl{display:flex;align-items:center;gap:10px;letter-spacing:.01em}
+.slide-foot img{height:22px;width:22px;object-fit:contain;background:var(--white);
+  border-radius:50%;padding:2px;box-sizing:content-box}
+.slide-foot .fn{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.04em;
+  background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.34);
+  border-radius:999px;padding:4px 14px}
+
+/* ══ body copy ══ */
+p.body{color:var(--ink-2);max-width:78ch;font-size:clamp(15px,1.1vw,18px);line-height:1.6}
+p.body + p.body{margin-top:11px}
+p.body.lede,.lede{font-family:var(--display);font-weight:600;color:var(--ink);
+  font-size:clamp(17px,1.5vw,23px);line-height:1.35;letter-spacing:-.01em}
+code{font-family:var(--intel);font-size:.87em;background:var(--paper);border:1px solid var(--rule);
+  border-radius:3px;padding:1px 6px;color:var(--ink)}
+h3.sub{font-family:var(--display);font-size:16px;font-weight:700;margin:22px 0 10px;
+  display:flex;align-items:center;gap:8px;color:var(--ink);letter-spacing:0}
+h3.sub .ic{width:17px;height:17px;color:var(--green)}
+
+/* ══ agenda tiles — numbered, alternating brand colours ══ */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:clamp(12px,1.4vw,20px)}
+.tile{position:relative;border:1px solid var(--rule);border-radius:4px;background:var(--paper);
+  padding:clamp(16px,1.7vw,24px);display:flex;flex-direction:column;gap:10px;cursor:pointer;
+  text-align:left;font-family:var(--sans);transition:border-color .2s,box-shadow .2s}
+.tile:hover{border-color:var(--green);box-shadow:0 2px 10px rgba(30,41,59,.09)}
+.tile .tic{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:var(--green);color:var(--white)}
+.tile .tic .ic{width:21px;height:21px}
+.tile .tnum{font-family:var(--display);font-weight:700;font-size:11.5px;color:var(--ink-4);letter-spacing:.12em}
+.tile .tt{font-family:var(--display);font-size:clamp(17px,1.5vw,22px);font-weight:700;line-height:1.2;color:var(--ink)}
+.tile .td{font-size:13.5px;color:var(--ink-3);line-height:1.5}
+.tile:nth-child(2) .tic{background:var(--blue)}
+.tile:nth-child(3) .tic{background:var(--navy)}
+.tile:nth-child(4) .tic{background:var(--amber);color:var(--navy)}
+.tile.ss .tic{background:var(--green)}
+.tile.amberish .tic{background:var(--amber);color:var(--navy)}
+
+/* ══ roles ══ */
+.roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:clamp(12px,1.4vw,20px)}
+.role{border:1px solid var(--rule);border-top:3px solid var(--rule-3);border-radius:4px;
+  padding:clamp(15px,1.5vw,20px);background:var(--paper)}
+.role .rhead{display:flex;align-items:center;gap:10px}
+.role .rhead .ic{width:19px;height:19px;color:var(--green)}
+.role.tool{border-top-color:var(--amber)}
+.role.tool .rhead .ic{color:var(--amber-2)}
+.role.key{border-top-color:var(--blue);background:var(--blue-pale)}
+.role.key .rhead .ic{color:var(--blue)}
+.role .rname{font-family:var(--display);font-size:17px;font-weight:700;letter-spacing:-.01em;color:var(--ink)}
+.role p{font-size:13.5px;color:var(--ink-3);margin-top:8px;line-height:1.5}
+.role .tag{font-family:var(--display);font-size:10.5px;font-weight:600;color:var(--ink-4);
+  text-transform:uppercase;letter-spacing:.09em;margin-top:11px;display:block;line-height:1.45}
+.role.key .tag{color:var(--blue)}
+
+/* ══ figures ══ */
+figure{background:var(--white);border:1px solid var(--rule);border-radius:4px;overflow:hidden}
+figure .figbody{overflow-x:auto;padding:clamp(12px,1.4vw,20px)}
+figure svg{display:block;width:100%;height:auto}
+figcaption{border-top:1px solid var(--rule);background:var(--paper);padding:11px clamp(14px,1.4vw,20px);
+  font-size:13px;color:var(--ink-3)}
+figcaption b{color:var(--ink)}
+.takeaways{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px 26px;margin-top:18px}
+.takeaway{display:flex;gap:10px;font-size:13.5px;color:var(--ink-2);line-height:1.5}
+.takeaway .ic{width:18px;height:18px;color:var(--green);margin-top:3px}
+
+/* ══ note ══ */
+.note{border:1px solid #F0D9A0;border-left:4px solid var(--amber);background:var(--amber-pale);
+  border-radius:0 4px 4px 0;padding:14px 18px;font-size:13.5px;color:#5C4410;
+  display:flex;gap:11px;margin-top:18px;line-height:1.5}
+.note .ic{width:18px;height:18px;color:var(--amber-2);margin-top:2px;flex:none}
+.note b{color:#3F2E08}
+
+/* ══ status ladder ══ */
+.ladder{display:flex;flex-wrap:wrap;align-items:center;gap:7px;font-family:var(--intel);font-size:12px}
+.ladder span{border:1px solid var(--rule-3);border-radius:3px;padding:6px 11px;background:var(--white);color:var(--ink-2)}
+.ladder .ok{border-color:var(--green);background:var(--green-pale);color:var(--green-2);font-weight:600}
+.ladder .no{border-color:#E4B4B0;background:var(--red-pale);color:var(--red-deep)}
+.ladder .arrow{border:0;background:none;padding:0 2px;color:var(--ink-4)}
+
+/* ══ steps ══ */
+.steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(265px,1fr));gap:clamp(14px,1.8vw,28px)}
+.step{display:flex;gap:14px}
+.step .sic{width:42px;height:42px;border-radius:50%;background:var(--green);
+  display:flex;align-items:center;justify-content:center;color:var(--white);flex:none}
+.step .sic .ic{width:20px;height:20px}
+.step:nth-child(2n) .sic{background:var(--blue)}
+.step .sn{font-family:var(--display);font-weight:700;font-size:10.5px;color:var(--ink-4);letter-spacing:.12em}
+.step .st{font-family:var(--display);font-size:17.5px;font-weight:700;margin-top:3px;letter-spacing:-.01em;color:var(--ink)}
+.step .sd{font-size:13.5px;color:var(--ink-3);margin-top:7px;line-height:1.5}
+.step .sw{font-family:var(--intel);font-size:11.5px;color:var(--blue);margin-top:9px;display:block}
+
+/* ══ boundary ══ */
+.boundary{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:clamp(14px,3vw,44px)}
+.bcard{border:1px solid var(--rule);border-radius:4px;padding:clamp(18px,2.2vw,30px);
+  background:var(--paper);text-align:center}
+.bcard img{height:clamp(40px,5vw,60px);width:auto;object-fit:contain}
+.bcard .bt{font-family:var(--display);font-size:clamp(17px,1.7vw,23px);font-weight:700;margin-top:14px;color:var(--ink)}
+.bcard .bd{font-size:13.5px;color:var(--ink-3);margin-top:7px;line-height:1.45}
+.bcard.ss{background:var(--blue-pale);border-color:#BDD4EF}
+.bwire{display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--green);min-width:110px}
+.bwire .ic{width:clamp(26px,3.2vw,40px);height:clamp(26px,3.2vw,40px)}
+.bwire span{font-size:12.5px;color:var(--ink-3);text-align:center;line-height:1.45}
+.b-rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px 26px;margin-top:26px}
+.b-rule{display:flex;gap:10px;font-size:13.5px;color:var(--ink-2);line-height:1.5}
+.b-rule .ic{width:18px;height:18px;color:var(--green);margin-top:3px}
+
+/* ══ before / after ══ */
+.ba{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:clamp(14px,2vw,30px)}
+.ba-col{border:1px solid var(--rule);border-top:3px solid var(--rule-3);border-radius:4px;
+  padding:clamp(15px,1.6vw,22px);background:var(--paper)}
+.ba-col.now{border-top-color:var(--green);background:var(--green-pale)}
+.ba-col h4{font-family:var(--display);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-4);display:flex;align-items:center;gap:8px;font-weight:700}
+.ba-col.now h4{color:var(--green-2)}
+.ba-col h4 .ic{width:15px;height:15px}
+.ba-col ul{list-style:none;margin-top:14px;display:grid;gap:11px}
+.ba-col li{display:flex;gap:10px;font-size:13.5px;color:var(--ink-2);line-height:1.5}
+.ba-col li .ic{width:16px;height:16px;color:var(--ink-4);margin-top:3px}
+.ba-col.now li .ic{color:var(--green)}
+
+/* ══ RAIL — geometry, sizes and lane colours unchanged ══ */
+.stage{border:1px solid var(--rule);border-radius:4px;overflow:hidden;background:var(--white)}
+.canvas-scroll{overflow-x:auto}
+svg.rail{display:block;width:100%;min-width:880px;height:auto}
+.zone{fill:none;stroke:var(--rule);stroke-dasharray:3 6}
+.zone-label,.lane-tag{font-family:var(--intel);font-size:11.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;fill:var(--ink-4)}
+.n-title{font-family:var(--intel);font-weight:600;font-size:15px;fill:var(--ink)}
+.n-sub{font-family:var(--intel);font-size:11px;fill:var(--ink-3)}
+.e-label{font-family:var(--intel);font-weight:500;font-size:10.5px;fill:var(--ink-3)}
+.band{stroke:none}
+.band-label{font-family:var(--intel);font-size:11.5px;font-weight:500;letter-spacing:.1em;text-transform:uppercase}
+.chip-label{font-family:var(--intel);font-size:11px;fill:var(--ink)}
+.node rect.box{fill:var(--paper);stroke:var(--rule);stroke-width:1}
+.node rect.halo{fill:none;stroke:var(--lane);stroke-width:1.2;opacity:0}
+.node.ext rect.box{fill:var(--white);stroke-dasharray:2 3}
+.node .port{fill:var(--lane)}
+.node.on rect.halo{opacity:.9}
+.node.on rect.box{fill:var(--white)}
+.node,.edge{transition:opacity .45s ease}
+.node.off,.edge.off{opacity:.16}
+.edge path.base{fill:none;stroke:var(--lane);stroke-width:1.5;opacity:.55}
+.edge path.pulse{fill:none;stroke:var(--lane-hot);stroke-width:2.6;stroke-linecap:round;opacity:0}
+.edge.on path.pulse{opacity:.95}
+.edge.on path.base{opacity:.75}
+.edge path.dotted{stroke-dasharray:2 7;opacity:.45}
+.edge path.dashed{stroke-dasharray:7 5}
+.lbl-bg{fill:#FFFFFF;opacity:.94}
+
+/* ══ rail console ══ */
+.console{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px 28px;align-items:start;
+  border-top:1px solid var(--rule);background:var(--paper);padding:15px clamp(14px,1.4vw,20px)}
+.scene-no{font-family:var(--display);font-weight:700;font-size:10.5px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--green-2)}
+.scene-title{font-family:var(--display);font-size:17px;font-weight:700;margin:4px 0 4px;
+  letter-spacing:-.01em;color:var(--ink)}
+.scene-claim{color:var(--ink-3);font-size:13px;max-width:82ch;line-height:1.5}
+.facts{list-style:none;display:flex;flex-wrap:wrap;gap:6px;margin-top:11px;font-size:11px;color:var(--ink-3)}
+.facts li{border:1px solid var(--rule-3);border-radius:3px;padding:4px 9px;background:var(--white);font-family:var(--intel)}
+.facts li b{color:var(--green-2);font-weight:600}
+.transport{display:flex;flex-direction:column;gap:9px;align-items:flex-end}
+.btns{display:flex;flex-wrap:wrap;gap:6px}
+.btns .btn{padding:6px 10px;font-size:11.5px}
+.btn[aria-pressed="true"]{border-color:var(--green);color:var(--green-2);background:var(--green-pale)}
+.ticks{display:flex;gap:5px}
+.tick{width:30px;height:4px;border:0;padding:0;border-radius:2px;background:var(--rule-3);cursor:pointer}
+.tick[data-state="done"]{background:var(--green-3)}
+.tick[data-state="now"]{background:var(--green)}
+.keys{font-family:var(--intel);font-size:10px;color:var(--ink-4);text-align:right}
+
+/* ══ scene list ══ */
+.scenes-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px}
+.scene-item{display:flex;gap:12px;border:1px solid var(--rule);border-radius:4px;padding:13px 16px;
+  background:var(--paper);text-align:left;cursor:pointer;font-family:var(--sans);
+  transition:border-color .18s,background .18s}
+.scene-item:hover{border-color:var(--green);background:var(--white)}
+.scene-item[aria-current="true"]{border-color:var(--green);background:var(--green-pale)}
+.scene-item .snum{font-family:var(--display);font-weight:700;font-size:11.5px;color:var(--ink-4);padding-top:3px}
+.scene-item .sttl{display:block;font-family:var(--display);font-size:14px;font-weight:700;color:var(--ink)}
+.scene-item .sdesc{display:block;font-size:12.5px;color:var(--ink-3);margin-top:4px;line-height:1.45}
+
+/* ══ chain (payment) ══ */
+.chain{display:flex;flex-wrap:wrap;align-items:stretch;gap:10px}
+.chain .link{flex:1 1 150px;border:1px solid var(--rule);border-top:3px solid var(--green);border-radius:4px;
+  padding:15px;display:flex;flex-direction:column;gap:8px;min-width:140px;background:var(--paper)}
+.chain .link .ic{width:21px;height:21px;color:var(--green)}
+.chain .link .lt{font-family:var(--display);font-size:16px;font-weight:700;letter-spacing:-.01em;line-height:1.2;color:var(--ink)}
+.chain .link .ld{font-size:12.5px;color:var(--ink-3);line-height:1.45}
+.chain .sep{display:flex;align-items:center;color:var(--ink-4)}
+.chain .sep .ic{width:18px;height:18px}
+.chain .link.out{border-top-color:var(--blue)}
+.chain .link.out .ic{color:var(--blue)}
+.chain .link.back{border-top-color:var(--navy)}
+.chain .link.back .ic{color:var(--navy)}
+
+/* ══ split ══ */
+.split{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:clamp(20px,2.8vw,48px);align-items:start}
+.split > div{min-width:0}
+
+/* ══ charts ══ */
+.chart{margin-top:8px}
+.chart-title{font-family:var(--display);font-size:17px;font-weight:700;letter-spacing:-.01em;color:var(--ink)}
+.chart-note{font-size:12px;color:var(--ink-4);margin-top:10px;line-height:1.45;max-width:72ch}
+.stack{display:flex;gap:2px;margin-top:14px;height:clamp(32px,3.2vw,44px)}
+.stack .seg{border-radius:2px;display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:600;color:#FFFFFF;min-width:0;overflow:hidden;white-space:nowrap}
+.stack .seg.pale{color:var(--ink-2)}
+.stack-key{display:flex;flex-wrap:wrap;gap:8px 24px;margin-top:13px;font-size:13px;color:var(--ink-2)}
+.stack-key span{display:flex;align-items:center;gap:8px}
+.stack-key i{width:11px;height:11px;border-radius:2px;flex:none}
+.stack-key b{font-weight:600;font-family:var(--intel);font-size:.94em}
+
+.stat-hero{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 16px;
+  border-left:4px solid var(--green);padding-left:clamp(16px,1.6vw,22px)}
+.stat-hero .big{font-family:var(--display);font-size:clamp(46px,6vw,88px);font-weight:700;line-height:.92;
+  color:var(--green);letter-spacing:-.03em}
+.stat-hero .of{font-family:var(--intel);font-size:13px;color:var(--ink-3)}
+.stat-hero .cap{font-size:clamp(14.5px,1.15vw,17px);color:var(--ink-2);flex-basis:100%;max-width:56ch;
+  line-height:1.5;margin-top:8px}
+.minibars{display:grid;gap:9px;margin-top:8px}
+.minibars .row{display:grid;grid-template-columns:minmax(130px,1.5fr) minmax(0,3fr) 56px;
+  gap:12px;align-items:center;font-size:13px}
+.minibars .lbl{color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.minibars .track{height:12px;background:var(--paper-3);border-radius:2px;overflow:hidden}
+.minibars .track i{display:block;height:100%;border-radius:2px;background:var(--green)}
+.minibars .track i.rej{background:var(--red)}
+.minibars .val{text-align:right;font-family:var(--display);font-weight:700;color:var(--ink)}
+
+/* ══ figures list ══ */
+dl.figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:0 clamp(24px,3vw,52px)}
+dl.figs div{border-top:1px solid var(--rule);padding:13px 0}
+dl.figs dt{font-family:var(--intel);font-size:13px;color:var(--ink);font-weight:500}
+dl.figs dd{color:var(--ink-3);font-size:13px;margin-top:5px;line-height:1.5}
+dl.figs dd em{font-style:normal;color:var(--ink-4);font-family:var(--intel);font-size:11.5px}
+
+/* ══ closing ══ */
+.closing{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:clamp(16px,2vw,34px)}
+.closing .cpt{border-top:3px solid var(--green);padding-top:17px}
+.closing .cpt:nth-child(2){border-top-color:var(--blue)}
+.closing .cpt:nth-child(3){border-top-color:var(--navy)}
+.closing .cpt:nth-child(4){border-top-color:var(--amber)}
+.closing .cpt .ic{width:23px;height:23px;color:var(--green)}
+.closing .cpt:nth-child(2) .ic{color:var(--blue)}
+.closing .cpt:nth-child(3) .ic{color:var(--navy)}
+.closing .cpt:nth-child(4) .ic{color:var(--amber-2)}
+.closing .cpt .ct{font-family:var(--display);font-size:clamp(18px,1.7vw,25px);font-weight:700;margin-top:13px;
+  color:var(--ink);letter-spacing:-.01em}
+.closing .cpt .cd{font-size:13.5px;color:var(--ink-3);margin-top:9px;line-height:1.55}
+.links-row{display:flex;flex-wrap:wrap;gap:9px;margin-top:26px;font-size:13px}
+.links-row a{border:1px solid var(--rule-3);border-radius:3px;padding:8px 15px;background:var(--white);color:var(--ink-2)}
+.links-row a:hover{border-color:var(--green);color:var(--green-2);text-decoration:none}
+
+/* ══ title slide — white cover, brand blocks, tri-colour rule ══ */
+.title-slide{background:var(--white);border-color:var(--rule)}
+.title-slide .slide-body{justify-content:center;padding-block:clamp(40px,6vw,88px);position:relative;z-index:1}
+.title-slide .slide-body{max-width:calc(var(--colw) + 2*var(--gut))}
+.title-slide .marks,.title-slide h1,.title-slide .tagline,.title-slide .meta{max-width:min(54%,760px)}
+.title-slide h1{max-width:min(54%,760px)}
+.title-slide .marks{display:flex;align-items:center;gap:clamp(14px,2.4vw,28px)}
+.title-slide .marks img{height:clamp(56px,6.4vw,92px);width:auto;object-fit:contain}
+.title-slide .marks .x{color:var(--ink-4);font-size:clamp(15px,1.8vw,22px)}
+.title-slide h1{font-family:var(--display);font-size:clamp(34px,5.4vw,76px);line-height:1.06;
+  letter-spacing:-.022em;margin-top:clamp(22px,3vw,40px);color:var(--green);font-weight:700;max-width:16ch}
+.title-slide .tagline{font-size:clamp(15px,1.5vw,20px);line-height:1.5;color:var(--ink-2);
+  max-width:46ch;margin-top:clamp(18px,2.2vw,28px);padding-top:clamp(18px,2.2vw,28px);
+  background:linear-gradient(90deg,var(--navy) 0 33%,var(--amber) 33% 66%,var(--blue) 66% 100%)
+    top left/clamp(190px,20vw,300px) 4px no-repeat}
+.title-slide .meta{margin-top:clamp(22px,3vw,38px);display:flex;flex-wrap:wrap;gap:8px 10px;
+  font-family:var(--intel);font-size:12px}
+.title-slide .meta span{border:1px solid var(--rule-3);border-radius:3px;padding:7px 14px;color:var(--ink-3)}
+/* decorative brand blocks, echoing the deck cover */
+.deco{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.deco i{position:absolute;display:block;border-radius:22px}
+.deco i:nth-child(1){width:19%;height:26%;top:-7%;right:-3%;background:var(--amber);transform:rotate(-14deg)}
+.deco i:nth-child(2){width:20%;height:42%;top:20%;right:9%;background:var(--navy);transform:rotate(-14deg)}
+.deco i:nth-child(3){width:17%;height:30%;bottom:2%;right:20%;
+  background:linear-gradient(150deg,var(--green) 0%,var(--blue) 100%);transform:rotate(-14deg)}
+.deco i:nth-child(4){width:14%;height:30%;bottom:1%;right:-2%;background:var(--blue);transform:rotate(-14deg)}
+@media (max-width:900px){.deco{display:none}}
+
+/* ══ closing slide cover treatment ══ */
+#close .slide-title{color:var(--white)}
+
+/* ══ deck bar (present mode) ══ */
+.deckbar{display:none;position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(255,255,255,.97);
+  border-top:1px solid var(--rule);padding:9px clamp(14px,2vw,24px);align-items:center;gap:16px;backdrop-filter:blur(8px)}
+.deckbar .dprog{flex:1;height:3px;background:var(--rule-3);border-radius:2px;overflow:hidden}
+.deckbar .dprog i{display:block;height:100%;background:var(--green);width:0;transition:width .25s ease}
+.deckbar .dcount{font-family:var(--display);font-weight:700;font-size:12px;color:var(--ink-3);min-width:76px;text-align:center}
+.deckbar .dtitle{font-size:13px;color:var(--ink-4);max-width:34ch;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;font-weight:500}
+
+body.present{overflow:hidden;background:var(--ink)}
+body.present .topbar{display:none}
+body.present #deck{display:block;gap:0;padding:0}
+body.present .slide{display:none}
+body.present .slide.active{display:flex;position:fixed;inset:0 0 44px 0;margin:0;border:0;border-radius:0}
+body.present .slide-body{overflow:auto}
+body.present .slide.center .slide-body,body.present .title-slide .slide-body,
+body.present #close .slide-body{justify-content:center}
+/* on a projector the bands are fixed furniture: buy the content its height back */
+body.present .slide-head{padding-block:clamp(12px,1.8vh,22px);min-height:0}
+body.present .slide-head::after{width:clamp(40px,3.6vw,54px);height:clamp(40px,3.6vw,54px)}
+body.present .slide-title{font-size:clamp(21px,2.1vw,31px)}
+body.present .moves{margin-top:10px}
+body.present .slide-body{padding-block:clamp(14px,2.2vh,26px)}
+/* the rail stage takes whatever the bands and console leave, rather than a fixed vh guess */
+body.present .slide-body{min-height:0}
+body.present .stage{flex:1;display:flex;flex-direction:column;min-height:0}
+body.present .canvas-scroll{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
+body.present svg.rail{max-height:100%;max-width:100%}
+body.present figure svg{max-height:40vh}
+body.present .deckbar{display:flex}
+body.present .doc-only{display:none}
+
+@media (min-width:1100px){
+  /* both six-item grids read as 3x2 rather than a five-across row with an orphan */
+  .roles,.scenes-list{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (max-width:860px){
+  .slide-head{flex-wrap:wrap;background:linear-gradient(135deg,#1963AD 0%,#2E8A86 60%,#1DB150 100%)}
+  .slide-head::after{display:none}
+  .slide-head .hint,.slide-head .legend{margin-left:0;margin-right:0;align-self:flex-start;
+    width:100%;text-align:left;color:rgba(255,255,255,.9)}
+  .slide-head .legend{grid-template-columns:auto auto;color:rgba(255,255,255,.9)}
+  .boundary{grid-template-columns:1fr}
+  .bwire{flex-direction:row;min-width:0}
+  .console{grid-template-columns:1fr}
+  .transport{align-items:flex-start}
+  .keys{text-align:left}
+}
+@media (prefers-reduced-motion:reduce){.node,.edge,.deckbar .dprog i{transition:none}}
+@media print{
+  .topbar,.deckbar,.doc-only{display:none}
+  body{background:#fff}
+  #deck{gap:0;padding:0}
+  .slide{break-after:page;border:0;border-radius:0}
+  .slide-head,.slide-foot{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .canvas-scroll{overflow:visible}
+  svg.rail{min-width:0}
+}
+</style>
+</head>
+<body class="doc">
+
+<!-- ══════ ICON SPRITE ══════ -->
+<svg class="sprite" aria-hidden="true" focusable="false"><defs>
+  <g id="i-pen"><path d="M4 20h4L20 8a2.8 2.8 0 0 0-4-4L4 16v4z"/><path d="M14 6l4 4"/></g>
+  <g id="i-tablet"><rect x="5" y="2" width="14" height="20" rx="2.5"/><path d="M11 18.5h2"/></g>
+  <g id="i-server"><rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 7.5h.01M7 16.5h.01"/></g>
+  <g id="i-hq"><path d="M3 21h18M5 21V8l7-4 7 4v13M10 21v-5h4v5M9 11h.01M15 11h.01"/></g>
+  <g id="i-users"><path d="M16 20v-1.5a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4V20"/><circle cx="9" cy="7" r="3.4"/><path d="M22 20v-1.5a4 4 0 0 0-3-3.8M16.5 4.2a3.4 3.4 0 0 1 0 6.6"/></g>
+  <g id="i-user"><path d="M19 20v-1.5a5 5 0 0 0-5-5h-4a5 5 0 0 0-5 5V20"/><circle cx="12" cy="7" r="3.6"/></g>
+  <g id="i-shield"><path d="M12 3l8 3v6c0 4.8-3.4 7.9-8 9-4.6-1.1-8-4.2-8-9V6z"/></g>
+  <g id="i-export"><path d="M12 3v12"/><path d="M8 11l4 4 4-4"/><path d="M4 19h16"/></g>
+  <g id="i-merge"><path d="M6 3v5a6 6 0 0 0 6 6h7"/><path d="M16 11l3 3-3 3"/><path d="M18 3v3"/></g>
+  <g id="i-sliders"><path d="M4 8h10M18 8h2M4 16h4M12 16h8"/><circle cx="16" cy="8" r="2"/><circle cx="10" cy="16" r="2"/></g>
+  <g id="i-calc"><rect x="4" y="3" width="16" height="18" rx="2.5"/><path d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01"/></g>
+  <g id="i-db"><ellipse cx="12" cy="6" rx="8" ry="3.2"/><path d="M4 6v12c0 1.8 3.6 3.2 8 3.2s8-1.4 8-3.2V6"/><path d="M4 12c0 1.8 3.6 3.2 8 3.2s8-1.4 8-3.2"/></g>
+  <g id="i-check"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></g>
+  <g id="i-link"><path d="M10 13a4.5 4.5 0 0 0 6.5.4l2.5-2.5a4.6 4.6 0 0 0-6.5-6.5l-1.4 1.4"/><path d="M14 11a4.5 4.5 0 0 0-6.5-.4L5 13.1a4.6 4.6 0 0 0 6.5 6.5l1.4-1.4"/></g>
+  <g id="i-arrow"><path d="M4 12h15"/><path d="M13 6l6 6-6 6"/></g>
+  <g id="i-refresh"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/></g>
+  <g id="i-clock"><circle cx="12" cy="12" r="9"/><path d="M12 7v5.4l3.4 2"/></g>
+  <g id="i-alert"><path d="M12 4.5 3 19.5h18z"/><path d="M12 10v4M12 17h.01"/></g>
+  <g id="i-grid"><rect x="3" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.6"/></g>
+  <g id="i-flow"><circle cx="5" cy="6" r="2.4"/><circle cx="19" cy="6" r="2.4"/><circle cx="12" cy="18" r="2.4"/><path d="M7.4 6h9.2"/><path d="M5 8.4V13a2 2 0 0 0 2 2h2.8"/><path d="M19 8.4V13a2 2 0 0 1-2 2h-2.8"/></g>
+  <g id="i-bank"><path d="M3 10h18L12 4 3 10z"/><path d="M6 10v8M10 10v8M14 10v8M18 10v8M3 21h18"/></g>
+  <g id="i-money"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><circle cx="12" cy="12" r="2.6"/><path d="M6 12h.01M18 12h.01"/></g>
+  <g id="i-chart"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></g>
+  <g id="i-book"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v17H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 17.5h16"/></g>
+  <g id="i-play"><path d="M6 4l13 8-13 8z"/></g>
+  <g id="i-present"><rect x="2.5" y="4" width="19" height="12" rx="2"/><path d="M12 16v4M8 21h8"/></g>
+  <g id="i-x"><path d="M6 6l12 12M18 6 6 18"/></g>
+  <g id="i-back"><path d="M20 12H5"/><path d="M11 6l-6 6 6 6"/></g>
+  <g id="i-ban"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></g>
+  <g id="i-history"><path d="M3.5 12a8.5 8.5 0 1 0 2.7-6.2"/><path d="M3.5 4.5V9H8"/><path d="M12 8v4.3l3 1.8"/></g>
+</defs></svg>
+
+<!-- ══════ TOPBAR ══════ -->
+<header class="topbar">
+  <a class="brand" href="index.html"><img src="assets/tasaf-logo.png" alt="TASAF" /><span>TASAF MIS Docs</span></a>
+  <nav>
+    <a href="#roles">Survey Solutions</a>
+    <a href="#ssflow">SS flow</a>
+    <a href="#handoff">The handoff</a>
+    <a href="#rail">The rail</a>
+    <a href="#payment">Payment</a>
+    <a href="#figures">Figures</a>
+  </nav>
+  <div class="topbar-actions">
+    <button class="btn btn-primary" id="presentBtn" type="button">
+      <svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-present"></use></svg> Present
+    </button>
+    <a class="btn" href="index.html"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-back"></use></svg> Hub</a>
+  </div>
+</header>
+
+<main id="deck">
+
+<!-- ── 1 · TITLE ── -->
+<section class="slide title-slide" id="title" data-title="The Data Flow">
+  <div class="deco" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+  <div class="slide-body" style="justify-content:center">
+    <div class="marks">
+      <img src="assets/survey-solutions-logo.png" alt="Survey Solutions" />
+      <span class="x">×</span>
+      <img src="assets/tasaf-logo.png" alt="TASAF" />
+    </div>
+    <h1>The Data Flow</h1>
+    <p class="tagline">From an interviewer's tablet in the field to a household in the TASAF MIS
+      registry — and on to the payment rail.</p>
+    <div class="meta">
+      <span>Survey Solutions → TASAF MIS</span>
+      <span id="slideCount">17 slides</span>
+      <span>Press <b>F</b> to present · ← → to move</span>
+    </div>
+  </div>
+  <div class="slide-foot">
+    <span class="fl"><img src="assets/tasaf-logo.png" alt="" /> The Data Flow</span>
+    <span class="fn"></span>
+  </div>
+</section>
+
+<!-- ── 2 · AGENDA ── -->
+<section class="slide" id="agenda" data-title="Four moves">
+  <div class="slide-head">
+    <span class="badge"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-grid"></use></svg></span>
+    <div class="htxt"><span class="eyebrow">Agenda</span><h2 class="slide-title">Four moves, in order</h2></div>
+    <span class="hint">read left to right</span>
+  </div>
+  <div class="slide-body">
+    <p class="body">Data changes hands four times on its way from a household interview to a payment.
+      Each hand-off has its own owner, and the order never varies.</p>
+    <div class="tiles" style="margin-top:18px">
+      <button class="tile ss" type="button" data-goto="roles">
+        <span class="tic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-users"></use></svg></span>
+        <span class="tnum">MOVE 01</span>
+        <span class="tt">Inside Survey Solutions</span>
+        <span class="td">Interviewer → supervisor → Headquarters. Quality control happens here, before anything leaves.</span>
+      </button>
+      <button class="tile" type="button" data-goto="handoff">
+        <span class="tic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-export"></use></svg></span>
+        <span class="tnum">MOVE 02</span>
+        <span class="tt">The handoff</span>
+        <span class="td">The MIS asks HQ for an export job, then flattens, normalises and scores what comes back.</span>
+      </button>
+      <button class="tile" type="button" data-goto="rail">
+        <span class="tic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-flow"></use></svg></span>
+        <span class="tnum">MOVE 03</span>
+        <span class="tt">Into the registry</span>
+        <span class="td">Validated people and households land in one registry — the animated rail shows the whole path.</span>
+      </button>
+      <button class="tile amberish" type="button" data-goto="payment">
+        <span class="tic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-money"></use></svg></span>
+        <span class="tnum">MOVE 04</span>
+        <span class="tt">Registry to payment</span>
+        <span class="td">Targeting, payroll, paylist, then out over GovESB to MUSE or GePG — and the feedback back.</span>
+      </button>
+    </div>
+  </div>
+  <div class="slide-foot"><span class="fl"><img src="assets/tasaf-logo.png" alt="" /> The Data Flow</span><span class="fn"></span></div>
+</section>
+
+<!-- ── 3 · SS ROLES ── -->
+<section class="slide" id="roles" data-move="1" data-title="Survey Solutions · components and roles">
+  <div class="slide-head">
+    <span class="badge"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-users"></use></svg></span>
+    <div class="htxt"><span class="eyebrow">Move 01 · Survey Solutions</span>
+      <h2 class="slide-title">Components and roles</h2></div>
+    <span class="hint">each role is also a component</span>
+  </div>
+  <div class="slide-body">
+    <div class="roles">
+      <div class="role tool">
+        <div class="rhead"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-pen"></use></svg><span class="rname">Designer</span></div>
+        <p>Web-based tool used to develop the questionnaires; several people can collaborate on one questionnaire.</p>
+        <span class="tag">Tool · web</span>
+      </div>
+      <div class="role tool">
+        <div class="rhead"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-server"></use></svg><span class="rname">Synchronization point</span></div>
+        <p>The data server every user exchanges information through — it coordinates the survey between tablets, supervisors and HQ.</p>
+        <span class="tag">Server</span>
+      </div>
+      <div class="role key">
+        <div class="rhead"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-hq"></use></svg><span class="rname">Headquarters</span></div>
+        <p>Manages user accounts, starts a survey, <strong>exports the data</strong>, and performs the highest level of quality control.</p>
+        <span class="tag">The only role the MIS talks to</span>
+      </div>
+      <div class="role">
+        <div class="rhead"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-users"></use></svg><span class="rname">Supervisor</span></div>
+        <p>Distributes the workload between interviewers and assures the quality of the incoming data.</p>
+        <span class="tag">Role · team lead</span>
+      </div>
+      <div class="role">
+        <div class="rhead"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-user"></use></svg><span class="rname">Interviewer</span></div>
+        <p>Conducts the interview and collects the respondent's answers, working offline on a tablet.</p>
+        <span class="tag">Role · field</span>
+      </div>
+      <div class="role">
+        <div class="rhead"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-shield"></use></svg><span class="rname">Other roles</span></div>
+        <p>Administrator and observer — account and oversight roles that take no part in the interview chain.</p>
+        <span class="tag">Role · support</span>
+      </div>
+    </div>
+  </div>
+  <div class="slide-foot"><span class="fl"><img src="assets/survey-solutions-logo.png" alt="" /> Survey Solutions</span><span class="fn"></span></div>
+</section>
+
+<!-- ── 4 · SS HIERARCHY ── -->
+<section class="slide" id="hierarchy" data-move="1" data-title="Survey Solutions · hierarchy">
+  <div class="slide-head">
+    <span class="badge"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-flow"></use></svg></span>
+    <div class="htxt"><span class="eyebrow">Move 01 · Survey Solutions</span>
+      <h2 class="slide-title">The hierarchy: work down, interviews up</h2></div>
+    <span class="hint">tablets work offline</span>
+  </div>
+  <div class="slide-body">
+    <figure>
+      <div class="figbody">
+        <svg viewBox="0 0 900 430" role="img"
+             aria-label="Survey Solutions hierarchy: the Designer publishes a questionnaire to Headquarters, which holds the interview database; Headquarters assigns work to supervisors, supervisors assign interviews to interviewers on tablets, and completed interviews sync back up through the synchronization point to Headquarters.">
+          <defs>
+            <marker id="h-down" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2B6CB0"></path></marker>
+            <marker id="h-up" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#009688"></path></marker>
+          </defs>
+
+          <rect x="352" y="18" width="196" height="54" rx="9" fill="#FDF0D4" stroke="#E0BE72"></rect>
+          <text x="450" y="42" text-anchor="middle" font-family="Intel One Mono, monospace" font-size="15" font-weight="600" fill="#0E1C1A">Designer</text>
+          <text x="450" y="60" text-anchor="middle" font-family="Intel One Mono, monospace" font-size="10.5" fill="#4A6560">questionnaire authoring</text>
+
+          <line x1="450" y1="72" x2="450" y2="118" stroke="#35678F" stroke-width="1.4" marker-end="url(#h-down)"></line>
+          <rect x="458" y="82" width="126" height="16" fill="#F6FAF9" opacity=".95"></rect>
+          <text x="464" y="94" font-family="Intel One Mono, monospace" font-size="10.5" fill="#4A6560">publishes questionnaire</text>
+
+          <!-- HQ -->
+          <rect x="318" y="124" width="204" height="62" rx="10" fill="#FFFFFF" stroke="#0B41C4" stroke-width="1.6"></rect>
+          <image href="assets/survey-solutions-logo.png" x="332" y="139" width="32" height="32" preserveAspectRatio="xMidYMid meet"></image>
+          <text x="374" y="150" font-family="Intel One Mono, monospace" font-size="15" font-weight="600" fill="#0E1C1A">Headquarters</text>
+          <text x="374" y="168" font-family="Intel One Mono, monospace" font-size="10.5" fill="#4A6560">survey control · export</text>
+          <g>
+            <ellipse cx="566" cy="139" rx="26" ry="8" fill="#EDF5F3" stroke="#C8E0DC"></ellipse>
+            <path d="M540,139 v32 a26,8 0 0 0 52,0 v-32" fill="#EDF5F3" stroke="#C8E0DC"></path>
+            <ellipse cx="566" cy="171" rx="26" ry="8" fill="none" stroke="#C8E0DC"></ellipse>
+            <text x="566" y="196" text-anchor="middle" font-family="Intel One Mono, monospace" font-size="10.5" fill="#4A6560">interview DB</text>
+          </g>
+          <line x1="522" y1="155" x2="538" y2="155" stroke="#C8E0DC" stroke-width="1.4"></line>
+
+          <path d="M420,186 v24 H150 v22" fill="none" stroke="#35678F" stroke-width="1.4" marker-end="url(#h-down)"></path>
+          <path d="M420,186 v46" fill="none" stroke="#35678F" stroke-width="1.4" marker-end="url(#h-down)"></path>
+          <path d="M420,186 v24 H690 v22" fill="none" stroke="#35678F" stroke-width="1.4" marker-end="url(#h-down)"></path>
+          <rect x="196" y="196" width="92" height="16" fill="#F6FAF9" opacity=".95"></rect>
+          <text x="200" y="208" font-family="Intel One Mono, monospace" font-size="10.5" fill="#4A6560">assignments</text>
+
+          <g font-family="Intel One Mono, monospace" font-size="13.5" font-weight="600" fill="#0E1C1A">
+            <rect x="86" y="234" width="128" height="46" rx="9" fill="#EDF5F3" stroke="#C8E0DC"></rect>
+            <text x="150" y="255" text-anchor="middle">Supervisor</text>
+            <text x="150" y="271" text-anchor="middle" font-size="10" font-weight="400" fill="#4A6560">team A</text>
+            <rect x="356" y="234" width="128" height="46" rx="9" fill="#EDF5F3" stroke="#C8E0DC"></rect>
+            <text x="420" y="255" text-anchor="middle">Supervisor</text>
+            <text x="420" y="271" text-anchor="middle" font-size="10" font-weight="400" fill="#4A6560">team B</text>
+            <rect x="626" y="234" width="128" height="46" rx="9" fill="#EDF5F3" stroke="#C8E0DC"></rect>
+            <text x="690" y="255" text-anchor="middle">Supervisor</text>
+            <text x="690" y="271" text-anchor="middle" font-size="10" font-weight="400" fill="#4A6560">team C</text>
+          </g>
+
+          <g fill="none" stroke="#35678F" stroke-width="1.3" marker-end="url(#h-down)">
+            <path d="M150,280 v16 H96 v22"></path><path d="M150,280 v16 H204 v22"></path>
+            <path d="M420,280 v16 H366 v22"></path><path d="M420,280 v16 H474 v22"></path>
+            <path d="M690,280 v16 H636 v22"></path><path d="M690,280 v16 H744 v22"></path>
+          </g>
+
+          <g font-family="Intel One Mono, monospace" font-size="10" fill="#4A6560" text-anchor="middle">
+            <rect x="70" y="318" width="52" height="66" rx="8" fill="#FFFFFF" stroke="#35678F"></rect><circle cx="96" cy="373" r="3" fill="#35678F"></circle><text x="96" y="342">CAPI</text>
+            <rect x="178" y="318" width="52" height="66" rx="8" fill="#FFFFFF" stroke="#35678F"></rect><circle cx="204" cy="373" r="3" fill="#35678F"></circle><text x="204" y="342">CAPI</text>
+            <rect x="340" y="318" width="52" height="66" rx="8" fill="#FFFFFF" stroke="#35678F"></rect><circle cx="366" cy="373" r="3" fill="#35678F"></circle><text x="366" y="342">CAPI</text>
+            <rect x="448" y="318" width="52" height="66" rx="8" fill="#FFFFFF" stroke="#35678F"></rect><circle cx="474" cy="373" r="3" fill="#35678F"></circle><text x="474" y="342">CAPI</text>
+            <rect x="610" y="318" width="52" height="66" rx="8" fill="#FFFFFF" stroke="#35678F"></rect><circle cx="636" cy="373" r="3" fill="#35678F"></circle><text x="636" y="342">CAPI</text>
+            <rect x="718" y="318" width="52" height="66" rx="8" fill="#FFFFFF" stroke="#35678F"></rect><circle cx="744" cy="373" r="3" fill="#35678F"></circle><text x="744" y="342">CAPI</text>
+          </g>
+          <text x="96" y="404" text-anchor="middle" font-family="Intel One Mono, monospace" font-size="10.5" fill="#4A6560">interviewers</text>
+
+          <path d="M782,350 H832 V155 H600" fill="none" stroke="#00695C" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#h-up)"></path>
+          <rect x="794" y="222" width="16" height="140" fill="#F6FAF9" opacity=".96"></rect>
+          <text transform="translate(808,296) rotate(-90)" text-anchor="middle" font-family="Intel One Mono, monospace" font-size="10.5" fill="#00695C">sync · completed interviews ↑</text>
+          <text x="840" y="140" text-anchor="end" font-family="Intel One Mono, monospace" font-size="10.5" fill="#7A9C96">via synchronization point</text>
+        </svg>
+      </div>
+      <figcaption><b>Assignments flow down, interviews flow up.</b> The MIS never talks to a tablet or a
+        supervisor — only to Headquarters.</figcaption>
+    </figure>
+    <div class="takeaways">
+      <div class="takeaway"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>
+        <span>Quality control is finished <strong>before</strong> the MIS sees anything.</span></div>
+      <div class="takeaway"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-server"></use></svg>
+        <span>Tablets are offline until they reach the synchronization point.</span></div>
+      <div class="takeaway"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-hq"></use></svg>
+        <span>One integration point: Headquarters, and its export API.</span></div>
+    </div>
+  </div>
+  <div class="slide-foot"><span class="fl"><img src="assets/survey-solutions-logo.png" alt="" /> Survey Solutions</span><span class="fn"></span></div>
+</section>
+
+<!-- ── SURVEY SOLUTIONS DATA FLOW ── -->
+<section class="slide" id="ssflow" data-move="1" data-title="Survey Solutions · the interview cycle">
+  <div class="slide-head">
+    <span class="badge"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-refresh"></use></svg></span>
+    <div class="htxt"><span class="eyebrow">Move 01 · Survey Solutions</span>
+      <h2 class="slide-title">Interviewer → Supervisor → Headquarters</h2></div>
+    <div class="legend" aria-label="Flow colours">
+      <span><i style="background:#0B41C4"></i>Assigned down</span>
+      <span><i style="background:#009688"></i>Approved up</span>
+      <span><i style="background:#B83232"></i>Rejected back</span>
+    </div>
+  </div>
+  <div class="slide-body">
+    <div class="stage" id="railSS">
+      <div class="canvas-scroll">
+        <svg class="rail rail-ss" viewBox="0 0 1900 700" role="img"
+             aria-label="Survey Solutions interview cycle across three lanes. Headquarters imports the questionnaire and creates assignments, which pass down to a supervisor as SupervisorAssigned and to an interviewer as InterviewerAssigned. The interviewer works offline on a tablet, completes the interview and syncs it as Completed. The supervisor reviews it and either rejects it back to the interviewer or approves it as ApprovedBySupervisor. Headquarters then reviews it and either rejects it back to the supervisor or approves it, after which the export API hands the data to TASAF MIS.">
+          <defs>
+            <marker id="ss-asg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0B41C4"></path></marker>
+            <marker id="ss-app" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#009688"></path></marker>
+            <marker id="ss-rej" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#B83232"></path></marker>
+          </defs>
+
+          <!-- time axis -->
+          <g class="lane-tag" text-anchor="middle">
+            <text x="425" y="62">Prepare</text>
+            <text x="701" y="62">Assign</text>
+            <text x="977" y="62">Field work</text>
+            <text x="1253" y="62">Review</text>
+            <text x="1529" y="62">Approve</text>
+            <text x="1780" y="62">Export</text>
+          </g>
+
+          <!-- lanes -->
+          <rect x="28" y="84" width="1844" height="102" rx="10" fill="#F2F6FD" stroke="#DCE5F7"></rect>
+          <rect x="28" y="314" width="1844" height="102" rx="10" fill="#F0F7F5" stroke="#D5E9E4"></rect>
+          <rect x="28" y="544" width="1844" height="102" rx="10" fill="#F7FAF9" stroke="#DFEAE7"></rect>
+
+          <g transform="translate(52,124)" fill="none" stroke="#0B41C4" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><use href="#i-hq"></use></g>
+          <text class="n-title" x="86" y="132">Headquarters</text>
+          <text class="n-sub" x="86" y="150">survey control · export</text>
+
+          <g transform="translate(52,354)" fill="none" stroke="#00695C" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><use href="#i-users"></use></g>
+          <text class="n-title" x="86" y="362">Supervisor</text>
+          <text class="n-sub" x="86" y="380">workload · first review</text>
+
+          <g transform="translate(52,584)" fill="none" stroke="#35678F" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><use href="#i-user"></use></g>
+          <text class="n-title" x="86" y="592">Interviewer</text>
+          <text class="n-sub" x="86" y="610">offline · tablet (CAPI)</text>
+
+          <g class="js-edges"></g>
+          <g class="js-nodes"></g>
+        </svg>
+      </div>
+      <div class="console">
+        <div>
+          <div class="scene-no js-no">Scene 1 / 5</div>
+          <div class="scene-title js-title">The interview cycle</div>
+          <p class="scene-claim js-claim"></p>
+          <ul class="facts js-facts"></ul>
+        </div>
+        <div class="transport">
+          <div class="btns">
+            <button class="btn js-prev" type="button" title="Previous scene" aria-label="Previous scene">◀</button>
+            <button class="btn js-play" type="button" aria-pressed="true" title="Play / pause (P)">❚❚ Pause</button>
+            <button class="btn js-next" type="button" title="Next scene" aria-label="Next scene">▶</button>
+            <button class="btn js-speed" type="button" title="Playback speed" aria-label="Playback speed">1×</button>
+          </div>
+          <div class="ticks js-ticks" role="tablist" aria-label="Scenes"></div>
+          <div class="keys">scenes: 1–5 · P plays</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-foot"><span class="fl"><img src="assets/survey-solutions-logo.png" alt="" /> Survey Solutions</span><span class="fn"></span></div>
+</section>
+
+<!-- ── 5 · STATUS LADDER ── -->
+<section class="slide" id="statuses" data-move="1" data-title="Survey Solutions · status ladder">
+  <div class="slide-head">
+    <span class="badge"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg></span>
+    <div class="htxt"><span class="eyebrow">Move 01 · Survey Solutions</span>
+      <h2 class="slide-title">The status ladder an interview climbs</h2></div>
+    <span class="hint">what the ETL can filter on</span>
+  </div>
+  <div class="slide-body">
+    <div class="split">
+      <div>
+        <p class="body">Every interview carries a status recording how far up the approval chain it
+          has travelled. The ETL can filter on it — <code>export_interview_status</code> defaults to
+          <code>All</code>, so the whole workspace is exported and the MIS decides what to keep.</p>
+        <div class="ladder" style="margin-top:18px">
+          <span>InterviewerAssigned</span><span class="arrow">→</span>
+          <span>Completed</span><span class="arrow">→</span>
+          <span class="ok">ApprovedBySupervisor</span><span class="arrow">→</span>
+          <span class="ok">ApprovedByHeadquarters</span>
+        </div>
+        <div class="ladder" style="margin-top:10px">
+          <span class="no">RejectedBySupervisor</span>
+          <span class="no">RejectedByHeadquarters</span>
+          <span class="arrow">— back down for correction, then climb again</span>
+        </div>
+        <div class="note"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-alert"></use></svg>
+          <span><b>Watch the enum names.</b> The sent-to-HQ state is <code>SentToCapi</code>, not
+            <code>SentToCapital</code> — and a wrong value raises no error: the filter is ignored and
+            the whole set comes back.</span>
+        </div>
+      </div>
+      <div>
+        <div class="stat-hero">
+          <span class="big">99.7%</span>
+          <span class="of">313,764 of 314,781 interviews</span>
+          <span class="cap">stop at <strong>ApprovedBySupervisor</strong>. The HQ gate is barely used on
+            this workspace — one more reason the ETL exports every status and decides for itself.</span>
+        </div>
+        <div class="chart" style="margin-top:18px">
+          <div class="chart-title">The other 1,017, on their own scale</div>
+          <div class="minibars" role="img" aria-label="Remaining interviews by status: RejectedBySupervisor 769, Completed 184, RejectedByHeadquarters 54, InterviewerAssigned 9, ApprovedByHeadquarters 1.">
+            <div class="row"><span class="lbl">RejectedBySupervisor</span><span class="track"><i class="rej" style="width:100%"></i></span><span class="val">769</span></div>
+            <div class="row"><span class="lbl">Completed</span><span class="track"><i style="width:23.9%"></i></span><span class="val">184</span></div>
+            <div class="row"><span class="lbl">RejectedByHeadquarters</span><span class="track"><i class="rej" style="width:7%"></i></span><span class="val">54</span></div>
+            <div class="row"><span class="lbl">InterviewerAssigned</span><span class="track"><i style="width:1.2%;min-width:3px"></i></span><span class="val">9</span></div>
+            <div class="row"><span class="lbl">ApprovedByHeadquarters</span><span class="track"><i style="width:3px"></i></span><span class="val">1</span></div>
+          </div>
+          <div class="chart-note">rm4 workspace, counted 2026-05-11. Bars are scaled to 769 — not to the 314,781 total.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-foot"><span class="fl"><img src="assets/survey-solutions-logo.png" alt="" /> Survey Solutions</span><span class="fn"></span></div>
+</section>
+
+<!-- ── 6 · THE BOUNDARY ── -->
+<section class="slide" id="handoff" data-move="2" data-title="The handoff">
+  <div class="slide-head">
+    <span class="badge"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-export"></use></svg></span>
+    <div class="htxt"><span class="eyebrow">Move 02 · The handoff</span>
+      <h2 class="slide-title">One boundary, one export job</h2></div>
+    <span class="hint">officer-triggered, worker-run</span>
+  </div>
+  <div class="slide-body">
+    <div class="boundary">
+      <div class="bcard ss">
+        <img src="assets/survey-solutions-logo.png" alt="Survey Solutions" />
+        <div class="bt">Survey Solutions HQ</div>
+        <div class="bd">Holds the interviews and decides who may export them.</div>
+      </div>
+      <div class="bwire">
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-arrow"></use></svg>
+        <span>export job<br />requested, polled,<br />then downloaded</span>
+      </div>
+      <div class="bcard">
+        <img src="assets/tasaf-logo.png" alt="TASAF MIS" />
+        <div class="bt">TASAF MIS</div>
+        <div class="bd">Flattens, normalises, scores and stores what comes back.</div>
+      </div>
+    </div>
+    <div class="b-rules">
+      <div class="b-rule"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-user"></use></svg>
+        <span>An <strong>officer</strong> starts an import for a district; everything after the button runs on a Celery worker.</span></div>
+      <div class="b-rule"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-clock"></use></svg>
+        <span>The export is polled until it completes, capped at <strong>one hour</strong>.</span></div>
+      <div class="b-rule"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-ban"></use></svg>
+        <span>The same district cannot import twice at once; different districts run in parallel.</span></div>
+    </div>
+  </div>
+  <div class="slide-foot"><span class="fl"><img src="assets/tasaf-logo.png" alt="" /> The Data Flow</span><span class="fn"></span></div>
+</section>
+
+<!-- ── 7 · STEPS 1-4 ── -->
+<section class="slide" id="steps-a" data-move="2" data-title="Handoff · steps 1–4">
+  <div class="slide-head">
+    <span class="badge"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-export"></use></svg></span>
+    <div class="htxt"><span class="eyebrow">Move 02 · The handoff</span>
+      <h2 class="slide-title">Ask, fetch, flatten</h2></div>
+    <span class="hint">steps 1–4</span>
+  </div>
+  <div class="slide-body">
+    <div class="steps-grid">
+      <div class="step">
+        <span class="sic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-play"></use></svg></span>
+        <div><div class="sn">STEP 01</div><div class="st">Trigger the import</div>
+          <div class="sd">The officer picks a district (PAA) and starts. A history row is created, and a second
+            import of the same district while one is running is refused.</div>
+          <span class="sw">PAABasedETLMutation → Celery</span></div>
+      </div>
+      <div class="step">
+        <span class="sic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-book"></use></svg></span>
+        <div><div class="sn">STEP 02</div><div class="st">Match the questionnaire</div>
+          <div class="sd">Resolved from the district, or overridden by hand. HQ returns its questionnaire list
+            40 at a time whatever limit you ask for, so the ETL pages through it.</div>
+          <span class="sw">api_etl · sources</span></div>
+      </div>
+      <div class="step">
+        <span class="sic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-export"></use></svg></span>
+        <div><div class="sn">STEP 03</div><div class="st">Ask HQ for an export</div>
+          <div class="sd">An export job is created over the v2 export API, polled until it completes, then the
+            archive is downloaded.</div>
+          <span class="sw">export_timeout_seconds = 3600</span></div>
+      </div>
+      <div class="step">
+        <span class="sic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-merge"></use></svg></span>
+        <div><div class="sn">STEP 04</div><div class="st">Merge household + roster</div>
+          <div class="sd">The household file and the member roster are merged into <strong>one row per person</strong>,
+            each carrying its household's own answers.</div>
+          <span class="sw">targeting adapter</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-foot"><span class="fl"><img src="assets/tasaf-logo.png" alt="" /> The Data Flow</span><span class="fn"></span></div>
+</section>
+
+<!-- ── THE MERGE ── -->
+<section class="slide" id="merge" data-move="2" data-title="The merge · one row per person">
+  <div class="slide-head">
+    <span class="badge"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-merge"></use></svg></span>
+    <div class="htxt"><span class="eyebrow">Move 02 · The handoff</span>
+      <h2 class="slide-title">The merge: one row per person</h2></div>
+    <span class="hint">the step that used to be done in Excel</span>
+  </div>
+  <div class="slide-body">
+    <p class="body">Survey Solutions exports a household file and a separate member roster. The adapter
+      joins them on the household code and writes <strong>one row per person</strong> — each member
+      carrying its household's answers with it, so a person can be validated, scored and inserted on its own.</p>
+    <figure style="margin-top:16px">
+      <div class="figbody">
+        <svg viewBox="0 0 1000 380" role="img"
+             aria-label="The household file has one row per household; the member roster has one row per member. The adapter joins them on the household code and produces one row per person, where each row carries the member's own fields followed by the household's answers repeated.">
+          <text class="band-label" x="40" y="30" fill="#8A5A19">Household file</text>
+          <rect x="40" y="42" width="300" height="38" rx="6" fill="#FDF3E2" stroke="#E6C88A"></rect>
+          <text class="n-sub" x="54" y="66">0703-0042 · roof · water · assets</text>
+
+          <text class="band-label" x="40" y="118" fill="#1B4E86">Member roster</text>
+          <g>
+            <rect x="40" y="130" width="300" height="34" rx="6" fill="#EEF3FB" stroke="#B9CDE8"></rect>
+            <text class="n-sub" x="54" y="152">1 · Amina · 42 · F · head</text>
+            <rect x="40" y="170" width="300" height="34" rx="6" fill="#EEF3FB" stroke="#B9CDE8"></rect>
+            <text class="n-sub" x="54" y="192">2 · Juma · 45 · M · spouse</text>
+            <rect x="40" y="210" width="300" height="34" rx="6" fill="#EEF3FB" stroke="#B9CDE8"></rect>
+            <text class="n-sub" x="54" y="232">3 · Neema · 14 · F · child</text>
+            <rect x="40" y="250" width="300" height="34" rx="6" fill="#EEF3FB" stroke="#B9CDE8"></rect>
+            <text class="n-sub" x="54" y="272">4 · Hawa · 68 · F · relative</text>
+          </g>
+
+          <path d="M356,205 L404,205" stroke="#009688" stroke-width="2" marker-end="url(#mg-arrow)"></path>
+          <defs><marker id="mg-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#009688"></path></marker></defs>
+          <text class="e-label" x="380" y="190" text-anchor="middle">join on</text>
+          <text class="e-label" x="380" y="228" text-anchor="middle">hh code</text>
+
+          <text class="band-label" x="424" y="118" fill="#00695C">Person rows — what the MIS stores</text>
+          <g>
+            <rect x="424" y="130" width="238" height="34" rx="6" fill="#EEF3FB" stroke="#B9CDE8"></rect>
+            <rect x="666" y="130" width="294" height="34" rx="6" fill="#FDF3E2" stroke="#E6C88A"></rect>
+            <text class="n-sub" x="438" y="152">Amina · 42 · F · head</text>
+            <text class="n-sub" x="680" y="152">0703-0042 · roof · water · assets</text>
+
+            <rect x="424" y="170" width="238" height="34" rx="6" fill="#EEF3FB" stroke="#B9CDE8"></rect>
+            <rect x="666" y="170" width="294" height="34" rx="6" fill="#FDF3E2" stroke="#E6C88A"></rect>
+            <text class="n-sub" x="438" y="192">Juma · 45 · M · spouse</text>
+            <text class="n-sub" x="680" y="192">0703-0042 · roof · water · assets</text>
+
+            <rect x="424" y="210" width="238" height="34" rx="6" fill="#EEF3FB" stroke="#B9CDE8"></rect>
+            <rect x="666" y="210" width="294" height="34" rx="6" fill="#FDF3E2" stroke="#E6C88A"></rect>
+            <text class="n-sub" x="438" y="232">Neema · 14 · F · child</text>
+            <text class="n-sub" x="680" y="232">0703-0042 · roof · water · assets</text>
+
+            <rect x="424" y="250" width="238" height="34" rx="6" fill="#EEF3FB" stroke="#B9CDE8"></rect>
+            <rect x="666" y="250" width="294" height="34" rx="6" fill="#FDF3E2" stroke="#E6C88A"></rect>
+            <text class="n-sub" x="438" y="272">Hawa · 68 · F · relative</text>
+            <text class="n-sub" x="680" y="272">0703-0042 · roof · water · assets</text>
+          </g>
+
+          <g>
+            <rect x="424" y="312" width="13" height="13" rx="3" fill="#EEF3FB" stroke="#B9CDE8"></rect>
+            <text class="e-label" x="446" y="323">member's own answers</text>
+            <rect x="628" y="312" width="13" height="13" rx="3" fill="#FDF3E2" stroke="#E6C88A"></rect>
+            <text class="e-label" x="650" y="323">household answers, repeated on every member</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption><b>Four members in, four rows out.</b> The PMT score is computed on the household's
+        answers during this same pass, so each row leaves the ETL already scored.</figcaption>
+    </figure>
+  </div>
+  <div class="slide-foot"><span class="fl"><img src="assets/tasaf-logo.png" alt="" /> The Data Flow</span><span class="fn"></span></div>
+</section>
+
+<!-- ── 8 · STEPS 5-8 ── -->
+<section class="slide" id="steps-b" data-move="2" data-title="Handoff · steps 5–8">
+  <div class="slide-head">
+    <span class="badge"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-db"></use></svg></span>
+    <div class="htxt"><span class="eyebrow">Move 02 · The handoff</span>
+      <h2 class="slide-title">Normalise, score, stage, insert</h2></div>
+    <span class="hint">steps 5–8</span>
+  </div>
+  <div class="slide-body">
+    <div class="steps-grid">
+      <div class="step">
+        <span class="sic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-sliders"></use></svg></span>
+        <div><div class="sn">STEP 05</div><div class="st">Normalise the fields</div>
+          <div class="sd">Names, date of birth, sex, location, household code, member role and head-of-household
+            flag are normalised; the raw answers stay in <code>json_ext</code>.</div>
+          <span class="sw">targeting adapter</span></div>
+      </div>
+      <div class="step">
+        <span class="sic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-calc"></use></svg></span>
+        <div><div class="sn">STEP 06</div><div class="st">Score the PMT</div>
+          <div class="sd">The proxy-means score is computed <strong>during the ETL</strong>, per interview key —
+            not as a separate job after the import.</div>
+          <span class="sw">workflows/pmt.py</span></div>
+      </div>
+      <div class="step">
+        <span class="sic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-db"></use></svg></span>
+        <div><div class="sn">STEP 07</div><div class="st">Stage the rows</div>
+          <div class="sd">Written as a CSV plus an upload row. Records already known by interview key go to the
+            update path, new ones to the import path — so a rerun corrects instead of duplicating.</div>
+          <span class="sw">IndividualImportSink</span></div>
+      </div>
+      <div class="step">
+        <span class="sic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg></span>
+        <div><div class="sn">STEP 08</div><div class="st">Validate and insert</div>
+          <div class="sd">The import workflow validates the staged rows, inserts people, links them into households,
+            and mirrors the household PMT onto the group.</div>
+          <span class="sw">individual module</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-foot"><span class="fl"><img src="assets/tasaf-logo.png" alt="" /> The Data Flow</span><span class="fn"></span></div>
+</section>
+
+<!-- ── 9 · BEFORE / AFTER ── -->
+<section class="slide" id="before-after" data-move="2" data-title="What replaced what">
+  <div class="slide-head">
+    <span class="badge"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-refresh"></use></svg></span>
+    <div class="htxt"><span class="eyebrow">Move 02 · The handoff</span>
+      <h2 class="slide-title">What replaced what</h2></div>
+    <span class="hint">the spreadsheet step is gone</span>
+  </div>
+  <div class="slide-body">
+    <div class="ba">
+      <div class="ba-col">
+        <h4><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-history"></use></svg> Before</h4>
+        <ul>
+          <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-x"></use></svg><span>Someone exported from HQ by hand and carried the file.</span></li>
+          <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-x"></use></svg><span>Households and members were cleaned and reshaped in Excel.</span></li>
+          <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-x"></use></svg><span>The file was imported, then PMT was run as a separate step.</span></li>
+          <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-x"></use></svg><span>No record of who imported what, or when it last ran.</span></li>
+        </ul>
+      </div>
+      <div class="ba-col now">
+        <h4><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg> Now</h4>
+        <ul>
+          <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg><span>The MIS requests the export job itself and waits on it.</span></li>
+          <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg><span>The adapter does the reshaping — the same way, every run.</span></li>
+          <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg><span>PMT is computed inside the ETL, so an import lands already scored.</span></li>
+          <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg><span>Every district import has a history row, a status and an owner.</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="chart" style="margin-top:20px">
+      <div class="chart-title">Where one import run's time actually goes</div>
+      <div class="stack" role="img" aria-label="Stacked bar of one import run: HQ export wait 3.9 to 5.7 percent, database load 82 to 88 percent, everything else about 10 percent.">
+        <div class="seg" style="flex:4.8;background:var(--mark-ss-hot)"></div>
+        <div class="seg" style="flex:85;background:var(--mark-ss)">Database load 82–88%</div>
+        <div class="seg pale" style="flex:10.2;background:#BDE5C9"></div>
+      </div>
+      <div class="stack-key">
+        <span><i style="background:var(--mark-ss-hot)"></i>HQ export wait <b>3.9–5.7%</b></span>
+        <span><i style="background:var(--mark-ss)"></i>Database load <b>82–88%</b></span>
+        <span><i style="background:#BDE5C9"></i>Staging, transfer, the rest</span>
+      </div>
+      <div class="chart-note">Measured on one run — Buhigwe, 633 households / 2,353 people, 2026-08-11.
+        Segment widths use the midpoint of each measured band. Linking within that load fell from 25.0 to
+        <b>7.01</b> SQL statements per person.</div>
+    </div>
+  </div>
+  <div class="slide-foot"><span class="fl"><img src="assets/tasaf-logo.png" alt="" /> The Data Flow</span><span class="fn"></span></div>
+</section>
+
+<!-- ── 10 · THE RAIL ── -->
+<section class="slide" id="rail" data-move="3" data-title="The animated rail">
+  <div class="slide-head">
+    <span class="badge"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-flow"></use></svg></span>
+    <div class="htxt"><span class="eyebrow">Move 03 · Inside TASAF MIS</span>
+      <h2 class="slide-title">The whole rail, end to end</h2></div>
+    <div class="legend" aria-label="Lane colours">
+      <span><i style="background:#009688"></i>Survey Solutions data</span>
+      <span><i style="background:#C47B0C"></i>PSSN legacy</span>
+      <span><i style="background:#2B6CB0"></i>Money path</span>
+      <span><i style="background:#B83232"></i>Returns</span>
+    </div>
+  </div>
+  <div class="slide-body">
+    <div class="stage" id="railMain">
+      <div class="canvas-scroll">
+        <svg class="rail" viewBox="0 0 1780 950" role="img"
+             aria-label="Dataflow: Survey Solutions HQ and livePSSN feed TASAF MIS; the ETL lane pulls interviews, merges rosters, scores PMT and stages records into the live registry; the legacy lane pulls livePSSN into a separate legacy registry that is not merged; a read-only monitoring loop polls changed interviews; the registry drives targeting, payroll and paylists, which leave over GovESB to MUSE or GePG and return as reconciliation feedback.">
+          <defs>
+            <marker id="ar-ss" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#00695C"></path></marker>
+            <marker id="ar-lg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#C47B0C"></path></marker>
+            <marker id="ar-py" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#35678F"></path></marker>
+            <marker id="ar-rt" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#B83232"></path></marker>
+          </defs>
+          <g id="zones">
+            <rect class="zone" x="30" y="150" width="220" height="750" rx="4"></rect>
+            <text class="zone-label" x="140" y="138" text-anchor="middle">Outside TASAF MIS</text>
+            <rect class="zone" x="280" y="28" width="1472" height="884" rx="4"></rect>
+
+            <rect class="band" x="292" y="34" width="1448" height="116" rx="8" fill="#F5FAF9"></rect>
+            <rect class="band" x="292" y="158" width="1448" height="196" rx="8" fill="#F0F8F7"></rect>
+            <rect class="band" x="292" y="376" width="1448" height="112" rx="8" fill="#FDF7EC"></rect>
+            <rect class="band" x="292" y="566" width="1448" height="112" rx="8" fill="#F1F5FB"></rect>
+            <rect class="band" x="292" y="748" width="1448" height="112" rx="8" fill="#FDF2F1"></rect>
+
+            <image href="assets/tasaf-logo.png" x="1664" y="34" width="20" height="20" preserveAspectRatio="xMidYMid meet"></image>
+            <text class="zone-label" x="1728" y="49" text-anchor="end">TASAF MIS</text>
+
+            <text class="band-label" x="308" y="52" fill="#3F6B64">Field monitoring · read-only</text>
+            <text class="band-label" x="308" y="180" fill="#00695C">1 · Survey Solutions ETL</text>
+            <text class="band-label" x="308" y="394" fill="#8A5A19">2 · PSSN legacy import</text>
+            <text class="band-label" x="308" y="584" fill="#1B4E86">3 · Targeting → disbursement · reads right to left</text>
+            <text class="band-label" x="308" y="766" fill="#8E2424">4 · Return path</text>
+          </g>
+          <g class="js-edges"></g>
+          <g class="js-nodes"></g>
+        </svg>
+      </div>
+      <div class="console">
+        <div>
+          <div class="scene-no js-no">Scene 1 / 6</div>
+          <div class="scene-title js-title">The whole rail</div>
+          <p class="scene-claim js-claim"></p>
+          <ul class="facts js-facts"></ul>
+        </div>
+        <div class="transport">
+          <div class="btns">
+            <button class="btn js-prev" type="button" title="Previous scene" aria-label="Previous scene">◀</button>
+            <button class="btn js-play" type="button" aria-pressed="true" title="Play / pause (P)">❚❚ Pause</button>
+            <button class="btn js-next" type="button" title="Next scene" aria-label="Next scene">▶</button>
+            <button class="btn js-speed" type="button" title="Playback speed" aria-label="Playback speed">1×</button>
+          </div>
+          <div class="ticks js-ticks" role="tablist" aria-label="Scenes"></div>
+          <div class="keys">scenes: 1–6 · P plays</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-foot"><span class="fl"><img src="assets/tasaf-logo.png" alt="" /> The Data Flow</span><span class="fn"></span></div>
+</section>
+
+<!-- ── 11 · SCENE LIST ── -->
+<section class="slide" id="scenes" data-move="3" data-title="The six scenes">
+  <div class="slide-head">
+    <span class="badge"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-grid"></use></svg></span>
+    <div class="htxt"><span class="eyebrow">Move 03 · Inside TASAF MIS</span>
+      <h2 class="slide-title">The six scenes, and what to say</h2></div>
+    <span class="hint">click one to run it</span>
+  </div>
+  <div class="slide-body">
+    <div class="scenes-list" id="track"></div>
+    <div class="note"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-alert"></use></svg>
+      <span><b>The legacy store is not merged.</b> The PSSN legacy import loads into its own tables and is
+        searched beside the live registry, never folded into it — which is why the two registries are joined
+        by a dotted line with no arrowhead.</span></div>
+  </div>
+  <div class="slide-foot"><span class="fl"><img src="assets/tasaf-logo.png" alt="" /> The Data Flow</span><span class="fn"></span></div>
+</section>
+
+<!-- ── 12 · LEGACY ── -->
+<section class="slide" id="legacy" data-move="3" data-title="PSSN legacy, in parallel">
+  <div class="slide-head">
+    <span class="badge"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-history"></use></svg></span>
+    <div class="htxt"><span class="eyebrow">Also on the rail</span>
+      <h2 class="slide-title">PSSN legacy, loaded in parallel</h2></div>
+    <span class="hint">a second source, a separate store</span>
+  </div>
+  <div class="slide-body">
+    <p class="body">Alongside the live Survey Solutions pipeline, the historic PSSN register is pulled
+      from the Oracle-backed livePSSN application, district by district, into its <strong>own</strong>
+      tables. It is searched beside the live registry, not merged into it.</p>
+    <div class="steps-grid" style="margin-top:16px">
+      <div class="step">
+        <span class="sic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-db"></use></svg></span>
+        <div><div class="sn">SOURCE</div><div class="st">livePSSN</div>
+          <div class="sd">Oracle behind a PHP endpoint. Pulled 1,000 rows per page — 5,000 read-timed-out against the source.</div></div>
+      </div>
+      <div class="step">
+        <span class="sic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-shield"></use></svg></span>
+        <div><div class="sn">SAFETY</div><div class="st">A failed re-import is a no-op</div>
+          <div class="sd">Superseding the previous load runs inside the insert transaction, so a district can never be
+            left empty by a half-finished re-import.</div></div>
+      </div>
+      <div class="step">
+        <span class="sic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-chart"></use></svg></span>
+        <div><div class="sn">SCALE</div><div class="st">District 0703</div>
+          <div class="sd">9,765 households and 54,675 individuals committed in one run.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-foot"><span class="fl"><img src="assets/tasaf-logo.png" alt="" /> The Data Flow</span><span class="fn"></span></div>
+</section>
+
+<!-- ── 13 · PAYMENT ── -->
+<section class="slide" id="payment" data-move="4" data-title="Registry to payment">
+  <div class="slide-head">
+    <span class="badge"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-money"></use></svg></span>
+    <div class="htxt"><span class="eyebrow">Move 04 · After the registry</span>
+      <h2 class="slide-title">One registry, then the money</h2></div>
+    <span class="hint">GovESB is the transport</span>
+  </div>
+  <div class="slide-body">
+    <div class="chain">
+      <div class="link"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-users"></use></svg>
+        <span class="lt">Targeting &amp; enrolment</span><span class="ld">Scored households become beneficiaries.</span></div>
+      <div class="sep"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-arrow"></use></svg></div>
+      <div class="link"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-calc"></use></svg>
+        <span class="lt">Payroll</span><span class="ld">Beneficiaries become benefit lines for a cycle.</span></div>
+      <div class="sep"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-arrow"></use></svg></div>
+      <div class="link"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-money"></use></svg>
+        <span class="lt">Paylist</span><span class="ld">Cut per channel: bank, mobile money, or mixed.</span></div>
+      <div class="sep"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-arrow"></use></svg></div>
+      <div class="link out"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-bank"></use></svg>
+        <span class="lt">GovESB → MUSE / GePG</span><span class="ld">One transport, two destinations, then the FSPs.</span></div>
+      <div class="sep"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-arrow"></use></svg></div>
+      <div class="link back"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-refresh"></use></svg>
+        <span class="lt">Return feedback</span><span class="ld">Settled items reconcile payroll; failures stay open.</span></div>
+    </div>
+    <div class="takeaways" style="margin-top:20px">
+      <div class="takeaway"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>
+        <span>Pre-audit only lets through accounts that are <strong>verified, primary and active</strong>.</span></div>
+      <div class="takeaway"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-link"></use></svg>
+        <span>GovESB is the <strong>wire</strong>; MUSE and GePG are destinations on it, chosen per paylist.</span></div>
+      <div class="takeaway"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-refresh"></use></svg>
+        <span>Only settled items reconcile — failures return to the next cycle.</span></div>
+    </div>
+    <div class="links-row doc-only">
+      <a href="PAYMENT_ARCHITECTURE.md">Payment architecture</a>
+      <a href="ENROLLMENT_TO_BENEFIT_TO_PAYMENT_FLOW.md">Enrollment → payment flow</a>
+      <a href="tasaf-registry/user-manual.html">Registry user manual</a>
+    </div>
+  </div>
+  <div class="slide-foot"><span class="fl"><img src="assets/tasaf-logo.png" alt="" /> The Data Flow</span><span class="fn"></span></div>
+</section>
+
+<!-- ── 14 · FIGURES ── -->
+<section class="slide" id="figures" data-title="Figures and sources">
+  <div class="slide-head">
+    <span class="badge"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-chart"></use></svg></span>
+    <div class="htxt"><span class="eyebrow">Reference</span>
+      <h2 class="slide-title">Figures, and where they come from</h2></div>
+    <span class="hint">dated runs, not estimates</span>
+  </div>
+  <div class="slide-body">
+    <dl class="figs">
+      <div><dt>Export wait 3.9–5.7% · database load 82–88%</dt>
+        <dd>Where an ETL run actually spends its time. Buhigwe: 633 households / 2,353 people. <em>measured 2026-08-11</em></dd></div>
+      <div><dt>25.0 → 7.01 SQL statements per individual</dt>
+        <dd>Household and member linking after bulk creation, audit trail intact. <em>same run</em></dd></div>
+      <div><dt>9,765 households · 54,675 individuals</dt>
+        <dd>One district (0703) loaded through the legacy PSSN API path. <em>2026-07-08</em></dd></div>
+      <div><dt>1,000 rows per page</dt>
+        <dd>Legacy pull page size; 5,000 read-timed-out against the source. <em>legacy_individual configuration</em></dd></div>
+      <div><dt>40 items per page</dt>
+        <dd>HQ caps its questionnaire list whatever limit is requested; the ETL pages past it. <em>SS pagination doc</em></dd></div>
+      <div><dt>export_interview_status = All</dt>
+        <dd>Default status filter on the export job, so the whole workspace is exported. <em>api_etl configuration</em></dd></div>
+    </dl>
+    <div class="links-row doc-only">
+      <a href="index.html">Documentation hub</a>
+      <a href="tasaf-registry/workflows.md">Registry workflow diagrams</a>
+      <a href="tasaf-registry/user-manual.html#monitoring">Survey monitoring</a>
+    </div>
+  </div>
+  <div class="slide-foot"><span class="fl"><img src="assets/tasaf-logo.png" alt="" /> The Data Flow</span><span class="fn"></span></div>
+</section>
+
+<!-- ── CLOSING ── -->
+<section class="slide" id="close" data-title="Where this leaves us">
+  <div class="slide-head">
+    <span class="badge"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg></span>
+    <div class="htxt"><span class="eyebrow">Summary</span>
+      <h2 class="slide-title">Where this leaves us</h2></div>
+    <span class="hint">four things to remember</span>
+  </div>
+  <div class="slide-body">
+    <div class="closing">
+      <div class="cpt"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-db"></use></svg>
+        <div class="ct">One registry</div>
+        <div class="cd">Survey Solutions and PSSN legacy each land in a defined store, and every downstream
+          module — targeting, payroll, payment — reads the same records.</div></div>
+      <div class="cpt"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-calc"></use></svg>
+        <div class="ct">Scored on arrival</div>
+        <div class="cd">PMT is computed inside the ETL. An import lands ready for targeting, with no
+          spreadsheet step and no separate scoring run.</div></div>
+      <div class="cpt"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-chart"></use></svg>
+        <div class="ct">Measured, not assumed</div>
+        <div class="cd">Timing, page sizes and statement counts on these slides come from dated runs
+          against real districts — each one is traceable to a document.</div></div>
+      <div class="cpt"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-refresh"></use></svg>
+        <div class="ct">A loop that closes</div>
+        <div class="cd">Paylists leave over GovESB and the return feedback reconciles payroll. Settled
+          items close; failures stay open for the next cycle.</div></div>
+    </div>
+    <div class="links-row doc-only">
+      <a href="index.html">Documentation hub</a>
+      <a href="PAYMENT_ARCHITECTURE.md">Payment architecture</a>
+      <a href="tasaf-registry/user-manual.html">Registry user manual</a>
+    </div>
+  </div>
+  <div class="slide-foot"><span class="fl"><img src="assets/tasaf-logo.png" alt="" /> The Data Flow</span><span class="fn"></span></div>
+</section>
+
+</main>
+
+<!-- ══════ DECK BAR ══════ -->
+<div class="deckbar" id="deckbar">
+  <button class="btn" id="dprev" type="button" title="Previous slide (←)" aria-label="Previous slide">◀</button>
+  <button class="btn" id="dnext" type="button" title="Next slide (→)" aria-label="Next slide">▶</button>
+  <span class="dcount" id="dcount">1 / 17</span>
+  <span class="dprog"><i id="dprogfill"></i></span>
+  <span class="dtitle" id="dtitle"></span>
+  <button class="btn" id="dfs" type="button" title="Fullscreen (F)" aria-label="Toggle fullscreen">⤢</button>
+  <button class="btn" id="dexit" type="button" title="Exit (Esc)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-x"></use></svg> Exit</button>
+</div>
+
+<script>
+/* ═════════ RAIL ENGINE ═════════ */
+function buildRail(cfg){
+  "use strict";
+  var NS="http://www.w3.org/2000/svg";
+  var stage=document.querySelector(cfg.stage);
+  var svg=stage.querySelector("svg.rail");
+  var gN=svg.querySelector(".js-nodes"),gE=svg.querySelector(".js-edges");
+  var LANE=cfg.lanes,NODES=cfg.nodes,EDGES=cfg.edges,SCENES=cfg.scenes;
+  var DW=cfg.w||200,DH=cfg.h||62;
+  var byId={},NODEG={},EDGEG=[];
+  var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function el(n,at){var e=document.createElementNS(NS,n);for(var k in at){e.setAttribute(k,at[k]);}return e;}
+  function box(nd){var w=nd.w||DW,h=nd.h||DH;return{l:nd.x-w/2,r:nd.x+w/2,t:nd.y-h/2,b:nd.y+h/2,w:w,h:h};}
+
+  NODES.forEach(function(nd){
+    byId[nd.id]=nd;
+    var b=box(nd),L=LANE[nd.lane];
+    var g=el("g",{"class":"node"+(nd.ext?" ext":""),style:"--lane:"+L.c});
+    g.appendChild(el("rect",{"class":"box",x:b.l,y:b.t,width:b.w,height:b.h,rx:8}));
+    g.appendChild(el("rect",{"class":"halo",x:b.l-3.5,y:b.t-3.5,width:b.w+7,height:b.h+7,rx:10}));
+    g.appendChild(el("rect",{"class":"port",x:b.l,y:nd.y-9,width:3,height:18}));
+    var tx=b.l+16;
+    if(nd.logo){
+      g.appendChild(el("image",{href:nd.logo,x:b.l+12,y:nd.y-14,width:28,height:28,preserveAspectRatio:"xMidYMid meet"}));
+      tx=b.l+48;
+    }
+    var lines=nd.s.length,ty=nd.y-(lines>1?(lines*7)-1:4);
+    var t=el("text",{"class":"n-title",x:tx,y:ty});t.textContent=nd.t;g.appendChild(t);
+    nd.s.forEach(function(str,i){
+      var st=el("text",{"class":"n-sub",x:tx,y:ty+17+i*14});st.textContent=str;g.appendChild(st);
+    });
+    gN.appendChild(g);NODEG[nd.id]=g;
+  });
+
+  EDGES.forEach(function(ed){
+    var L=LANE[ed.lane],d=ed.d,lx=ed.lx,ly=ed.ly,anchor=ed.anchor||"middle";
+    if(!d){
+      var A=box(byId[ed.a]),B=box(byId[ed.b]),ay=byId[ed.a].y,by=byId[ed.b].y,x1,x2;
+      if(ed.dir==="r"){x1=A.r+2;x2=B.l-9;}else{x1=A.l-2;x2=B.r+9;}
+      if(ay===by){d="M"+x1+","+ay+" L"+x2+","+by;}
+      else{var mx=(x1+x2)/2;d="M"+x1+","+ay+" C"+mx+","+ay+" "+mx+","+by+" "+x2+","+by;}
+      if(lx===undefined){lx=(x1+x2)/2;ly=Math.min(ay,by)-13;}
+    }
+    var g=el("g",{"class":"edge",style:"--lane:"+L.c+";--lane-hot:"+L.h});
+    var base=el("path",{"class":"base"+(ed.dotted?" dotted":"")+(ed.dash?" dashed":""),d:d});
+    if(!ed.nom)base.setAttribute("marker-end",L.m);
+    g.appendChild(base);
+    var pulse=el("path",{"class":"pulse",d:d,"stroke-dasharray":"14 116"});
+    g.appendChild(pulse);
+    if(ed.chip){
+      var cx=(box(byId[ed.a]).l-2+box(byId[ed.b]).r+9)/2,cy=byId[ed.a].y;
+      g.appendChild(el("rect",{x:cx-38,y:cy-11,width:76,height:22,rx:6,fill:"#FFFFFF",stroke:L.c,"stroke-width":"1","stroke-opacity":".7"}));
+      var ct=el("text",{"class":"chip-label",x:cx,y:cy+4,"text-anchor":"middle"});ct.textContent=ed.chip;g.appendChild(ct);
+      ly=cy+26;
+    }
+    if(ed.l){
+      var lt=el("text",{"class":"e-label",x:lx,y:ly,"text-anchor":anchor});lt.textContent=ed.l;g.appendChild(lt);
+      ed._label=lt;
+    }
+    gE.appendChild(g);
+    EDGEG.push({g:g,pulse:pulse,sc:ed.sc,off:0,on:true});
+  });
+
+  EDGES.forEach(function(ed){
+    if(!ed._label)return;
+    var bb;try{bb=ed._label.getBBox();}catch(e){return;}
+    if(!bb||!bb.width)return;
+    var r=el("rect",{"class":"lbl-bg",x:bb.x-5,y:bb.y-2,width:bb.width+10,height:bb.height+4,rx:3});
+    ed._label.parentNode.insertBefore(r,ed._label);
+  });
+
+  var cur=0,playing=!reduce,speed=1,elapsed=0,last=0,visible=true;
+  var ticks=stage.querySelector(".js-ticks");
+  var track=cfg.track?document.querySelector(cfg.track):null;
+  var elNo=stage.querySelector(".js-no"),elTitle=stage.querySelector(".js-title"),
+      elClaim=stage.querySelector(".js-claim"),elFacts=stage.querySelector(".js-facts"),
+      elPlay=stage.querySelector(".js-play"),elSpeed=stage.querySelector(".js-speed");
+
+  SCENES.forEach(function(sc,i){
+    var b=document.createElement("button");
+    b.className="tick";b.type="button";b.setAttribute("role","tab");
+    b.setAttribute("aria-label","Scene "+(i+1)+": "+sc.n);
+    b.addEventListener("click",function(){go(i);});
+    ticks.appendChild(b);
+    if(track){
+      var t=document.createElement("button");
+      t.type="button";t.className="scene-item";
+      t.innerHTML='<span class="snum">'+(i+1<10?"0":"")+(i+1)+'</span><span><span class="sttl"></span><span class="sdesc"></span></span>';
+      t.querySelector(".sttl").textContent=sc.n;
+      t.querySelector(".sdesc").textContent=sc.talk||sc.c;
+      t.addEventListener("click",function(){go(i);if(window.DECK&&cfg.slide)window.DECK.goto(cfg.slide);});
+      track.appendChild(t);
+    }
+  });
+
+  function render(){
+    var sc=SCENES[cur],n=cur+1;
+    elNo.textContent="Scene "+n+" / "+SCENES.length;
+    elTitle.textContent=sc.n;elClaim.textContent=sc.c;elFacts.innerHTML="";
+    (sc.f||[]).forEach(function(f){
+      var li=document.createElement("li");li.innerHTML="<b></b> ";
+      li.querySelector("b").textContent=f[0];
+      li.appendChild(document.createTextNode(f[1]));
+      elFacts.appendChild(li);
+    });
+    NODES.forEach(function(nd){
+      var on=nd.sc.indexOf(n)>-1;
+      NODEG[nd.id].setAttribute("class","node"+(nd.ext?" ext":"")+(on?" on":" off"));
+    });
+    EDGEG.forEach(function(e){
+      var on=e.sc.indexOf(n)>-1;
+      e.g.setAttribute("class","edge"+(on?" on":" off"));e.on=on;
+    });
+    Array.prototype.forEach.call(ticks.children,function(b,i){
+      b.setAttribute("data-state",i===cur?"now":(i<cur?"done":"next"));
+      b.setAttribute("aria-selected",i===cur?"true":"false");
+    });
+    if(track)Array.prototype.forEach.call(track.children,function(b,i){
+      b.setAttribute("aria-current",i===cur?"true":"false");
+    });
+  }
+  function go(i){cur=(i+SCENES.length)%SCENES.length;elapsed=0;render();}
+  function setPlaying(p){
+    playing=p;elPlay.textContent=p?"❚❚ Pause":"▶ Play";
+    elPlay.setAttribute("aria-pressed",p?"true":"false");
+  }
+  stage.querySelector(".js-prev").addEventListener("click",function(){go(cur-1);});
+  stage.querySelector(".js-next").addEventListener("click",function(){go(cur+1);});
+  elPlay.addEventListener("click",function(){setPlaying(!playing);});
+  elSpeed.addEventListener("click",function(){
+    speed=speed===1?2:(speed===2?0.5:1);
+    elSpeed.textContent=(speed===0.5?"0.5×":speed+"×");
+  });
+  render();setPlaying(playing);
+
+  if(!reduce){
+    var SPAN=130;
+    requestAnimationFrame(function loop(ts){
+      var dt=last?Math.min(ts-last,80):16;last=ts;
+      if(playing&&visible){
+        var step=dt*0.075*speed;
+        EDGEG.forEach(function(e){
+          if(!e.on)return;
+          e.off=(e.off+step)%SPAN;
+          e.pulse.style.strokeDashoffset=(-e.off).toString();
+        });
+        elapsed+=dt*speed;
+        if(elapsed>=SCENES[cur].d){go(cur+1);}
+      }
+      requestAnimationFrame(loop);
+    });
+  }else{EDGEG.forEach(function(e){e.pulse.style.opacity="0";});}
+
+  return {slide:cfg.slide,scene:go,count:SCENES.length,
+          toggle:function(){setPlaying(!playing);},
+          setVisible:function(v){visible=v;}};
+}
+
+/* ═════════ RAIL 1 · SURVEY SOLUTIONS INTERVIEW CYCLE ═════════ */
+var RAIL_SS=buildRail({
+  stage:"#railSS", slide:"ssflow", w:190,
+  lanes:{
+    asg:{c:"#0B41C4",h:"#062E8C",m:"url(#ss-asg)"},
+    app:{c:"#009688",h:"#00695C",m:"url(#ss-app)"},
+    rej:{c:"#B83232",h:"#8E2424",m:"url(#ss-rej)"}
+  },
+  nodes:[
+    {id:"IMPORT",x:425, y:135,lane:"asg",t:"Import questionnaire",s:["from the Designer"],sc:[1,2]},
+    {id:"ASSIGN",x:701, y:135,lane:"asg",t:"Create assignments",s:["+ identifying answers"],sc:[1,2]},
+    {id:"HQREV", x:1529,y:135,lane:"app",t:"HQ quality control",s:["approve · reject"],sc:[1,4,5]},
+    {id:"MIS",   x:1780,y:135,lane:"app",w:170,ext:1,logo:"assets/tasaf-logo.png",t:"TASAF MIS",s:[],sc:[1,5]},
+    {id:"DIST",  x:701, y:365,lane:"asg",t:"Distribute workload",s:["assign to interviewers"],sc:[1,2]},
+    {id:"SUPREV",x:1253,y:365,lane:"app",t:"Supervisor review",s:["approve · reject"],sc:[1,4]},
+    {id:"RECV",  x:701, y:595,lane:"asg",t:"Assignment lands",s:["on the next sync"],sc:[1,2,3]},
+    {id:"FIELD", x:977, y:595,lane:"asg",t:"Conduct interview",s:["offline · no network"],sc:[1,3]},
+    {id:"SEND",  x:1253,y:595,lane:"app",t:"Complete + sync",s:["answers uploaded"],sc:[1,3,4]}
+  ],
+  edges:[
+    {lane:"asg",d:"M522,135 L597,135",l:"ready to field",lx:559,ly:180,sc:[1,2]},
+    {lane:"asg",d:"M701,168 L701,325",l:"SupervisorAssigned",lx:713,ly:250,anchor:"start",sc:[1,2]},
+    {lane:"asg",d:"M701,398 L701,555",l:"InterviewerAssigned",lx:713,ly:480,anchor:"start",sc:[1,2]},
+    {lane:"asg",d:"M798,595 L873,595",l:"opens offline",lx:835,ly:640,sc:[1,3]},
+    {lane:"asg",d:"M1074,595 L1149,595",l:"answers in",lx:1111,ly:640,sc:[1,3]},
+    {lane:"app",d:"M1290,562 L1290,406",l:"Completed (100)",lx:1302,ly:490,anchor:"start",sc:[1,3,4]},
+    {lane:"app",d:"M1290,332 C1290,240 1330,135 1426,135",l:"ApprovedBySupervisor (120)",lx:1302,ly:214,anchor:"start",sc:[1,4]},
+    {lane:"app",d:"M1626,135 L1688,135",l:"export API",lx:1657,ly:180,sc:[1,5]},
+    {lane:"rej",dash:1,d:"M1216,398 L1216,556",l:"RejectedBySupervisor (65)",lx:1204,ly:480,anchor:"end",sc:[1,4]},
+    {lane:"rej",dash:1,d:"M1470,168 C1470,250 1400,300 1348,330",l:"RejectedByHeadquarters (125)",lx:1482,ly:250,anchor:"start",sc:[1,4]}
+  ],
+  scenes:[
+    {n:"The interview cycle",
+     c:"Work is assigned downward through three tiers; each finished interview climbs back up through two review gates before anyone outside can see it.",
+     f:[["3","tiers"],["2","review gates"],["2","ways back down"]],d:9500,
+     talk:"Establish the three lanes first, then say every arrow carries a status."},
+    {n:"Prepare and assign",
+     c:"Headquarters imports the questionnaire from the Designer and creates assignments — the questionnaire plus the identifying answers that pin it to one household. They pass to a supervisor, who splits the workload between interviewers.",
+     f:[["SupervisorAssigned","HQ → supervisor"],["InterviewerAssigned","supervisor → interviewer"]],d:11000,
+     talk:"An assignment is not an interview yet — it is the instruction to go and collect one."},
+    {n:"Field work, offline",
+     c:"The assignment reaches the tablet on the next sync. The interview is conducted with no network at all; only when the interviewer syncs again does the completed interview leave the device.",
+     f:[["offline","the whole interview"],["Completed","status on sync"],["both ways","sync sends and receives"]],d:11000,
+     talk:"This is why nothing is real time: data moves only when a tablet reaches the sync point."},
+    {n:"Two review gates",
+     c:"The supervisor checks the interview first and can reject it straight back to the interviewer. Approved work goes up to Headquarters, which can reject it back down to the supervisor.",
+     f:[["313 764","ApprovedBySupervisor on rm4"],["769","RejectedBySupervisor"],["1","ApprovedByHeadquarters"]],d:12500,
+     talk:"On rm4 almost everything stops at supervisor approval — HQ approval is barely used, which is why the ETL exports every status and decides for itself."},
+    {n:"Approved, then exported",
+     c:"Only Headquarters can export. That export job is the single door between Survey Solutions and TASAF MIS — and the point where the next rail picks up.",
+     f:[["All","export_interview_status default"],["one door","HQ export API"]],d:10000,
+     talk:"Hand over to the main rail here: the export job is where our pipeline starts."}
+  ]
+});
+
+/* ═════════ RAIL 2 · TASAF MIS END TO END ═════════ */
+var RAIL_MAIN=buildRail({
+  stage:"#railMain", slide:"rail", track:"#track",
+  lanes:{
+    ss:{c:"#009688",h:"#00695C",m:"url(#ar-ss)"},
+    lg:{c:"#C47B0C",h:"#8A5A19",m:"url(#ar-lg)"},
+    py:{c:"#2B6CB0",h:"#1B4E86",m:"url(#ar-py)"},
+    rt:{c:"#B83232",h:"#8E2424",m:"url(#ar-rt)"}
+  },
+  nodes:[
+    {id:"SSHQ", x:140,  y:250, lane:"ss", ext:1, logo:"assets/survey-solutions-logo.png",
+      t:"Survey Solutions", s:["HQ · rm4 workspace"], sc:[1,2,4]},
+    {id:"ETL",  x:440,  y:250, lane:"ss", t:"api_etl", s:["run_paa_etl_task · Celery"], sc:[1,2]},
+    {id:"ADAPT",x:740,  y:250, lane:"ss", t:"Adapter + roster", s:["household ⇄ member"], sc:[1,2]},
+    {id:"PMT",  x:1040, y:250, lane:"ss", t:"PMT enrichment", s:["global formula, in-ETL"], sc:[1,2]},
+    {id:"SINK", x:1340, y:250, lane:"ss", t:"Import sink", s:["CSV + upload row"], sc:[1,2]},
+    {id:"REG",  x:1640, y:258, h:170, lane:"ss", t:"Live registry",
+      s:["Individual · Group","pmt_score_household","one source of truth"], sc:[1,2,3,5]},
+    {id:"MON",  x:740,  y:96, lane:"ss", t:"Survey monitoring", s:["updateDateUtc cursor"], sc:[1,4]},
+    {id:"CACHE",x:1040, y:96, lane:"ss", t:"Interview cache", s:["hh_size per interview"], sc:[1,4]},
+    {id:"DASH", x:1340, y:96, lane:"ss", t:"Field dashboard", s:["local SQL metrics"], sc:[1,4]},
+    {id:"PSSN", x:140,  y:440, lane:"lg", ext:1, t:"livePSSN", s:["Oracle · etlapi (PHP)"], sc:[1,3]},
+    {id:"LPULL",x:440,  y:440, lane:"lg", t:"legacy_individual", s:["import_legacy_pssn_api"], sc:[1,3]},
+    {id:"LNORM",x:740,  y:440, lane:"lg", t:"Supersede + insert", s:["district-scoped · atomic"], sc:[1,3]},
+    {id:"LREG", x:1040, y:440, lane:"lg", t:"Legacy registry", s:["LegacyGroup + members"], sc:[1,3]},
+    {id:"ENROLL", x:1340, y:630, lane:"py", t:"Targeting", s:["GroupBeneficiary"], sc:[1,5]},
+    {id:"PAYROLL",x:1040, y:630, lane:"py", t:"Payroll", s:["BenefitConsumption"], sc:[1,5,6]},
+    {id:"PAYLIST",x:740,  y:630, lane:"py", t:"Paylist", s:["BANK · MNO · MIXED"], sc:[1,5,6]},
+    {id:"AUDIT",  x:440,  y:630, lane:"py", t:"Pre-audit", s:["VERIFIED + primary"], sc:[1,6]},
+    {id:"GATE",   x:140,  y:630, lane:"py", ext:1, t:"MUSE / GePG", s:["→ banks · MNOs"], sc:[1,6]},
+    {id:"RECON",  x:740,  y:812, lane:"rt", t:"Reconciliation", s:["PaylistItem → payroll"], sc:[1,6]}
+  ],
+  edges:[
+    {a:"SSHQ", b:"ETL",   lane:"ss", dir:"r", l:"export · paged", sc:[1,2]},
+    {a:"ETL",  b:"ADAPT", lane:"ss", dir:"r", l:"raw + roster",   sc:[1,2]},
+    {a:"ADAPT",b:"PMT",   lane:"ss", dir:"r", l:"person rows",    sc:[1,2]},
+    {a:"PMT",  b:"SINK",  lane:"ss", dir:"r", l:"pmt score",      sc:[1,2]},
+    {a:"SINK", b:"REG",   lane:"ss", dir:"r", l:"validate→link",  sc:[1,2]},
+    {lane:"ss", d:"M240,230 C420,230 440,96 640,96", l:"60 s poll", lx:452, ly:142, sc:[1,4]},
+    {a:"MON",  b:"CACHE", lane:"ss", dir:"r", l:"changed only", sc:[1,4]},
+    {a:"CACHE",b:"DASH",  lane:"ss", dir:"r", l:"aggregate",    sc:[1,4]},
+    {a:"PSSN", b:"LPULL", lane:"lg", dir:"r", l:"etlapi JSON",  sc:[1,3]},
+    {a:"LPULL",b:"LNORM", lane:"lg", dir:"r", l:"1 000/page",   sc:[1,3]},
+    {a:"LNORM",b:"LREG",  lane:"lg", dir:"r", l:"one txn",      sc:[1,3]},
+    {lane:"lg", d:"M1140,440 L1540,440 Q1640,440 1640,362", dotted:1, nom:1,
+      l:"parallel store · not merged", lx:1320, ly:424, sc:[1,3]},
+    {lane:"py", d:"M1640,343 L1640,570 Q1640,630 1580,630 L1444,630",
+      l:"eligible hh", lx:1592, ly:590, sc:[1,5]},
+    {a:"ENROLL", b:"PAYROLL", lane:"py", dir:"l", l:"benefit lines", sc:[1,5]},
+    {a:"PAYROLL",b:"PAYLIST", lane:"py", dir:"l", l:"by channel",    sc:[1,5]},
+    {a:"PAYLIST",b:"AUDIT",   lane:"py", dir:"l", l:"paylist items", sc:[1,5,6]},
+    {a:"AUDIT",  b:"GATE",    lane:"py", dir:"l", chip:"GovESB", l:"signed push", sc:[1,6]},
+    {lane:"rt", d:"M140,661 L140,752 Q140,812 200,812 L638,812",
+      l:"return / unapplied feedback", lx:400, ly:796, sc:[1,6]},
+    {lane:"rt", d:"M840,812 C960,812 1040,772 1040,665", l:"receipt", lx:962, ly:790, sc:[1,6]}
+  ],
+  scenes:[
+    {n:"The whole rail", c:"Two ingestion paths, one live registry, one disbursement loop that closes itself.",
+     f:[["2","ingestion paths"],["3","external systems"],["1","return path"]], d:9500,
+     talk:"Start here. Name the three external systems on the left rail, then say everything else is ours."},
+    {n:"Survey Solutions → live registry", c:"Field interviews are pulled by export job, flattened to person rows, PMT-scored during the ETL, then staged and inserted.",
+     f:[["in-ETL","PMT, not a post-import job"],["3.9–5.7%","export wait"],["82–88%","database load"]], d:12000,
+     talk:"An import lands already scored, and the timing split was measured, not assumed."},
+    {n:"PSSN legacy → parallel registry", c:"livePSSN is pulled district by district into its own store. Superseding the previous load runs inside the insert transaction.",
+     f:[["1 000","rows per page"],["9 765","households, district 0703"],["54 675","individuals"]], d:11500,
+     talk:"Stress the atomicity: a district can never be left empty by a half-finished re-import."},
+    {n:"Field monitoring, read-only", c:"A separate cursor loop watches interview progress. It never touches the import pipeline, and the dashboard answers from local SQL.",
+     f:[["cursor","only interviews changed since last poll"],["zero","HQ calls on the request path"]], d:10500,
+     talk:"For management: monitoring is live without waiting for an export to finish."},
+    {n:"Registry → targeting → payroll", c:"One registry drives PMT targeting, enrolment and the benefit lines a paylist is cut from — channel by channel.",
+     f:[["pmt_class_household","drives eligibility"],["GroupBeneficiary","→ BenefitConsumption"],["BANK · MNO · MIXED","paylist split"]], d:10500,
+     talk:"This is why the ingestion work matters: it is the same registry the money runs on."},
+    {n:"Disbursement and return", c:"Pre-audited paylists leave over GovESB — one transport, two destinations — and the return feedback reconciles payroll.",
+     f:[["pre-audit","VERIFIED + primary + active"],["GovESB","carries MUSE and GePG"],["RECONCILED","settled items only"]], d:12000,
+     talk:"GovESB is the wire; MUSE and GePG are destinations on it. Failures stay open for the next cycle."}
+  ]
+});
+
+var RAILS=[RAIL_SS,RAIL_MAIN];
+
+/* ═════════ DECK ═════════ */
+window.DECK=(function(){
+  "use strict";
+  var slides=Array.prototype.slice.call(document.querySelectorAll(".slide"));
+  var idx=0,present=false;
+
+  slides.forEach(function(sl){
+    var mv=parseInt(sl.getAttribute("data-move"),10);
+    if(!mv)return;
+    var htxt=sl.querySelector(".slide-head .htxt");
+    if(!htxt)return;
+    var wrap=document.createElement("div");
+    wrap.className="moves";
+    wrap.setAttribute("aria-label","Move "+mv+" of 4");
+    for(var i=1;i<=4;i++){
+      var d=document.createElement("i");
+      d.className=i===mv?"on":(i<mv?"done":"");
+      wrap.appendChild(d);
+    }
+    htxt.appendChild(wrap);
+  });
+  var bar={count:document.getElementById("dcount"),fill:document.getElementById("dprogfill"),
+           title:document.getElementById("dtitle")};
+
+  slides.forEach(function(s,i){
+    var fn=s.querySelector(".slide-foot .fn");
+    if(fn)fn.textContent=(i+1)+" / "+slides.length;
+  });
+  var sc=document.getElementById("slideCount");
+  if(sc)sc.textContent=slides.length+" slides";
+
+  function railOnSlide(){
+    for(var i=0;i<RAILS.length;i++){if(RAILS[i].slide===slides[idx].id)return RAILS[i];}
+    return null;
+  }
+  function show(i){
+    idx=Math.max(0,Math.min(slides.length-1,i));
+    slides.forEach(function(s,n){s.classList.toggle("active",n===idx);});
+    bar.count.textContent=(idx+1)+" / "+slides.length;
+    bar.fill.style.width=((idx+1)/slides.length*100)+"%";
+    bar.title.textContent=slides[idx].getAttribute("data-title")||"";
+    RAILS.forEach(function(r){r.setVisible(!present||r.slide===slides[idx].id);});
+    if(present)window.scrollTo(0,0);
+  }
+  function enter(){
+    present=true;document.body.classList.add("present");document.body.classList.remove("doc");
+    var cand=-1;
+    slides.forEach(function(s,i){if(cand<0&&isInView(s))cand=i;});
+    show(cand>0?cand:0);
+    if(document.documentElement.requestFullscreen)
+      document.documentElement.requestFullscreen().catch(function(){});
+  }
+  function exit(){
+    present=false;document.body.classList.remove("present");document.body.classList.add("doc");
+    slides.forEach(function(s){s.classList.remove("active");});
+    RAILS.forEach(function(r){r.setVisible(true);});
+    if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(function(){});
+    slides[idx].scrollIntoView({block:"start"});
+  }
+  function isInView(s){
+    var r=s.getBoundingClientRect();
+    return r.top<window.innerHeight*0.5&&r.bottom>0;
+  }
+  function gotoId(id){
+    var i=-1;
+    slides.forEach(function(s,n){if(s.id===id)i=n;});
+    if(i<0)return;
+    if(present)show(i);
+    else{idx=i;document.getElementById(id).scrollIntoView({block:"start"});}
+  }
+
+  document.getElementById("presentBtn").addEventListener("click",enter);
+  document.getElementById("dexit").addEventListener("click",exit);
+  document.getElementById("dprev").addEventListener("click",function(){show(idx-1);});
+  document.getElementById("dnext").addEventListener("click",function(){show(idx+1);});
+  document.getElementById("dfs").addEventListener("click",function(){
+    if(document.fullscreenElement){document.exitFullscreen();}
+    else if(document.documentElement.requestFullscreen){document.documentElement.requestFullscreen();}
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-goto]"),function(b){
+    b.addEventListener("click",function(){gotoId(b.getAttribute("data-goto"));});
+  });
+  document.addEventListener("fullscreenchange",function(){
+    if(!document.fullscreenElement&&present)exit();
+  });
+  document.addEventListener("keydown",function(e){
+    if(e.target&&(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA"))return;
+    var k=e.key,r=railOnSlide();
+    if(k==="Escape"&&present){e.preventDefault();exit();return;}
+    if(k==="p"||k==="P"){if(r)r.toggle();return;}
+    if(/^[1-9]$/.test(k)&&r&&(!present||r.slide===slides[idx].id)){
+      var n=parseInt(k,10);
+      if(n<=r.count){r.scene(n-1);return;}
+    }
+    if(!present){
+      if(k==="F"||k==="f"){enter();}
+      return;
+    }
+    if(k==="ArrowRight"||k==="PageDown"||k===" "){e.preventDefault();show(idx+1);}
+    else if(k==="ArrowLeft"||k==="PageUp"){e.preventDefault();show(idx-1);}
+    else if(k==="Home"){show(0);}
+    else if(k==="End"){show(slides.length-1);}
+  });
+
+  if(location.hash){gotoId(location.hash.slice(1));}
+  return {goto:gotoId,enter:enter};
+})();
+
+</script>
+</body>
+</html>
