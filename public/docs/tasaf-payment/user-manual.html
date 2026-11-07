@@ -146,7 +146,7 @@
       <div class="cover-meta">
         <span class="badge">Tanzania Social Action Fund</span>
         <span class="badge">Mfuko wa Maendeleo ya Jamii</span>
-        <span class="badge">Version 1.0 · 22 October 2026</span>
+        <span class="badge">Version 1.1 · 30 October 2026</span>
       </div>
     </div>
   </header>
@@ -218,6 +218,8 @@
         <tr><td><code>270302</code></td><td>The <strong>Disbursement</strong> tab: generate paylists.</td></tr>
         <tr><td><code>270301</code> / <code>270303</code> / <code>270304</code></td><td>See paylists / approve a paylist / submit a paylist to MUSE.</td></tr>
         <tr><td><code>270401</code></td><td>The <strong>Unapplied Payments</strong> tab.</td></tr>
+        <tr><td><code>270402</code></td><td>Decide unapplied payments: Repay, Send to Case, Withdraw (PCT Officer / Manager).</td></tr>
+        <tr><td><code>270403</code></td><td>Repay an unapplied payment whose reason points to the account (PCT Manager).</td></tr>
         <tr><td><code>270501</code></td><td>The <strong>Dashboard</strong> tab.</td></tr>
         <tr><td><code>270701</code> / <code>270702</code></td><td>See the <strong>Charges</strong> tab / propose FSP names and charge bands.</td></tr>
         <tr><td><code>270801</code></td><td>The <strong>Reports</strong> tab.</td></tr>
@@ -257,7 +259,7 @@
       <li><strong>Generate</strong> the Bank and MNO paylists from the approved payroll.</li>
       <li><strong>Approve</strong> each paylist twice, by two different people.</li>
       <li><strong>Submit</strong> to MUSE. MUSE's replies update the paylist and each payment automatically.</li>
-      <li><strong>Follow up</strong> unapplied payments through Case Management.</li>
+      <li><strong>Follow up</strong> unapplied payments: the PCT decides each one, and those repaid go back to MUSE on a re-send paylist (section 8).</li>
     </ol>
 
     <div class="callout note"><strong>Two-person rule.</strong> Paylists, and every change to MUSE or
@@ -465,18 +467,109 @@
 
     <!-- 8 -->
     <h2 id="unapplied">8. Unapplied Payments</h2>
-    <p>A payment the bank or operator could not credit (wrong or closed account, name mismatch, returned
-    by the bank) is listed here with MUSE's reason code and description. These records come from MUSE and
-    cannot be edited.</p>
-    <ol class="steps">
-      <li>Open the payment and find its account.</li>
-      <li>Correct the account in Case Management → Account Corrections; it is then verified again.</li>
-      <li>The household is paid in a later batch once the account passes again.</li>
-    </ol>
+    <p>A payment is <strong>unapplied</strong> when the bank or operator could not credit it: a wrong or closed
+    account, a name mismatch, or a payment the bank returned. MUSE keeps the money and tells the MIS, with a
+    reason. The payment then waits on this tab until the PCT decides what to do with it. The household's
+    benefit is held, not lost.</p>
     <figure class="shot">
       <a href="img/pay-11-unapplied.png"><img src="img/pay-11-unapplied.png" alt="Unapplied Payments with reason codes." loading="lazy" /></a>
       <figcaption><span class="num">Fig. 11</span> Unapplied Payments with reason codes.</figcaption>
     </figure>
+
+    <h3>8.1 The whole process at a glance</h3>
+    <table>
+      <thead><tr><th>#</th><th>Step</th><th>Who</th><th>Where</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>MUSE reports the payment unapplied</td><td>Automatic</td><td>The payment shows <em>Unapplied</em> on its paylist and <em>Awaiting action</em> on this tab; PCT users get a notification.</td></tr>
+        <tr><td>2</td><td>Decide: <strong>Repay</strong>, <strong>Send to Case</strong> or <strong>Withdraw</strong></td><td>PCT Officer / Manager (<code>270402</code>)</td><td>Unapplied Payments → <strong>View details</strong></td></tr>
+        <tr><td>3</td><td>Create the re-send paylist</td><td>Paylist officer (<code>270302</code>)</td><td>Unapplied Payments → <strong>Re-send to MUSE (n)</strong></td></tr>
+        <tr><td>4</td><td>Submit it to MUSE</td><td>Finance officer (<code>270304</code>)</td><td>Paylists → the re-send paylist → <strong>Submit to MUSE</strong></td></tr>
+        <tr><td>5</td><td>Follow the result</td><td>Automatic</td><td>The payment shows <em>Re-paid</em>, or <em>Awaiting action</em> again if it comes back.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>8.2 Step 1: find the payments waiting for a decision</h3>
+    <ol class="steps">
+      <li>Open <strong>TASAF Payments → Unapplied Payments</strong>.</li>
+      <li>Filter <strong>Progress = Awaiting action</strong>. Other filters: HHID, account and MUSE batch reference.</li>
+      <li>Each row shows the payee, MUSE's reason, the <strong>Action</strong> the system suggests, <strong>Times returned unapplied</strong> and <strong>Days waiting</strong>.</li>
+    </ol>
+
+    <h3>8.3 Step 2: decide each payment</h3>
+    <p>Open the payment with <strong>View details</strong>. The dialog shows <em>Why it was not paid</em>, the
+    <em>Account and correction</em> and the <em>Decision</em> section. Choose one of the three buttons at the bottom:</p>
+    <table>
+      <thead><tr><th>Decision</th><th>Use it when</th><th>What happens next</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Repay</strong></td><td>The account is right and the failure was temporary (suggested for such reasons).</td><td>Paid again to the same account, without verifying it again. Progress: <em>Re-paying</em>.</td></tr>
+        <tr><td><strong>Send to Case</strong></td><td>The account itself is wrong (suggested when MUSE's reason points to the account).</td><td>The account is marked failed and a Case Management follow-up opens. PAAF, PSSNC or TMO correct it. Progress: <em>In correction</em>, then <em>Re-paying</em> once the corrected account is verified and pre-audited.</td></tr>
+        <tr><td><strong>Withdraw</strong></td><td>The payment should not go through MUSE's unapplied route.</td><td>Not re-sent. The benefit is kept; the account starts again from verification and pre-audit and is paid as a normal payment, from the same payroll if it is still open, otherwise the next cycle. Progress: <em>Unapplied withdrawn</em>.</td></tr>
+      </tbody>
+    </table>
+    <div class="callout warn"><strong>Rules.</strong>
+      A <strong>note</strong> is required to Withdraw, or to choose another action than the suggested one.
+      <strong>Repay</strong> is refused when the account is not verified and pre-audited, or when the payment has
+      already come back unapplied twice; then send it to Case or withdraw it. When MUSE's reason points to the
+      account, only a PCT Manager (<code>270403</code>) can repay it as it is.
+      If the account is corrected to <strong>another provider</strong> (bank ↔ mobile money, or another bank or
+      operator), the payment is withdrawn automatically, because the charges differ.</div>
+
+    <h3>8.4 Step 3: create the re-send paylist</h3>
+    <ol class="steps">
+      <li>Check that the payments to pay again show <strong>Re-paying</strong>.</li>
+      <li>On Unapplied Payments press <strong>Re-send to MUSE (n)</strong>. The dialog has two tabs.</li>
+      <li>Tab <strong>Send unapplied batch</strong> lists, per payroll and channel, how many are <em>Ready</em>,
+      the amount, and how many are still <em>Waiting for the account</em>.</li>
+      <li>Press <strong>Create re-send paylists (n)</strong>. One paylist of type <strong>UNAPPLIED</strong> is made
+      per payroll and channel, already <em>Approved</em>: its payments were approved on the original paylist.</li>
+    </ol>
+    <p>Each payment on it keeps the original amount and charge, and gets a new payment ID: the original benefit
+    code followed by <strong>R</strong> and the number of the send (for example <code>XP231004200030R2</code> is
+    the second send of <code>XP231004200030</code>). The original ID goes with it, so MUSE can link the two.
+    Tab <strong>Send unapplied withdraw</strong> only shows how many withdrawn payments wait; sending them to MUSE
+    is not available yet.</p>
+    <div class="callout note"><strong>Generate does not make re-sends.</strong> On the Disbursement tab the
+    preview counts them (<em>unapplied re-send(s): create them from Unapplied Payments</em>) but leaves them out.</div>
+
+    <h3>8.5 Step 4: submit to MUSE</h3>
+    <ol class="steps">
+      <li>Open <strong>Paylists</strong> and double-click the new paylist (<em>Bank unapplied re-send</em> or
+      <em>MNO unapplied re-send</em>, status <em>Approved</em>).</li>
+      <li>Press <strong>MUSE message</strong> and check it: payment type <strong>UNAPPLIED</strong>, the unapplied
+      sub-budget class, and no problems listed.</li>
+      <li>Press <strong>Submit to MUSE</strong> <strong>once</strong>. The paylist shows that it is being sent, then
+      <em>Submitted to MUSE</em>.</li>
+    </ol>
+    <div class="callout warn"><strong>Sub-budget class.</strong> A re-send goes under the unapplied class that
+    belongs to the paylist's sub-budget class (shown under the sub-budget class in Integrations → MUSE:
+    <em>Unapplied re-sends use …</em>). Class 213 has no unapplied class, so a re-send under it is refused.</div>
+
+    <h3>8.6 Step 5: check that it worked</h3>
+    <table>
+      <thead><tr><th>You see</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td>Re-send paylist <em>Approved</em></td><td>Created, not sent yet: submit it.</td></tr>
+        <tr><td><em>Submitted</em> → <em>Received</em> → <em>Accepted</em> → <em>Sent to bank / MNO</em></td><td>MUSE took the batch.</td></tr>
+        <tr><td>Payment <em>Processed</em>; on Unapplied Payments <em>Re-paid</em></td><td>The household was paid.</td></tr>
+        <tr><td>Payment returned unapplied again; progress <em>Awaiting action</em></td><td>Decide again from step 2. After two returns, Repay is no longer possible.</td></tr>
+        <tr><td>Progress <em>Lapsed</em></td><td>Not re-paid by the payment cycle's cut-off; left unpaid.</td></tr>
+      </tbody>
+    </table>
+    <p>The <strong>Reports</strong> tab shows where the money of every unapplied payment is, per payment cycle and
+    provider: returned = re-paid + withdrawn + lapsed + still held.</p>
+
+    <h3>8.7 Progress values</h3>
+    <table>
+      <thead><tr><th>Progress</th><th>Meaning</th><th>Who acts next</th></tr></thead>
+      <tbody>
+        <tr><td>Awaiting action</td><td>Waiting for the PCT to repay, send to Case or withdraw it</td><td>PCT</td></tr>
+        <tr><td>In correction</td><td>Waiting for the account to be corrected in Case Management</td><td>PAAF / PSSNC / TMO</td></tr>
+        <tr><td>Re-paying</td><td>Ready for, or on, a re-send paylist</td><td>Payment team</td></tr>
+        <tr><td>Re-paid</td><td>Paid on a new paylist</td><td>—</td></tr>
+        <tr><td>Unapplied withdrawn</td><td>Withdrawn; the account goes through verification and pre-audit again</td><td>Verification officer</td></tr>
+        <tr><td>Lapsed</td><td>Not re-paid by the cycle cut-off; left unpaid</td><td>—</td></tr>
+      </tbody>
+    </table>
 
     <!-- 9 -->
     <h2 id="dashboard">9. Payment Dashboard</h2>
@@ -620,6 +713,7 @@
         <tr><td>Pending</td><td>In a paylist, no outcome yet</td></tr>
         <tr><td>Processed</td><td>Paid</td></tr>
         <tr><td>Unapplied</td><td>Could not be credited; see Unapplied Payments</td></tr>
+        <tr><td>Withdrawn</td><td>Taken out of a batch MUSE rejected; paid again once corrected</td></tr>
       </tbody>
     </table>
 
@@ -634,6 +728,9 @@
         <tr><td>No answer from GePG after a day</td><td>Release the request and send again; tell the administrator if it repeats.</td></tr>
         <tr><td>Submit to MUSE is refused</td><td>Open MUSE message and fix what it lists; check the FSP's status on Charges.</td></tr>
         <tr><td>A change I made is not applied</td><td>It waits for a second person under Integrations → MUSE → Changes.</td></tr>
+        <tr><td>Repay is refused on an unapplied payment</td><td>The account is not verified and pre-audited, it came back twice, or the reason points to the account (PCT Manager only). Send it to Case or withdraw it.</td></tr>
+        <tr><td>I decided Repay but nothing went to MUSE</td><td>Repay only marks it <em>Re-paying</em>. Create the re-send paylist (Re-send to MUSE) and submit it (section 8.4–8.5).</td></tr>
+        <tr><td>A re-send is refused: no unapplied class</td><td>The paylist's sub-budget class has none (213). Ask finance which class to use.</td></tr>
         <tr><td>I cannot approve my own change</td><td>By design; another approver must decide it.</td></tr>
       </tbody>
     </table>
@@ -654,7 +751,8 @@
         <tr><td><strong>Withdrawal charge</strong></td><td>The fee an FSP takes to withdraw; added on top of the benefit.</td></tr>
         <tr><td><strong>Charge band</strong></td><td>An amount range and its withdrawal charge.</td></tr>
         <tr><td><strong>BIC</strong></td><td>Bank identifier code MUSE uses to route a payment.</td></tr>
-        <tr><td><strong>Unapplied</strong></td><td>A payment the FSP could not credit.</td></tr>
+        <tr><td><strong>Unapplied</strong></td><td>A payment the FSP could not credit; MUSE holds the money until it is re-sent or withdrawn.</td></tr>
+        <tr><td><strong>Re-send paylist</strong></td><td>A paylist of type UNAPPLIED that pays unapplied payments again, each under a new payment ID.</td></tr>
         <tr><td><strong>HHID</strong></td><td>Household identifier, e.g. P3-010501204-11281575.</td></tr>
       </tbody>
     </table>
@@ -665,7 +763,7 @@
   <footer class="doc-footer">
     <div class="brand">
       <img src="../assets/tasaf-logo.png" alt="TASAF" />
-      <span>Tanzania Social Action Fund · Payment Module End-User Manual · Version 1.0</span>
+      <span>Tanzania Social Action Fund · Payment Module End-User Manual · Version 1.1</span>
     </div>
     <div><a href="../index.html">← Back to documentation hub</a></div>
   </footer>
