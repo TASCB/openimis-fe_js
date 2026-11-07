@@ -1,0 +1,712 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Communication Onboarding Tutorial</title>
+<link rel="icon" type="image/png" href="../assets/tasaf-logo.png" />
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    /* TASAF corporateTeal palette (matches the main app) */
+    --tasaf-primary: #00695C;
+    --tasaf-primary-dark: #004D40;
+    --tasaf-primary-light: #4DB6AC;
+    --tasaf-accent: #B83232;
+    --tasaf-bg: #F4FAF9;
+    --tasaf-header: #D6ECE9;
+    --tasaf-highlight: #E4F2EF;
+    --tasaf-text: #202B2A;
+    --tasaf-muted: #5F6368;
+    --tasaf-white: #FFFFFF;
+    --tasaf-border: #D6ECE9;
+    --tasaf-toggled: #546E7A;
+    --tasaf-success: #2E7D32;
+    --tasaf-warning: #ED6C02;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: 'Rubik', 'Roboto', 'Helvetica Neue', sans-serif;
+    font-weight: 300; color: var(--tasaf-text); background: var(--tasaf-bg);
+    line-height: 1.65; font-size: 15px;
+  }
+  img, svg { max-width: 100%; }
+  a { color: var(--tasaf-primary); text-decoration: none; border-bottom: 1px dotted var(--tasaf-primary); }
+  a:hover { color: var(--tasaf-accent); border-bottom-style: solid; }
+  code, kbd { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 0.9em;
+    background: var(--tasaf-highlight); color: var(--tasaf-primary-dark); padding: 1px 6px; border-radius: 4px; }
+
+  .page-wrap { max-width: 1180px; margin: 24px auto; background: var(--tasaf-white);
+    box-shadow: 0 8px 40px rgba(0,105,92,0.12); border-radius: 14px; overflow: hidden; }
+
+  /* Cover */
+  .cover { background: linear-gradient(135deg, #00695C 0%, #004F45 100%); color: #fff;
+    padding: 40px 56px; display: flex; align-items: center; gap: 28px; }
+  .cover-logo img { width: 76px; height: 76px; background: #fff; padding: 8px; border-radius: 14px; }
+  .cover-text h1 { margin: 0; font-size: 30px; font-weight: 600; letter-spacing: 0.2px; }
+  .cover-text h2 { margin: 4px 0 12px; font-size: 16px; font-weight: 400; color: var(--tasaf-header); }
+  .cover-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+  .badge { background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.25);
+    padding: 3px 11px; border-radius: 999px; font-size: 12px; }
+
+  .subhead { background: var(--tasaf-header); color: var(--tasaf-primary-dark);
+    padding: 12px 56px; font-size: 13px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+  .content { padding: 36px 56px 48px; }
+  h2 { color: var(--tasaf-primary); font-size: 22px; font-weight: 600; margin: 40px 0 12px;
+    padding-bottom: 8px; border-bottom: 2px solid var(--tasaf-header); }
+  h2:first-of-type { margin-top: 8px; }
+  h3 { color: var(--tasaf-primary-dark); font-size: 16.5px; font-weight: 600; margin: 24px 0 8px; }
+  p { margin: 10px 0; }
+  ul, ol { margin: 10px 0; padding-left: 22px; }
+  li { margin: 5px 0; }
+
+  /* TOC */
+  .toc { background: var(--tasaf-header); border-radius: 8px; padding: 18px 24px; margin: 0 0 24px;
+    border-left: 5px solid var(--tasaf-primary); }
+  .toc h3 { margin: 0 0 8px; color: var(--tasaf-primary); font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .toc ol { columns: 2; column-gap: 32px; padding-left: 18px; margin: 0; }
+  .toc li { margin: 3px 0; break-inside: avoid; }
+  .toc a { border-bottom: none; }
+
+  /* Step procedures */
+  ol.steps { counter-reset: step; list-style: none; padding-left: 0; }
+  ol.steps > li { counter-increment: step; position: relative; padding: 5px 0 5px 42px; margin: 5px 0; }
+  ol.steps > li::before { content: counter(step); position: absolute; left: 0; top: 4px;
+    width: 28px; height: 28px; background: var(--tasaf-primary); color: #fff; border-radius: 50%;
+    text-align: center; line-height: 28px; font-weight: 500; font-size: 13px; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 24px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 14px; border: 1px solid var(--tasaf-border); vertical-align: top; }
+  th { background: var(--tasaf-primary); color: #fff; font-weight: 500; }
+  tbody tr:nth-child(even) { background: var(--tasaf-bg); }
+  td code { white-space: nowrap; }
+
+  /* Callouts */
+  .callout { border-radius: 8px; padding: 14px 18px; margin: 16px 0; border-left: 5px solid; font-size: 14px; }
+  .callout.note { background: var(--tasaf-highlight); border-color: var(--tasaf-primary); }
+  .callout.warn { background: #FDF0D4; border-color: var(--tasaf-warning); }
+  .callout.tip { background: #E8F5E9; border-color: var(--tasaf-success); }
+  .callout strong { color: var(--tasaf-primary-dark); }
+
+  /* Status / reporter chips */
+  .chip { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 500; }
+  .chip.received { background: #ECEFF1; color: var(--tasaf-toggled); }
+  .chip.open { background: #E3F2FD; color: #0D47A1; }
+  .chip.progress { background: #FFF3E0; color: var(--tasaf-warning); }
+  .chip.resolved { background: #E8F5E9; color: var(--tasaf-success); }
+  .chip.closed { background: #FDECEA; color: var(--tasaf-accent); }
+
+  /* Figure / screenshot placeholders (replace the .ph div with <img> when screenshots are ready) */
+  figure.shot { margin: 18px 0 26px; background: var(--tasaf-white); border: 1px solid var(--tasaf-border);
+    border-radius: 10px; overflow: hidden; box-shadow: 0 4px 14px rgba(0,105,92,0.10); }
+  figure.shot img { display: block; max-width: 100%; height: auto; margin: 0 auto; border-bottom: 1px solid var(--tasaf-border); }
+  figure.shot a { border-bottom: none; }
+  figure.shot .ph { display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 220px; gap: 6px; text-align: center; color: var(--tasaf-primary);
+    background: repeating-linear-gradient(135deg, transparent 0 14px, rgba(0,105,92,0.045) 14px 28px), var(--tasaf-bg);
+    border-bottom: 1px dashed var(--tasaf-primary-light); font-style: italic; }
+  figure.shot .ph .cam { font-size: 30px; font-style: normal; }
+  figure.shot .ph .lbl { font-size: 13px; letter-spacing: 0.3px; }
+  figure.shot figcaption { padding: 10px 16px; background: var(--tasaf-header); color: var(--tasaf-primary-dark);
+    font-size: 13px; display: flex; gap: 10px; align-items: baseline; }
+  figure.shot figcaption .num { display: inline-block; background: var(--tasaf-primary); color: #fff;
+    padding: 2px 9px; border-radius: 4px; font-weight: 500; font-size: 11.5px; letter-spacing: 0.4px;
+    text-transform: uppercase; flex-shrink: 0; }
+
+  /* Footer */
+  .doc-footer { background: var(--tasaf-primary-dark); color: rgba(255,255,255,0.9); padding: 26px 56px;
+    font-size: 13px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .doc-footer .brand { display: flex; align-items: center; gap: 12px; }
+  .doc-footer img { width: 36px; height: 36px; background: #fff; padding: 4px; border-radius: 8px; }
+  .doc-footer a { color: #cbedf2; border-bottom: none; }
+
+  @media (max-width: 700px) {
+    .cover, .subhead, .content, .doc-footer { padding-left: 22px; padding-right: 22px; }
+    .toc ol { columns: 1; }
+    .cover { flex-direction: column; text-align: center; }
+  }
+  @media print {
+    body { background: #fff; } .page-wrap { box-shadow: none; margin: 0; border-radius: 0; }
+    a { color: inherit; border-bottom: none; } table, .callout, figure.shot { break-inside: avoid; }
+  }
+
+  /* Onboarding tutorial additions */
+  p.lead { font-size: 16px; color: var(--tasaf-primary-dark); }
+  p.who { margin: 4px 0 10px; font-size: 14px; }
+  .split { display: grid; grid-template-columns: 260px 1fr; gap: 24px; align-items: start; }
+  .split table { margin-top: 18px; }
+  figure.shot.narrow img { max-width: 260px; }
+  figure.shot.diagram { padding: 18px 18px 0; }
+  figure.shot.diagram svg { display: block; width: 100%; height: auto; margin-bottom: 14px; }
+  h3 .chip { vertical-align: middle; margin-left: 6px; }
+  .ex h3 { margin-top: 22px; }
+  table.card td:first-child { font-weight: 500; }
+  @media (max-width: 700px) { .split { grid-template-columns: 1fr; } }
+  @page { size: A4; margin: 12mm 10mm; }
+  @media print {
+    html, body { font-size: 12.5px; }
+    .page-wrap { max-width: none; }
+    .cover { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    h2 { break-after: avoid; } h3 { break-after: avoid; }
+    #l1, #l2, #l3, #l4, #l5, #l6, #l7, #l8, #known, #practice, #card { break-before: page; }
+    figure.shot img { max-height: 112mm; width: auto; }
+    .split { grid-template-columns: 200px 1fr; } figure.shot.narrow img { max-width: 200px; }
+    .doc-footer a { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+  <header class="cover">
+    <div class="cover-logo"><img src="../assets/tasaf-logo.png" alt="TASAF — Tanzania Social Action Fund" /></div>
+    <div class="cover-text">
+      <h1>Communication Module</h1>
+      <h2>TASAF MIS — Onboarding Tutorial for New Staff</h2>
+      <div class="cover-meta">
+        <span class="badge">Tanzania Social Action Fund</span>
+        <span class="badge">Mfuko wa Maendeleo ya Jamii</span>
+        <span class="badge">Version 2.0 · 6 November 2026</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="subhead">
+    <span><strong>For:</strong> new communications staff · trainers · managers</span>
+    <span><strong>Level:</strong> beginner, no technical knowledge needed</span>
+    <span><strong>Time:</strong> about 2 hours with the exercises</span>
+  </div>
+
+  <main class="content">
+    <p class="lead">This tutorial teaches you, step by step, how to plan a communication activity, get it
+    approved, run it, record who came and which media covered it, and share news with all TASAF staff.
+    Every picture comes from the real system. The names and numbers in them are made up.</p>
+
+    <nav class="toc">
+      <h3>Contents</h3>
+      <ol>
+        <li><a href="#purpose">What this module is for</a></li>
+        <li><a href="#roles">Who does what</a></li>
+        <li><a href="#around">Finding your way around</a></li>
+        <li><a href="#l1">Lesson 1 · Plan an activity</a></li>
+        <li><a href="#l2">Lesson 2 · Add the details (tabs)</a></li>
+        <li><a href="#l3">Lesson 3 · Send it for approval</a></li>
+        <li><a href="#l4">Lesson 4 · Run the activity</a></li>
+        <li><a href="#l5">Lesson 5 · After the event</a></li>
+        <li><a href="#l6">Lesson 6 · The News Feed</a></li>
+        <li><a href="#l7">Lesson 7 · Calendar and Dashboard</a></li>
+        <li><a href="#l8">Lesson 8 · Library, media houses, journalists</a></li>
+        <li><a href="#known">Known limits</a></li>
+        <li><a href="#practice">Practice exercises</a></li>
+        <li><a href="#card">Quick reference card</a></li>
+        <li><a href="#words">Words you will see</a></li>
+      </ol>
+    </nav>
+
+    <!-- 1 -->
+    <h2 id="purpose">1. What this module is for</h2>
+    <p>The Communications module helps the TASAF communications team do four things:</p>
+    <table>
+      <thead><tr><th>You want to…</th><th>Use</th></tr></thead>
+      <tbody>
+        <tr><td>Plan and track a communication activity (press conference, media mission, awareness meeting…)</td><td><strong>Activities</strong></td></tr>
+        <tr><td>Record who came and which media covered it</td><td>the activity's <strong>Participants</strong> and <strong>Media Coverage</strong> tabs</td></tr>
+        <tr><td>Share news with all TASAF staff inside the system</td><td><strong>News Feed</strong></td></tr>
+        <tr><td>See what is coming and how well it went</td><td><strong>Calendar</strong> and <strong>Dashboard</strong></td></tr>
+      </tbody>
+    </table>
+    <p>Everything you do is saved with your name and the date, so the team can see who did what.</p>
+
+    <!-- 2 -->
+    <h2 id="roles">2. Who does what</h2>
+    <p>The system gives each person a <strong>role</strong>. Your role decides which menus and buttons
+    you see. If a button in this guide is missing for you, your role does not allow it. That is normal.</p>
+    <table>
+      <thead><tr><th style="width:28%">Role</th><th>What this person does</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Communications Officer</strong></td><td>Plans activities, fills in the details, runs the activity, records attendance and media coverage, writes News Feed posts</td></tr>
+        <tr><td><strong>Communications Manager</strong></td><td>Approves or rejects activities, cancels approved activities, approves, publishes and pins News Feed posts, marks channels as sent, deletes records</td></tr>
+        <tr><td><strong>All other staff</strong></td><td>Read the News Feed and see announcements when they log in</td></tr>
+      </tbody>
+    </table>
+    <div class="callout note"><strong>The golden rule.</strong> The person who prepares a piece of work is not
+    the person who approves it. The Officer prepares and the Manager approves.</div>
+
+    <!-- 3 -->
+    <h2 id="around">3. Finding your way around</h2>
+    <ol class="steps">
+      <li>Log in to the MIS with your username and password.</li>
+      <li>In the left menu, open <strong>Communications</strong>.</li>
+    </ol>
+    <div class="split">
+      <figure class="shot narrow">
+        <a href="img/ob-01-menu.png"><img src="img/ob-01-menu.png" alt="The Communications menu" /></a>
+        <figcaption><span class="num">Fig. 1</span> The Communications menu.</figcaption>
+      </figure>
+      <table>
+        <thead><tr><th>Menu</th><th>What you find there</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Activities</strong></td><td>All communication activities. Start here.</td></tr>
+          <tr><td><strong>Events</strong></td><td>The same list, only events (meetings, launches, gatherings)</td></tr>
+          <tr><td><strong>News Feed</strong></td><td>Internal news and announcements for staff</td></tr>
+          <tr><td><strong>Calendar</strong></td><td>Activities by month, week or agenda</td></tr>
+          <tr><td><strong>Library</strong></td><td>Message templates, stakeholder contact lists and files (logos, photos, documents)</td></tr>
+          <tr><td><strong>Media Houses</strong></td><td>Newspapers, radios, TV stations and websites</td></tr>
+          <tr><td><strong>Journalists</strong></td><td>Journalists and media staff</td></tr>
+          <tr><td><strong>Dashboard</strong></td><td>Numbers: activities, people reached, media coverage</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>Lists work the same everywhere:</strong></p>
+    <ul>
+      <li>the <em>Search Criteria</em> box at the top narrows the list, and <strong>Search</strong> applies it</li>
+      <li>click a row to open it</li>
+      <li>the round <strong>+</strong> button at the bottom right creates a new record</li>
+    </ul>
+    <figure class="shot">
+      <a href="img/ob-02-activities.png"><img src="img/ob-02-activities.png" alt="The Activities list" /></a>
+      <figcaption><span class="num">Fig. 2</span> The Activities list: filters on top, the list below, the round + button bottom right.</figcaption>
+    </figure>
+
+    <!-- 4 -->
+    <h2 id="l1">4. Lesson 1 · Plan an activity</h2>
+    <p class="who">Who: <span class="chip open">Communications Officer</span></p>
+    <ol class="steps">
+      <li>Go to <strong>Communications ▸ Activities</strong>.</li>
+      <li>Click the round <strong>+</strong> button.</li>
+      <li>Fill in the form. Fields with a star (*) are required.</li>
+    </ol>
+    <table>
+      <thead><tr><th>Field</th><th>What to write</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Title</strong> *</td><td>A short name people will recognise</td><td>Press conference: PCT payments in Dodoma</td></tr>
+        <tr><td><strong>Activity Type</strong></td><td>What kind of activity it is</td><td>Press Conference, Media Mission, Community Awareness Session…</td></tr>
+        <tr><td><strong>Programme Area</strong></td><td>The programme it supports</td><td>PCT, SCPW, E-payment, Economic Inclusion, General</td></tr>
+        <tr><td><strong>Objective (What)</strong></td><td>One or two sentences on why you are doing it</td><td>Explain the new payment dates to the media.</td></tr>
+        <tr><td><strong>Start</strong> * and <strong>End</strong> *</td><td>Date and time</td><td>12 Nov 2026 10:00 to 13:00</td></tr>
+        <tr><td><strong>Venue</strong></td><td>Where it happens</td><td>Dodoma Regional Office hall</td></tr>
+        <tr><td><strong>Virtual / hybrid</strong></td><td>Tick it if people join online, then name the platform</td><td>Zoom</td></tr>
+        <tr><td><strong>Region</strong></td><td>Region or district</td><td>Dodoma</td></tr>
+        <tr><td><strong>Description</strong></td><td>Any other useful details</td><td></td></tr>
+      </tbody>
+    </table>
+    <figure class="shot">
+      <a href="img/ob-03-new.png"><img src="img/ob-03-new.png" alt="A new activity form" /></a>
+      <figcaption><span class="num">Fig. 3</span> A new activity, before saving.</figcaption>
+    </figure>
+    <ol class="steps" start="4" style="counter-reset: step 3">
+      <li>Click <strong>Save</strong> (the round disk button at the bottom right).</li>
+    </ol>
+    <p>The system gives the activity a <strong>code</strong> such as <code>COM00000071</code>. You cannot
+    choose or change it. The status is <span class="chip received">Draft</span>.</p>
+    <figure class="shot">
+      <a href="img/ob-04-draft.png"><img src="img/ob-04-draft.png" alt="The saved draft with its code" /></a>
+      <figcaption><span class="num">Fig. 4</span> After saving: the code is filled in and the <strong>Submit</strong> button appears.</figcaption>
+    </figure>
+    <div class="callout warn"><strong>Clash warnings.</strong> A coloured box may appear above the form. It means
+    a team member, or the same place, is already booked for another activity at that time.
+    <ul>
+      <li><strong>Red (staff clash):</strong> you cannot save until you change the time or the staff.</li>
+      <li><strong>Yellow (place clash):</strong> only a warning. You can still save.</li>
+    </ul></div>
+
+    <!-- 5 -->
+    <h2 id="l2">5. Lesson 2 · Add the details (the tabs)</h2>
+    <p>Below the form there is a row of <strong>tabs</strong>. Fill them in <strong>while the activity is
+    still a Draft</strong>.</p>
+    <figure class="shot">
+      <a href="img/ob-05-tabs.png"><img src="img/ob-05-tabs.png" alt="The tabs under an activity" /></a>
+      <figcaption><span class="num">Fig. 5</span> The tabs under an activity. Here: Channels, with a radio and an SMS row.</figcaption>
+    </figure>
+    <table>
+      <thead><tr><th style="width:17%">Tab</th><th>What you add</th><th style="width:32%">Tip</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Channels</strong></td><td>How the message goes out (Email, SMS, Social Media, Radio, TV, Print, Website) and the target</td><td>One row per channel</td></tr>
+        <tr><td><strong>Objectives</strong></td><td>What you want to achieve: Objective, Indicator, Target, Achieved</td><td>e.g. "Media houses reporting", target 10. Fill in Achieved after the event</td></tr>
+        <tr><td><strong>Audience</strong></td><td>Which group, and how many people: Stakeholder Type, Planned Reach, later Actual Reach</td><td>The planned total on the form adds itself up from this tab</td></tr>
+        <tr><td><strong>Participants</strong></td><td>The named people invited (Lesson 5)</td><td></td></tr>
+        <tr><td><strong>Media Coverage</strong></td><td>The media houses you invite (Lesson 5)</td><td></td></tr>
+        <tr><td><strong>Staff</strong></td><td>Who in the team works on it, and their role (Owner, Contributor, Reviewer…)</td><td>A red warning means the person is busy elsewhere at that time</td></tr>
+        <tr><td><strong>Attachments</strong></td><td>Concept note, budget, press release, invitation; later the report and photos</td><td>PDF, Office files, pictures, audio or video, up to 25 MB</td></tr>
+        <tr><td><strong>Feedback</strong></td><td>What people said: source, respondent, rating 1–5, comment</td><td>Usually after the event</td></tr>
+      </tbody>
+    </table>
+    <div class="callout tip"><strong>Add a row:</strong> fill in the empty line, then click <strong>Add</strong>.
+    <strong>Change a row</strong> (Objectives, Audience): click the pencil, change it, click <strong>Save</strong>.
+    <strong>Remove a row:</strong> click the bin and confirm.</div>
+    <figure class="shot">
+      <a href="img/ob-06-audience.png"><img src="img/ob-06-audience.png" alt="The Audience tab" /></a>
+      <figcaption><span class="num">Fig. 6</span> The Audience tab: 30 Village Executive Officers and 20 beneficiaries planned.</figcaption>
+    </figure>
+    <figure class="shot">
+      <a href="img/ob-07-staff.png"><img src="img/ob-07-staff.png" alt="The Staff tab" /></a>
+      <figcaption><span class="num">Fig. 7</span> The Staff tab: the Officer is the Owner. A red box appears here if someone is double-booked.</figcaption>
+    </figure>
+    <div class="callout note"><strong>What freezes after Submit?</strong>
+    <ul>
+      <li><strong>Channels</strong> and <strong>Staff</strong> can no longer change.</li>
+      <li><strong>Objectives</strong> and <strong>Audience</strong> stay open for the <em>results only</em>
+      (Achieved, Actual Reach). The targets cannot change.</li>
+      <li><strong>Participants</strong>, <strong>Media Coverage</strong>, <strong>Attachments</strong> and
+      <strong>Feedback</strong> stay open until the activity is Archived or Cancelled.</li>
+    </ul></div>
+
+    <!-- 6 -->
+    <h2 id="l3">6. Lesson 3 · Send it for approval</h2>
+    <h3>The Officer submits</h3>
+    <ol class="steps">
+      <li>Open your Draft activity.</li>
+      <li>Check the form and the tabs.</li>
+      <li>Click <strong>Submit</strong> at the top. The status becomes <span class="chip open">Submitted</span> and the details are locked.</li>
+    </ol>
+    <h3>The Manager approves or rejects</h3>
+    <ol class="steps">
+      <li>Open <strong>Communications ▸ Activities</strong> and filter by status <strong>Submitted</strong>.</li>
+      <li>Open the activity and read it.</li>
+      <li>Click <strong>Approve</strong> (status <span class="chip resolved">Approved</span>) or
+      <strong>Reject</strong> (status <span class="chip closed">Rejected</span>).</li>
+    </ol>
+    <figure class="shot">
+      <a href="img/ob-08-approve.png"><img src="img/ob-08-approve.png" alt="A submitted activity seen by the Manager" /></a>
+      <figcaption><span class="num">Fig. 8</span> What the Manager sees: a read-only summary with <strong>Reject</strong> and <strong>Approve</strong>.</figcaption>
+    </figure>
+    <div class="callout note">Nobody can approve an activity they created themselves. For the creator, the Approve and
+    Reject buttons do not show.</div>
+    <h3>If it was rejected</h3>
+    <ol class="steps">
+      <li>The Officer opens the activity and clicks <strong>Revise</strong>. It goes back to Draft.</li>
+      <li>They fix what is needed.</li>
+      <li>They click <strong>Submit</strong> again.</li>
+    </ol>
+    <div class="callout warn"><strong>Manager:</strong> tell the Officer <em>why</em> you rejected it (phone, email
+    or a note in Description). The screen does not ask for a reason yet.</div>
+
+    <!-- 7 -->
+    <h2 id="l4">7. Lesson 4 · Run the activity, from start to finish</h2>
+    <p>After approval the Officer moves the activity forward <strong>one step at a time</strong>. Only the next
+    possible button is shown.</p>
+    <figure class="shot diagram">
+      <svg viewBox="0 0 1060 300" role="img" aria-label="Activity status workflow" font-family="Rubik, Roboto, sans-serif">
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#00695C"/></marker>
+          <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#B83232"/></marker>
+        </defs>
+        <style>
+          .bx { fill: #E4F2EF; stroke: #00695C; stroke-width: 1.5; }
+          .bx.end { fill: #00695C; }
+          .bx.bad { fill: #FDECEA; stroke: #B83232; }
+          .t { font-size: 14px; font-weight: 500; fill: #004D40; text-anchor: middle; }
+          .t.w { fill: #fff; } .t.r { fill: #B83232; }
+          .l { font-size: 12px; fill: #5F6368; text-anchor: middle; font-style: italic; }
+          .ln { stroke: #00695C; stroke-width: 1.6; fill: none; marker-end: url(#ar); }
+          .ln.r { stroke: #B83232; marker-end: url(#arr); stroke-dasharray: 5 4; }
+        </style>
+        <!-- row 1 -->
+        <rect class="bx" x="10" y="40" width="110" height="40" rx="8"/><text class="t" x="65" y="65">Draft</text>
+        <rect class="bx" x="200" y="40" width="120" height="40" rx="8"/><text class="t" x="260" y="65">Submitted</text>
+        <rect class="bx" x="400" y="40" width="120" height="40" rx="8"/><text class="t" x="460" y="65">Approved</text>
+        <rect class="bx" x="600" y="40" width="120" height="40" rx="8"/><text class="t" x="660" y="65">Scheduled</text>
+        <rect class="bx" x="800" y="40" width="120" height="40" rx="8"/><text class="t" x="860" y="65">Ongoing</text>
+        <path class="ln" d="M120,60 H198"/><text class="l" x="160" y="32">Submit</text>
+        <path class="ln" d="M320,60 H398"/><text class="l" x="360" y="32">Approve</text>
+        <path class="ln" d="M520,60 H598"/><text class="l" x="560" y="32">Schedule</text>
+        <path class="ln" d="M720,60 H798"/><text class="l" x="760" y="32">Start</text>
+        <!-- reject loop -->
+        <rect class="bx bad" x="200" y="150" width="120" height="40" rx="8"/><text class="t r" x="260" y="175">Rejected</text>
+        <path class="ln r" d="M260,80 V148"/><text class="l" x="296" y="120">Reject</text>
+        <path class="ln" d="M200,170 H65 V82"/><text class="l" x="132" y="162">Revise</text>
+        <!-- row 2 -->
+        <rect class="bx" x="800" y="150" width="120" height="40" rx="8"/><text class="t" x="860" y="175">Completed</text>
+        <path class="ln" d="M860,80 V148"/><text class="l" x="898" y="120">Complete</text>
+        <rect class="bx" x="600" y="150" width="120" height="40" rx="8"/><text class="t" x="660" y="175">Closed</text>
+        <path class="ln" d="M800,170 H722"/><text class="l" x="760" y="162">Close</text>
+        <rect class="bx end" x="400" y="150" width="120" height="40" rx="8"/><text class="t w" x="460" y="175">Archived</text>
+        <path class="ln" d="M600,170 H522"/><text class="l" x="560" y="162">Archive</text>
+        <!-- cancel -->
+        <rect class="bx bad" x="400" y="240" width="120" height="40" rx="8"/><text class="t r" x="460" y="265">Cancelled</text>
+        <path class="ln" d="M460,240 V192"/><text class="l" x="500" y="222">Archive</text>
+        <text class="l" x="760" y="258" style="font-style:normal;fill:#B83232">Cancel: from Draft, Approved, Scheduled or Ongoing</text>
+        <path class="ln r" d="M600,262 H522"/>
+      </svg>
+      <figcaption><span class="num">Fig. 9</span> The life of an activity. Red dashed arrows are the "no" paths.</figcaption>
+    </figure>
+    <table>
+      <thead><tr><th>Button</th><th>When to click it</th><th>Who</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Schedule</strong></td><td>The date is confirmed and invitations are going out</td><td>Officer</td></tr>
+        <tr><td><strong>Start</strong></td><td>On the day, when the activity begins</td><td>Officer</td></tr>
+        <tr><td><strong>Complete</strong></td><td>When the activity has ended</td><td>Officer</td></tr>
+        <tr><td><strong>Close</strong></td><td>When everything is recorded (attendance, coverage, feedback)</td><td>Officer</td></tr>
+        <tr><td><strong>Archive</strong></td><td>When nobody needs to work on it any more</td><td>Officer</td></tr>
+        <tr><td><strong>Cancel</strong></td><td>When it will not happen</td><td>Officer while Draft; <strong>Manager</strong> once approved</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Schedule</strong> checks again for staff clashes. If someone is double-booked, it refuses and tells you who.</p>
+    <h3>Recording that a message went out</h3>
+    <p>The MIS does <strong>not</strong> send emails or SMS itself. When you have sent the message the usual way,
+    open the <strong>Channels</strong> tab and click <strong>Mark as sent</strong> (the paper-plane icon) on that row.
+    The status becomes <strong>Marked as sent</strong>, with your name and the time. The button appears once the
+    activity is <strong>Scheduled</strong>, for users with the dispatch right.</p>
+    <figure class="shot">
+      <a href="img/ob-09-mark-sent.png"><img src="img/ob-09-mark-sent.png" alt="Mark as sent on the Channels tab" /></a>
+      <figcaption><span class="num">Fig. 10</span> A Scheduled activity: the paper-plane icon on each row marks it as sent.</figcaption>
+    </figure>
+
+    <!-- 8 -->
+    <h2 id="l5">8. Lesson 5 · After the event: attendance and media coverage</h2>
+    <p>These tabs stay open after the event, until the activity is Archived or Cancelled. Also record the
+    <strong>Achieved</strong> values (Objectives), the <strong>Actual Reach</strong> (Audience), the feedback and
+    the report or photos (Attachments).</p>
+    <h3>Participants (attendance register)</h3>
+    <p><strong>Add one person:</strong></p>
+    <ol class="steps">
+      <li>Open the <strong>Participants</strong> tab.</li>
+      <li>Fill in Full name, Gender, Stakeholder type, Organisation, Designation, Phone and Email.</li>
+      <li>Choose a status: Invited, Confirmed, Attended, Absent or Replaced.</li>
+      <li>Optional: link the person to a TASAF beneficiary.</li>
+      <li>Click <strong>Add participant</strong>.</li>
+    </ol>
+    <p><strong>Invite a whole list:</strong> under <em>Invite from a stakeholder list</em>, choose the list
+    (Lesson 8) and click <strong>Invite members</strong>. Everyone on it is added as Invited. People already on
+    the register (same phone, or same name and organisation) are skipped.</p>
+    <p><strong>After the event:</strong> change each person to <strong>Attended</strong> or <strong>Absent</strong>.
+    The <strong>Actual Audience</strong> on the form counts the people marked Attended. You do not type it.</p>
+    <figure class="shot">
+      <a href="img/ob-10-participants.png"><img src="img/ob-10-participants.png" alt="The Participants tab" /></a>
+      <figcaption><span class="num">Fig. 11</span> Add one person at the top, invite a list below it, then the register: "12 on the register · 9 attended".</figcaption>
+    </figure>
+    <h3>Media Coverage</h3>
+    <ol class="steps">
+      <li>Open the <strong>Media Coverage</strong> tab and add each media house you invited.</li>
+      <li>Tick <strong>Invited</strong>, <strong>Attended</strong> and <strong>Reported</strong> as they apply.</li>
+      <li>When they publish or broadcast a story, add the coverage type, the link and the journalist who filed it.</li>
+      <li>Give the story a <strong>Quality</strong> score from 1 (poor) to 5 (excellent).</li>
+    </ol>
+    <p>"Media Houses Invited / Reported" on the activity form now count themselves from this tab.</p>
+    <figure class="shot">
+      <a href="img/ob-12-media.png"><img src="img/ob-12-media.png" alt="The Media Coverage tab" /></a>
+      <figcaption><span class="num">Fig. 12</span> Media Coverage: dark pills are ticked, white pills are not. Quality on the right.</figcaption>
+    </figure>
+    <h3>Results: Achieved and Actual Reach</h3>
+    <p>On the <strong>Objectives</strong> and <strong>Audience</strong> tabs, click the pencil on a row, type the
+    result and click <strong>Save</strong>. After Submit only the result box can be changed; the plan stays grey.</p>
+    <figure class="shot">
+      <a href="img/ob-13-objective-edit.png"><img src="img/ob-13-objective-edit.png" alt="Recording the achieved value" /></a>
+      <figcaption><span class="num">Fig. 13</span> Recording the Achieved value (9 of 40) on a completed activity.</figcaption>
+    </figure>
+
+    <!-- 9 -->
+    <h2 id="l6">9. Lesson 6 · The News Feed</h2>
+    <p>The News Feed is the internal noticeboard. Every staff member can read it. Posts of type
+    <strong>Announcement</strong> also pop up once for each person when they log in; each person closes it with
+    <strong>Dismiss</strong>.</p>
+    <figure class="shot">
+      <a href="img/ob-14-feed.png"><img src="img/ob-14-feed.png" alt="The News Feed" /></a>
+      <figcaption><span class="num">Fig. 14</span> The News Feed: a pinned post on top, then recent posts. Labels show Pinned, Published or Draft.</figcaption>
+    </figure>
+    <figure class="shot">
+      <a href="img/co-05-announcement.png"><img src="img/co-05-announcement.png" alt="The login announcement" /></a>
+      <figcaption><span class="num">Fig. 15</span> An announcement as it pops up after login.</figcaption>
+    </figure>
+    <h3>Write a post <span class="chip open">Officer</span></h3>
+    <ol class="steps">
+      <li>Go to <strong>Communications ▸ News Feed</strong> and click <strong>Post an update…</strong></li>
+      <li>Optional: choose <strong>Start from a template</strong>. The title and message fill in from the Library;
+      <strong>Undo</strong> puts back what you had.</li>
+      <li>Write a <strong>Title</strong> and a message. The toolbar has bold, lists, links and pictures.</li>
+      <li>Choose the type: Announcement, Update, Media Highlight or Newsletter.</li>
+      <li>Optional: <strong>Attach files</strong> (PDFs, pictures, spreadsheets).</li>
+      <li>Click <strong>Save draft</strong>. The post shows the label <span class="chip received">Draft</span>.
+      Only you and the Manager can see it.</li>
+      <li>Click <strong>Submit for approval</strong> under your post. The label becomes
+      <span class="chip progress">Pending approval</span>.</li>
+    </ol>
+    <figure class="shot">
+      <a href="img/ob-15-composer.png"><img src="img/ob-15-composer.png" alt="The post editor with a template" /></a>
+      <figcaption><span class="num">Fig. 16</span> The post editor after choosing the template "Payment window notice".</figcaption>
+    </figure>
+    <figure class="shot">
+      <a href="img/ob-16-draft-post.png"><img src="img/ob-16-draft-post.png" alt="A draft post" /></a>
+      <figcaption><span class="num">Fig. 17</span> A saved draft with its <strong>Submit for approval</strong> button.</figcaption>
+    </figure>
+    <h3>Approve, publish and pin <span class="chip resolved">Manager</span></h3>
+    <ul>
+      <li>Open <strong>Approvals</strong> in the main menu and approve or reject the post.
+      Approved: it is published for everyone. Rejected: the post shows a red box with the reason; the Officer
+      fixes it (pencil) and submits again.</li>
+      <li>You can also publish or unpublish directly: <strong>⋮ (More actions) ▸ Publish / Unpublish</strong>.</li>
+      <li>The <strong>pin</strong> icon keeps a post at the top of the feed. Unpin it when it is old.</li>
+    </ul>
+    <div class="callout warn"><strong>Changing a published post.</strong> If the Officer edits a published post, it
+    goes back to Draft and must be approved again. A Manager's small corrections stay published.</div>
+
+    <!-- 10 -->
+    <h2 id="l7">10. Lesson 7 · Calendar and Dashboard</h2>
+    <h3>Calendar</h3>
+    <p><strong>Communications ▸ Calendar</strong> shows activities by <strong>Month</strong>, <strong>Week</strong>
+    or <strong>Agenda</strong>. Click an activity to open it; click an empty day to plan a new one on that date.
+    <strong>Other modules</strong> adds Training and Coordination activities so you can avoid clashes with them.</p>
+    <figure class="shot">
+      <a href="img/ob-17-calendar.png"><img src="img/ob-17-calendar.png" alt="The Calendar" /></a>
+      <figcaption><span class="num">Fig. 18</span> The month view. Cancelled activities are struck through.</figcaption>
+    </figure>
+    <h3>Dashboard</h3>
+    <p><strong>Communications ▸ Dashboard</strong> gives the numbers for reports:</p>
+    <ul>
+      <li><strong>Activities:</strong> total, this week, upcoming, and by status, type and channel.</li>
+      <li><strong>Audience reach:</strong> planned against actual, and by level (National, Regional, PAA, Community).</li>
+      <li><strong>Participants:</strong> registered, attendance rate, attendance by gender.</li>
+      <li><strong>Media coverage:</strong> houses invited and reported, coverage rate, average quality.</li>
+    </ul>
+    <p>Use the filters at the top: <strong>From</strong> and <strong>To</strong> (activities starting in that
+    period) and <strong>Region</strong> (everything inside it is included). The numbers update when you change a filter.</p>
+    <figure class="shot">
+      <a href="img/ob-18-dashboard.png"><img src="img/ob-18-dashboard.png" alt="The Dashboard" /></a>
+      <figcaption><span class="num">Fig. 19</span> The Dashboard with its filters, summary cards and status counts.</figcaption>
+    </figure>
+    <div class="callout note">The numbers are only as good as what the team records. An activity with no
+    Participants or Media Coverage rows counts as zero reached.</div>
+
+    <!-- 11 -->
+    <h2 id="l8">11. Lesson 8 · Library, media houses and journalists</h2>
+    <h3>Library</h3>
+    <table>
+      <thead><tr><th>Tab</th><th>What it holds</th><th>Used by</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Templates</strong></td><td>Ready-made messages: code, name, channel, subject, message</td><td>"Start from a template" in the News Feed</td></tr>
+        <tr><td><strong>Stakeholder lists</strong></td><td>Named lists of people (name, organisation, phone, email, location)</td><td>"Invite from a stakeholder list" in Participants</td></tr>
+        <tr><td><strong>Assets</strong></td><td>Logos, brand files, photos, videos, documents</td><td>Download and reuse</td></tr>
+      </tbody>
+    </table>
+    <figure class="shot">
+      <a href="img/ob-19-library-list.png"><img src="img/ob-19-library-list.png" alt="A stakeholder list" /></a>
+      <figcaption><span class="num">Fig. 20</span> The stakeholder list "Dodoma regional editors" and its members.</figcaption>
+    </figure>
+    <h3>Media Houses</h3>
+    <p>The official list of newspapers, radio and TV stations, websites and blogs. Each has a code such as
+    <code>MH00012</code> made by the system, and a category (medium and reach). The quality column is the average of
+    the ratings given in Media Coverage; you cannot type it.</p>
+    <h3>Journalists</h3>
+    <p>Media staff, each with a code such as <code>MJ00031</code>. A journalist belongs to a media house or is
+    <strong>freelance</strong>. The record shows the stories they filed and their average quality.</p>
+    <figure class="shot">
+      <a href="img/ob-20-journalist.png"><img src="img/ob-20-journalist.png" alt="A journalist record" /></a>
+      <figcaption><span class="num">Fig. 21</span> A journalist record (phone masked).</figcaption>
+    </figure>
+    <div class="callout warn">This list holds personal details. Do not copy it outside the system.</div>
+
+    <!-- 12 -->
+    <h2 id="known">12. Known limits (tell trainees)</h2>
+    <p>Tell trainees about these limits so they don't think they made a mistake.</p>
+    <table>
+      <thead><tr><th>#</th><th>What the user sees</th><th>What to do for now</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><strong>Mark as sent</strong> only records that a message went out. The MIS sends no email or SMS.</td><td>Send messages the usual way, then mark them.</td></tr>
+        <tr><td>2</td><td>A rejected <strong>activity</strong> does not show why it was rejected.</td><td>The Manager tells the Officer directly.</td></tr>
+        <tr><td>3</td><td>Uploaded files may be lost when the server is updated, until the storage fix is applied.</td><td>Keep your own copy of important files.</td></tr>
+        <tr><td>4</td><td>Everyone with access sees the activities of all regions.</td><td>Use the filters (Activities list, Dashboard).</td></tr>
+      </tbody>
+    </table>
+
+    <!-- 13 -->
+    <h2 id="practice">13. Practice exercises</h2>
+    <div class="callout warn">Do these on the <strong>test server</strong>, never on the live one.</div>
+    <div class="ex">
+      <h3>Exercise 1 · Plan and approve <span class="chip open">Officer + Manager · 20 min</span></h3>
+      <ol class="steps">
+        <li>Officer: create "Community awareness meeting, Kondoa" for next Tuesday, 09:00–12:00, area PCT, type Community Awareness Session.</li>
+        <li>Add one channel (Radio), one objective (target 50 people), two audience rows and yourself as Owner.</li>
+        <li>Submit it.</li>
+        <li>Manager: reject it, and give the reason by phone.</li>
+        <li>Officer: Revise, change the venue, Submit again.</li>
+        <li>Manager: Approve it.</li>
+      </ol>
+      <h3>Exercise 2 · Run it <span class="chip open">Officer · 15 min</span></h3>
+      <ol class="steps">
+        <li>Schedule the activity.</li>
+        <li>Invite a stakeholder list, then add two people by hand.</li>
+        <li>Start the activity; mark 3 people Attended and 1 Absent. Complete it.</li>
+        <li>Check that "Actual Audience" now shows 3.</li>
+      </ol>
+      <h3>Exercise 3 · Media coverage <span class="chip open">Officer · 10 min</span></h3>
+      <ol class="steps">
+        <li>Add two media houses, both invited.</li>
+        <li>Mark one as reported, with a link, the journalist and quality 4.</li>
+        <li>Open the Dashboard and find your numbers.</li>
+      </ol>
+      <h3>Exercise 4 · News Feed <span class="chip open">Officer + Manager · 15 min</span></h3>
+      <ol class="steps">
+        <li>Officer: write an Announcement from a template, attach a PDF, Save draft, then Submit for approval.</li>
+        <li>Manager: approve it in <strong>Approvals</strong>, then pin it in the News Feed.</li>
+        <li>Log in as any other user: the announcement pops up. Dismiss it.</li>
+        <li>Officer: edit the published post and check that it goes back to Draft.</li>
+      </ol>
+      <h3>Exercise 5 · Results after the event <span class="chip open">Officer · 10 min</span></h3>
+      <ol class="steps">
+        <li>On the activity from Exercise 2, type the Achieved value (pencil) and the Actual Reach on each audience row.</li>
+        <li>Add one feedback row and upload a photo in Attachments.</li>
+        <li>Open the Dashboard, choose this month and your region, and find your numbers.</li>
+      </ol>
+    </div>
+
+    <!-- 14 -->
+    <h2 id="card">14. Quick reference card</h2>
+    <table class="card">
+      <thead><tr><th>I want to…</th><th>Go to</th><th>Click</th></tr></thead>
+      <tbody>
+        <tr><td>Plan an activity</td><td>Activities</td><td><strong>+</strong></td></tr>
+        <tr><td>Send it to my manager</td><td>the activity</td><td><strong>Submit</strong></td></tr>
+        <tr><td>Approve an activity</td><td>the activity (Submitted)</td><td><strong>Approve</strong> / <strong>Reject</strong></td></tr>
+        <tr><td>Fix a rejected activity</td><td>the activity</td><td><strong>Revise</strong>, then <strong>Submit</strong></td></tr>
+        <tr><td>Record who came</td><td>Participants tab</td><td>status <strong>Attended</strong></td></tr>
+        <tr><td>Invite a saved list</td><td>Participants tab</td><td><strong>Invite members</strong></td></tr>
+        <tr><td>Record a news story</td><td>Media Coverage tab</td><td>tick <strong>Reported</strong>, give <strong>Quality</strong></td></tr>
+        <tr><td>Record a message I sent</td><td>Channels tab</td><td><strong>Mark as sent</strong></td></tr>
+        <tr><td>Record results</td><td>Objectives / Audience tab</td><td>pencil, then <strong>Save</strong></td></tr>
+        <tr><td>Tell all staff something</td><td>News Feed</td><td><strong>Post an update…</strong></td></tr>
+        <tr><td>Send a post for approval</td><td>News Feed, my draft</td><td><strong>Submit for approval</strong></td></tr>
+        <tr><td>Approve a post</td><td>Approvals</td><td><strong>Approve</strong></td></tr>
+        <tr><td>See the month</td><td>Calendar</td><td><strong>Month</strong></td></tr>
+        <tr><td>Get numbers for a report</td><td>Dashboard</td><td><strong>From</strong>, <strong>To</strong>, <strong>Region</strong></td></tr>
+      </tbody>
+    </table>
+
+    <!-- 15 -->
+    <h2 id="words">15. Words you will see</h2>
+    <table>
+      <thead><tr><th style="width:24%">Word</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Activity</strong></td><td>Any planned communication work: press conference, media mission, meeting, newsletter…</td></tr>
+        <tr><td><strong>Event</strong></td><td>An activity where people gather. The Events menu shows only these.</td></tr>
+        <tr><td><strong>Status</strong></td><td>The stage an activity is at (Draft, Submitted, Approved…)</td></tr>
+        <tr><td><strong>Audience</strong></td><td>The <em>groups</em> you want to reach and how many people</td></tr>
+        <tr><td><strong>Participants</strong></td><td>The <em>named people</em> invited or present</td></tr>
+        <tr><td><strong>Stakeholder type</strong></td><td>A group such as Journalist, Village Executive Officer or Beneficiaries, at a level (National, Regional, PAA, Community)</td></tr>
+        <tr><td><strong>Stakeholder list</strong></td><td>A saved list of named contacts you can invite in one click</td></tr>
+        <tr><td><strong>Media house</strong></td><td>A newspaper, radio, TV station, website or blog</td></tr>
+        <tr><td><strong>Coverage</strong></td><td>A story a media house published or broadcast about the activity</td></tr>
+        <tr><td><strong>Channel</strong></td><td>The way a message goes out: email, SMS, radio…</td></tr>
+        <tr><td><strong>Template</strong></td><td>A ready-made message you can reuse</td></tr>
+        <tr><td><strong>Pin</strong></td><td>Keep a post at the top of the News Feed</td></tr>
+        <tr><td><strong>Clash</strong></td><td>The same staff member or place booked for two activities at the same time</td></tr>
+        <tr><td><strong>Maker / checker</strong></td><td>One person prepares (maker), another approves (checker)</td></tr>
+      </tbody>
+    </table>
+  </main>
+
+  <footer class="doc-footer">
+    <div class="brand">
+      <img src="../assets/tasaf-logo.png" alt="TASAF" />
+      <span>Tanzania Social Action Fund · Communication Module Onboarding Tutorial · Version 2.0</span>
+    </div>
+    <div><a href="user-manual.html">User manual</a> · <a href="../index.html">← Documentation hub</a></div>
+  </footer>
+
+</div>
+</body>
+</html>
