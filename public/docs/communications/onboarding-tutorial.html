@@ -169,7 +169,7 @@
       <div class="cover-meta">
         <span class="badge">Tanzania Social Action Fund</span>
         <span class="badge">Mfuko wa Maendeleo ya Jamii</span>
-        <span class="badge">Version 2.0 · 6 November 2026</span>
+        <span class="badge">Version 2.1 · 7 November 2026</span>
       </div>
     </div>
   </header>
@@ -228,7 +228,7 @@
       <thead><tr><th style="width:28%">Role</th><th>What this person does</th></tr></thead>
       <tbody>
         <tr><td><strong>Communications Officer</strong></td><td>Plans activities, fills in the details, runs the activity, records attendance and media coverage, writes News Feed posts</td></tr>
-        <tr><td><strong>Communications Manager</strong></td><td>Approves or rejects activities, cancels approved activities, approves, publishes and pins News Feed posts, marks channels as sent, deletes records</td></tr>
+        <tr><td><strong>Communications Manager</strong></td><td>Approves or rejects activities and News Feed posts, cancels approved activities, pins and unpins posts, marks channels as sent, deletes records</td></tr>
         <tr><td><strong>All other staff</strong></td><td>Read the News Feed and see announcements when they log in</td></tr>
       </tbody>
     </table>
@@ -260,6 +260,13 @@
         </tbody>
       </table>
     </div>
+    <p>Two more places matter for approvals:</p>
+    <ul>
+      <li>The <strong>bell</strong> at the top of the screen tells you when something waits for you, or when your work
+      was approved or rejected. Click a notice to open the item.</li>
+      <li><strong>Approvals ▸ My approvals</strong> in the main menu lists the News Feed posts (and other requests)
+      waiting for your decision.</li>
+    </ul>
     <p><strong>Lists work the same everywhere:</strong></p>
     <ul>
       <li>the <em>Search Criteria</em> box at the top narrows the list, and <strong>Search</strong> applies it</li>
@@ -360,15 +367,20 @@
     <ol class="steps">
       <li>Open your Draft activity.</li>
       <li>Check the form and the tabs.</li>
-      <li>Click <strong>Submit</strong> at the top. The status becomes <span class="chip open">Submitted</span> and the details are locked.</li>
+      <li>Click <strong>Submit</strong> at the top. The status becomes <span class="chip open">Submitted</span> and the details are locked.
+      If you try to save a change to them, the system says the activity is submitted and can no longer be changed.</li>
     </ol>
+    <p>Every Communications Manager gets a <strong>bell</strong> notice: “<em>title</em> is awaiting your approval”.</p>
     <h3>The Manager approves or rejects</h3>
     <ol class="steps">
-      <li>Open <strong>Communications ▸ Activities</strong> and filter by status <strong>Submitted</strong>.</li>
-      <li>Open the activity and read it.</li>
+      <li>Click the notice in the bell. The activity opens. (Or open <strong>Communications ▸ Activities</strong>,
+      filter by status <strong>Submitted</strong> and open the activity.)</li>
+      <li>Read it.</li>
       <li>Click <strong>Approve</strong> (status <span class="chip resolved">Approved</span>) or
       <strong>Reject</strong> (status <span class="chip closed">Rejected</span>).</li>
     </ol>
+    <p>The Officer gets a bell notice: “<em>title</em> was approved” or “<em>title</em> was rejected”. The Manager's
+    “awaiting your approval” notice closes by itself.</p>
     <figure class="shot">
       <a href="img/ob-08-approve.png"><img src="img/ob-08-approve.png" alt="A submitted activity seen by the Manager" /></a>
       <figcaption><span class="num">Fig. 8</span> What the Manager sees: a read-only summary with <strong>Reject</strong> and <strong>Approve</strong>.</figcaption>
@@ -377,9 +389,9 @@
     Reject buttons do not show.</div>
     <h3>If it was rejected</h3>
     <ol class="steps">
-      <li>The Officer opens the activity and clicks <strong>Revise</strong>. It goes back to Draft.</li>
+      <li>The Officer clicks the notice (or opens the activity) and clicks <strong>Revise</strong>. It goes back to Draft.</li>
       <li>They fix what is needed.</li>
-      <li>They click <strong>Submit</strong> again.</li>
+      <li>They click <strong>Submit</strong> again. The Manager is told again.</li>
     </ol>
     <div class="callout warn"><strong>Manager:</strong> tell the Officer <em>why</em> you rejected it (phone, email
     or a note in Description). The screen does not ask for a reason yet.</div>
@@ -534,16 +546,27 @@
       <a href="img/ob-16-draft-post.png"><img src="img/ob-16-draft-post.png" alt="A draft post" /></a>
       <figcaption><span class="num">Fig. 17</span> A saved draft with its <strong>Submit for approval</strong> button.</figcaption>
     </figure>
-    <h3>Approve, publish and pin <span class="chip resolved">Manager</span></h3>
+    <h3>Approve, reject and pin <span class="chip resolved">Manager</span></h3>
+    <ol class="steps">
+      <li>The bell shows “<em>title</em> is awaiting your approval”. Click it to open the approval request. (Or open
+      <strong>Approvals ▸ My approvals</strong> and open the request.)</li>
+      <li>Read the post and click <strong>Approve</strong> or <strong>Reject</strong>. When rejecting, write the reason
+      in the comment box.</li>
+    </ol>
     <ul>
-      <li>Open <strong>Approvals</strong> in the main menu and approve or reject the post.
-      Approved: it is published for everyone. Rejected: the post shows a red box with the reason; the Officer
-      fixes it (pencil) and submits again.</li>
-      <li>You can also publish or unpublish directly: <strong>⋮ (More actions) ▸ Publish / Unpublish</strong>.</li>
+      <li><strong>Approved:</strong> the post is published for everyone. The Officer gets a bell notice that it was
+      approved, and another that it was published.</li>
+      <li><strong>Rejected:</strong> the Officer gets a bell notice. The post shows a red box with your comment; the
+      Officer fixes it (pencil) and submits again.</li>
       <li>The <strong>pin</strong> icon keeps a post at the top of the feed. Unpin it when it is old.</li>
     </ul>
+    <div class="callout note"><strong>Approvals is the only way a new post goes live.</strong> While a post is
+    <em>Pending approval</em> it has no <strong>Publish</strong> button, and a Draft that was never approved cannot be
+    published from the feed. <strong>⋮ (More actions) ▸ Unpublish</strong> takes a post off the feed;
+    <strong>Publish</strong> puts it back only if its approved wording has not changed. Only the system administrator
+    can publish a draft directly.</div>
     <div class="callout warn"><strong>Changing a published post.</strong> If the Officer edits a published post, it
-    goes back to Draft and must be approved again. A Manager's small corrections stay published.</div>
+    goes back to Draft and must be submitted and approved again.</div>
 
     <!-- 10 -->
     <h2 id="l7">10. Lesson 7 · Calendar and Dashboard</h2>
@@ -607,7 +630,7 @@
       <thead><tr><th>#</th><th>What the user sees</th><th>What to do for now</th></tr></thead>
       <tbody>
         <tr><td>1</td><td><strong>Mark as sent</strong> only records that a message went out. The MIS sends no email or SMS.</td><td>Send messages the usual way, then mark them.</td></tr>
-        <tr><td>2</td><td>A rejected <strong>activity</strong> does not show why it was rejected.</td><td>The Manager tells the Officer directly.</td></tr>
+        <tr><td>2</td><td>A rejected <strong>activity</strong> does not show why it was rejected. The Officer gets a bell notice, but without the reason. (For News Feed posts the reason is shown.)</td><td>The Manager tells the Officer directly.</td></tr>
         <tr><td>3</td><td>Uploaded files may be lost when the server is updated, until the storage fix is applied.</td><td>Keep your own copy of important files.</td></tr>
         <tr><td>4</td><td>Everyone with access sees the activities of all regions.</td><td>Use the filters (Activities list, Dashboard).</td></tr>
       </tbody>
@@ -622,9 +645,10 @@
         <li>Officer: create "Community awareness meeting, Kondoa" for next Tuesday, 09:00–12:00, area PCT, type Community Awareness Session.</li>
         <li>Add one channel (Radio), one objective (target 50 people), two audience rows and yourself as Owner.</li>
         <li>Submit it.</li>
+        <li>Manager: check the bell shows “… is awaiting your approval”, and click it to open the activity.</li>
         <li>Manager: reject it, and give the reason by phone.</li>
-        <li>Officer: Revise, change the venue, Submit again.</li>
-        <li>Manager: Approve it.</li>
+        <li>Officer: check the bell shows “… was rejected”. Revise, change the venue, Submit again.</li>
+        <li>Manager: Approve it. Officer: check the bell shows “… was approved”.</li>
       </ol>
       <h3>Exercise 2 · Run it <span class="chip open">Officer · 15 min</span></h3>
       <ol class="steps">
@@ -642,7 +666,11 @@
       <h3>Exercise 4 · News Feed <span class="chip open">Officer + Manager · 15 min</span></h3>
       <ol class="steps">
         <li>Officer: write an Announcement from a template, attach a PDF, Save draft, then Submit for approval.</li>
-        <li>Manager: approve it in <strong>Approvals</strong>, then pin it in the News Feed.</li>
+        <li>Manager: check the post has no <strong>Publish</strong> button while it is pending. Open the bell notice and
+        <strong>Reject</strong> it with the comment “Add the date”.</li>
+        <li>Officer: check the red box shows “Add the date”. Fix the post and Submit for approval again.</li>
+        <li>Manager: approve it from <strong>Approvals ▸ My approvals</strong>, then pin it in the News Feed.</li>
+        <li>Officer: check the bell says the post was approved and published.</li>
         <li>Log in as any other user: the announcement pops up. Dismiss it.</li>
         <li>Officer: edit the published post and check that it goes back to Draft.</li>
       </ol>
@@ -661,7 +689,8 @@
       <tbody>
         <tr><td>Plan an activity</td><td>Activities</td><td><strong>+</strong></td></tr>
         <tr><td>Send it to my manager</td><td>the activity</td><td><strong>Submit</strong></td></tr>
-        <tr><td>Approve an activity</td><td>the activity (Submitted)</td><td><strong>Approve</strong> / <strong>Reject</strong></td></tr>
+        <tr><td>See what waits for me</td><td>the bell, or Approvals ▸ My approvals</td><td>click the notice</td></tr>
+        <tr><td>Approve an activity</td><td>the bell notice, or the activity (Submitted)</td><td><strong>Approve</strong> / <strong>Reject</strong></td></tr>
         <tr><td>Fix a rejected activity</td><td>the activity</td><td><strong>Revise</strong>, then <strong>Submit</strong></td></tr>
         <tr><td>Record who came</td><td>Participants tab</td><td>status <strong>Attended</strong></td></tr>
         <tr><td>Invite a saved list</td><td>Participants tab</td><td><strong>Invite members</strong></td></tr>
@@ -670,7 +699,7 @@
         <tr><td>Record results</td><td>Objectives / Audience tab</td><td>pencil, then <strong>Save</strong></td></tr>
         <tr><td>Tell all staff something</td><td>News Feed</td><td><strong>Post an update…</strong></td></tr>
         <tr><td>Send a post for approval</td><td>News Feed, my draft</td><td><strong>Submit for approval</strong></td></tr>
-        <tr><td>Approve a post</td><td>Approvals</td><td><strong>Approve</strong></td></tr>
+        <tr><td>Approve a post</td><td>the bell notice, or Approvals ▸ My approvals</td><td><strong>Approve</strong> / <strong>Reject</strong> (with a comment)</td></tr>
         <tr><td>See the month</td><td>Calendar</td><td><strong>Month</strong></td></tr>
         <tr><td>Get numbers for a report</td><td>Dashboard</td><td><strong>From</strong>, <strong>To</strong>, <strong>Region</strong></td></tr>
       </tbody>
@@ -695,6 +724,7 @@
         <tr><td><strong>Pin</strong></td><td>Keep a post at the top of the News Feed</td></tr>
         <tr><td><strong>Clash</strong></td><td>The same staff member or place booked for two activities at the same time</td></tr>
         <tr><td><strong>Maker / checker</strong></td><td>One person prepares (maker), another approves (checker)</td></tr>
+        <tr><td><strong>Bell</strong></td><td>The notifications icon at the top of the screen: what waits for you and what was decided</td></tr>
       </tbody>
     </table>
   </main>
@@ -702,7 +732,7 @@
   <footer class="doc-footer">
     <div class="brand">
       <img src="../assets/tasaf-logo.png" alt="TASAF" />
-      <span>Tanzania Social Action Fund · Communication Module Onboarding Tutorial · Version 2.0</span>
+      <span>Tanzania Social Action Fund · Communication Module Onboarding Tutorial · Version 2.1</span>
     </div>
     <div><a href="user-manual.html">User manual</a> · <a href="../index.html">← Documentation hub</a></div>
   </footer>

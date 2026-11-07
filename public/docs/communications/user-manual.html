@@ -145,13 +145,13 @@
       <div class="cover-meta">
         <span class="badge">Tanzania Social Action Fund</span>
         <span class="badge">Mfuko wa Maendeleo ya Jamii</span>
-        <span class="badge">Version 1.0 · 22 October 2026</span>
+        <span class="badge">Version 1.1 · 7 November 2026</span>
       </div>
     </div>
   </header>
 
   <div class="subhead">
-    <span><strong>Audience:</strong> Communication officers · approvers · staff · management</span>
+    <span><strong>Audience:</strong> Communications Officers · Communications Managers · staff · management</span>
     <span><strong>Module:</strong> <code>openimis-be-communications_py</code></span>
   </div>
 
@@ -182,9 +182,9 @@
     <table>
       <thead><tr><th>Role</th><th>Typical work</th></tr></thead>
       <tbody>
-        <tr><td><strong>Communication officer</strong></td><td>Plan activities and events, record outcomes, keep the media registries.</td></tr>
-        <tr><td><strong>Communication approver</strong></td><td>Approve activities and News Feed posts.</td></tr>
-        <tr><td><strong>Staff</strong></td><td>Read the News Feed; post updates for approval.</td></tr>
+        <tr><td><strong>Communications Officer</strong></td><td>Plan and run activities and events, record outcomes, write News Feed posts and submit them for approval, keep the media registries.</td></tr>
+        <tr><td><strong>Communications Manager</strong></td><td>Approve or reject activities and News Feed posts, cancel approved activities, pin and unpublish posts, mark channels as sent, delete records. Never approves their own work.</td></tr>
+        <tr><td><strong>Staff</strong></td><td>Read the News Feed and the announcements shown at login.</td></tr>
         <tr><td><strong>Management / M&amp;E</strong></td><td>Calendar and dashboard.</td></tr>
       </tbody>
     </table>
@@ -193,16 +193,20 @@
       <thead><tr><th>Right</th><th>Grants</th></tr></thead>
       <tbody>
         <tr><td><code>220101</code>–<code>220104</code></td><td>Search / create / update / delete activities and events.</td></tr>
-        <tr><td><code>220110</code></td><td>Approve or reject activities.</td></tr>
+        <tr><td><code>220110</code></td><td>Approve or reject activities; cancel an approved, scheduled or ongoing activity.</td></tr>
+        <tr><td><code>220305</code></td><td>Mark a channel as sent.</td></tr>
         <tr><td><code>220402</code> · <code>220502</code> · <code>220602</code> · <code>221402</code> · <code>220802</code></td><td>Manage an activity's channels · objectives · staff · audience · feedback.</td></tr>
         <tr><td><code>220701</code> / <code>220702</code></td><td>See / upload attachments.</td></tr>
         <tr><td><code>221901</code>–<code>221904</code></td><td>The participant register of an event.</td></tr>
-        <tr><td><code>221501</code> / <code>221502</code> / <code>221505</code></td><td>Read the News Feed / write posts / publish posts.</td></tr>
+        <tr><td><code>221501</code> / <code>221502</code> / <code>221505</code></td><td>Read the News Feed / write posts / approve posts (in Approvals), pin and unpublish.</td></tr>
         <tr><td><code>221601</code>–<code>221604</code> · <code>221801</code>–<code>221804</code></td><td>Media houses · journalists.</td></tr>
         <tr><td><code>220901</code> / <code>220902</code> · <code>221101</code> / <code>221102</code></td><td>Templates · library assets.</td></tr>
         <tr><td><code>221201</code></td><td>Calendar and dashboard.</td></tr>
+        <tr><td><code>280001</code></td><td>The bell (notifications).</td></tr>
       </tbody>
     </table>
+    <div class="callout note"><strong>Approvals ▸ My approvals</strong> needs no extra right. Anyone who can decide
+    an approval step sees the requests waiting for them there, and can open a request from its bell notice.</div>
 
     <h2 id="navigation">2. Menus and Pages</h2>
     <table>
@@ -253,19 +257,29 @@
 
     <h2 id="workflow">5. Status Workflow</h2>
     <table>
-      <thead><tr><th>Status</th><th>Next</th></tr></thead>
+      <thead><tr><th>Status</th><th>Next</th><th>Who</th></tr></thead>
       <tbody>
-        <tr><td>Draft</td><td>Submit · Cancel</td></tr>
-        <tr><td>Submitted</td><td>Approve · Reject (approver, 220110)</td></tr>
-        <tr><td>Rejected</td><td>Revise (back to Draft)</td></tr>
-        <tr><td>Approved</td><td>Schedule · Cancel</td></tr>
-        <tr><td>Scheduled</td><td>Start · Cancel</td></tr>
-        <tr><td>Ongoing</td><td>Complete · Cancel</td></tr>
-        <tr><td>Completed</td><td>Close</td></tr>
-        <tr><td>Closed</td><td>Archive</td></tr>
-        <tr><td>Cancelled · Archived</td><td>Final</td></tr>
+        <tr><td>Draft</td><td>Submit · Cancel</td><td>Officer</td></tr>
+        <tr><td>Submitted</td><td>Approve · Reject</td><td>Manager (220110), not the person who created it</td></tr>
+        <tr><td>Rejected</td><td>Revise (back to Draft)</td><td>Officer</td></tr>
+        <tr><td>Approved</td><td>Schedule · Cancel</td><td>Officer schedules; Manager cancels</td></tr>
+        <tr><td>Scheduled</td><td>Start · Cancel</td><td>Officer starts; Manager cancels</td></tr>
+        <tr><td>Ongoing</td><td>Complete · Cancel</td><td>Officer completes; Manager cancels</td></tr>
+        <tr><td>Completed</td><td>Close</td><td>Officer</td></tr>
+        <tr><td>Closed · Cancelled</td><td>Archive</td><td>Officer</td></tr>
+        <tr><td>Archived</td><td>Final</td><td></td></tr>
       </tbody>
     </table>
+    <h3>Notifications</h3>
+    <ul>
+      <li><strong>Submit:</strong> every Communications Manager gets a bell notice, “<em>title</em> is awaiting your
+      approval”. Clicking it opens the activity.</li>
+      <li><strong>Approve / Reject:</strong> the Officer who created the activity gets a bell notice, “<em>title</em>
+      was approved” or “was rejected”. The Managers' waiting notice closes.</li>
+    </ul>
+    <div class="callout note">After Submit the details, channels and staff are locked; a save that changes them is
+    refused with a message. Objective results, actual reach, participants, media coverage, attachments and
+    feedback stay open. The Reject button does not ask for a reason yet: tell the Officer directly.</div>
 
     <h2 id="events">6. Events and the Participant Register</h2>
     <p>An event is created the same way under <strong>Events</strong>, with an event type: Public,
@@ -288,14 +302,27 @@
       <li>Open <strong>News Feed</strong> and click <strong>Post an update…</strong>.</li>
       <li>Optionally start from a template. Write the title and message; the editor has headings, bold, colour, links, images, lists and alignment. Attach files if needed.</li>
       <li>Choose the type: Announcement, Update, Media Highlight or Newsletter.</li>
-      <li>Press <strong>Post</strong> (or <strong>Save draft</strong>). Posts wait for a communication officer's approval before others see them; the feed shows how many are awaiting approval.</li>
+      <li>Press <strong>Save draft</strong>. Only you and the Managers see the draft.</li>
+      <li>Press <strong>Submit for Approval</strong> under the post. The Managers get a bell notice; the feed shows
+      how many posts are awaiting approval.</li>
     </ol>
+    <h3>Approve or reject a post (Manager)</h3>
+    <ol class="steps">
+      <li>Click the bell notice, or open <strong>Approvals ▸ My approvals</strong>, and open the request.</li>
+      <li>Press <strong>Approve</strong> or <strong>Reject</strong>. When rejecting, write the reason in the comment.</li>
+    </ol>
+    <p>Approved: the post is published and the author is told. Rejected: the author is told and the post shows
+    the comment in a red box; the author edits it and submits again.</p>
     <figure class="shot">
       <a href="img/co-04-composer.png"><img src="img/co-04-composer.png" alt="The post composer." loading="lazy" /></a>
       <figcaption><span class="num">Fig. 4</span> The post composer.</figcaption>
     </figure>
     <p>Posts can be pinned to the top, edited, unpublished or deleted from the ⋮ menu. The search box
     looks through the latest posts.</p>
+    <div class="callout warn"><strong>Publishing goes through Approvals.</strong> A post that is awaiting approval,
+    or a draft that was never approved, has no <strong>Publish</strong> item in the ⋮ menu. Publish only puts back an
+    unpublished post whose approved wording has not changed. When the author edits a published post, it goes
+    back to Draft and must be approved again. Only the system administrator can publish a draft directly.</div>
     <h3>Announcements at login</h3>
     <p>Published announcements a user has not read yet open in a window after they log in, one after the
     other (<em>Announcement 1 of 3</em>). <strong>Read</strong> moves to the next.</p>
@@ -343,7 +370,10 @@
       <tbody>
         <tr><td>The tabs are missing</td><td>Save the activity first.</td></tr>
         <tr><td>Save is disabled</td><td>Read the red conflict banner and change the time, venue or staff.</td></tr>
-        <tr><td>My post is not visible to others</td><td>It is awaiting approval.</td></tr>
+        <tr><td>My post is not visible to others</td><td>It is a draft (submit it for approval) or is awaiting approval.</td></tr>
+        <tr><td>There is no Publish item on a post</td><td>It is awaiting approval or was never approved. Decide it in Approvals ▸ My approvals.</td></tr>
+        <tr><td>“This activity is submitted, so its details can no longer be changed”</td><td>Only results and the open tabs can change after Submit. To change the plan, the Manager rejects it and the Officer revises it.</td></tr>
+        <tr><td>I was told something is waiting but cannot find it</td><td>Click the bell notice, or open Approvals ▸ My approvals.</td></tr>
         <tr><td>An attachment fails to upload</td><td>The file is too large; reduce it or upload a link.</td></tr>
       </tbody>
     </table>
@@ -355,7 +385,7 @@
   <footer class="doc-footer">
     <div class="brand">
       <img src="../assets/tasaf-logo.png" alt="TASAF" />
-      <span>Tanzania Social Action Fund · Communication Module End-User Manual · Version 1.0</span>
+      <span>Tanzania Social Action Fund · Communication Module End-User Manual · Version 1.1</span>
     </div>
     <div><a href="../index.html">← Back to documentation hub</a></div>
   </footer>
